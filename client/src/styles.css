@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "primeng/resources/themes/tailwind-light/theme.css";
+@import "primeng/resources/primeng.css";
+
+@font-face {
+    font-family: 'Inter var';
+    font-weight: 100 900;
+    font-display: swap;
+    font-style: normal;
+    font-named-instance: 'Regular';
+    src: url("./assets/fonts/Inter-roman.var.woff2?v=3.19") format("woff2");
+}
+
+  
+@font-face {
+    font-family: 'SierraMadre';
+    font-style: normal;
+    font-weight: 900;
+    src: url('./assets/fonts/CeraRoundProBold.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'SiarraMadre';
+    font-style: normal;
+    font-weight: 400;
+    src: url('./assets/fonts/CeraRoundProLightRegular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'SiarraMadre';
+    font-style: normal;
+    font-weight: 700;
+    src: url('./assets/fonts/CeraRoundProMediumRegular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'SiarraMadre';
+    font-style: normal;
+    font-weight: 500;
+    src: url('./assets/fonts/CeraRoundProRegular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'SiarraMadre';
+    font-style: normal;
+    font-weight: 300;
+    src: url('./assets/fonts/CeraRoundProThinRegular.woff') format('woff');
+}
+
+.no-scroll {
+    overflow: hidden;
+}
+
+/* Filter Bar */
+.filterbar-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transition: all 0.3s ease;
+    z-index: 99;
+}
+
+/* Paginator */
+.p-paginator {
+    padding: 0px;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page {
+    /* background-color: #F8FAFC; */
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    min-width: 2.3rem;
+    height: 2.3rem;
+    margin: 0 8px 0 -1px;
+    transition: none;
+    border-radius: 0.50rem;
+    font-family: 'Inter var', sans-serif;
+    font-weight: 300;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page:not(.p-highlight):hover {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    color: #334155;
+  }
+
+.p-paginator .p-paginator-first:not(.p-disabled):not(.p-highlight):hover,
+.p-paginator .p-paginator-prev:not(.p-disabled):not(.p-highlight):hover,
+.p-paginator .p-paginator-next:not(.p-disabled):not(.p-highlight):hover,
+.p-paginator .p-paginator-last:not(.p-disabled):not(.p-highlight):hover {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #334155;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #fda4af;
+}
+
+.p-paginator .p-paginator-first:focus, .p-paginator .p-paginator-prev:focus, .p-paginator .p-paginator-next:focus, .p-paginator .p-paginator-last:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #f1f5f9;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    border-color: transparent;
+    background-color: #F43F5E;
+    color: #ffffff;
+    margin-right: 8px;
+    font-weight: 600;
+}
+
+.p-paginator .p-paginator-first, .p-paginator .p-paginator-prev, .p-paginator .p-paginator-next, .p-paginator .p-paginator-last {
+    background-color: transparent;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    min-width: 2.3rem;
+    height: 2.3rem;
+    margin: 0 0 0 -1px;
+    transition: none;
+    border-radius: 0.50rem;
+}
+
+.p-paginator .p-paginator-first, .p-paginator .p-paginator-prev {
+    margin-right: 8px;
+}
+
+.p-paginator .p-paginator-last {
+    margin-left: 8px;
+}
+
+.p-paginator .p-paginator-prev {
+    margin-right: 16px;
+}
+
+.p-paginator .p-paginator-next {
+    margin-left: 8px;
+}
+
+.p-paginator .p-paginator-first:disabled, .p-paginator .p-paginator-prev:disabled, .p-paginator .p-paginator-next:disabled, .p-paginator .p-paginator-last:disabled {
+    background-color: #f1f5f9;
+    color: #64748b;
+    opacity: 100%;
+    border-color: transparent;
+}

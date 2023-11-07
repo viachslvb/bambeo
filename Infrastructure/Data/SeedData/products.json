@@ -1,0 +1,37 @@
+﻿[
+  {
+    "Name": "Światowid Ser żółty Edamski, 250 g",
+    "ImageUrl": "/images/products/product_id_0.jpg",
+    "ProductCategoryId": 10,
+    "StoreId": 13,
+    "CreatedAt": "2023-10-31T10:00:00"
+  },
+  {
+    "Name": "Światowid Ser holenderski Mimolette w plastrach, 150 g",
+    "ImageUrl": "/images/products/product_id_1.jpg",
+    "ProductCategoryId": 10,
+    "StoreId": 13,
+    "CreatedAt": "2023-10-31T10:00:00"
+  },
+  {
+    "Name": "Sierpc Ser zółty Królewski wędzony w plastrach, 135 g",
+    "ImageUrl": "/images/products/product_id_2.jpg",
+    "ProductCategoryId": 10,
+    "StoreId": 13,
+    "CreatedAt": "2023-10-31T10:00:00"
+  },
+  {
+    "Name": "Hochland Ser topiony w krążku z szynką, 180 g",
+    "ImageUrl": "/images/products/product_id_3.jpg",
+    "ProductCategoryId": 10,
+    "StoreId": 13,
+    "CreatedAt": "2023-10-31T10:00:00"
+  },
+  {
+    "Name": "Président Ser pleśniowy Camembert naturalny, 120 g",
+    "ImageUrl": "/images/products/product_id_4.jpg",
+    "ProductCategoryId": 10,
+    "StoreId": 13,
+    "CreatedAt": "2023-10-31T10:00:00"
+  }
+]

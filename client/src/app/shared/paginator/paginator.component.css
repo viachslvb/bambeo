@@ -1,0 +1,10 @@
+.p-paginator .p-paginator-pages .p-paginator-page {
+    background-color: #000;
+    border: 1px solid #d4d4d8;
+    color: #71717A;
+    min-width: 3rem;
+    height: 3rem;
+    margin: 0 0 0 -1px;
+    transition: none;
+    border-radius: 0;
+}

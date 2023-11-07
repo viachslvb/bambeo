@@ -1,0 +1,20 @@
+<p-paginator #paginator
+    (onPageChange)="onPageChange($event)" 
+    [rows]="pageSize"
+    [totalRecords]="totalCount"
+    [showFirstLastIcon]="showFirstLastIcon">
+</p-paginator>
+<!-- Previous Page Template -->
+<ng-template #prevPageLinkIconTemplate>
+    <div class="flex items-center px-4 text-sm">
+        <i class="fa-solid fa-angle-left fa-xs"></i>
+        <span class="hidden md:inline-block pl-3">Poprzednia</span>
+    </div>
+</ng-template>
+<!-- Next Page Template -->
+<ng-template #nextPageLinkIconTemplate>
+    <div class="flex items-center px-4 text-sm">
+        <span class="hidden md:inline-block pr-3">Następna</span>
+        <i class="fa-solid fa-angle-right fa-xs"></i>
+    </div>
+</ng-template>
