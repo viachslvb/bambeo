@@ -1,0 +1,13 @@
+:host ::ng-deep .xng-breadcrumb-list {
+    font-weight: 300;
+    font-size: 14px;
+}
+
+:host ::ng-deep .xng-breadcrumb-link {
+    color: #475569;
+}
+
+:host ::ng-deep .xng-breadcrumb-link:hover {
+    color: #475569;
+    text-decoration: none;
+}

@@ -4,14 +4,33 @@
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center justify-between h-16 lg:h-20 transition-all duration-300">
                 <!-- logotype -->
-                <a class="mr-10" href="#">
+                <a class="mr-10" routerLink="/">
                     <img class="w-auto h-5 md:h-6 transition-all duration-300" src="./assets/bambeo.svg" alt="">
                 </a>
                 <!-- menu -->
                 <div class="hidden text-[0.85rem] font-medium lg:flex lg:flex-row lg:items-center lg:ml-5 xl:ml-10 xl:mr-6">
-                    <a href="#" class="px-1 py-2 xl:px-3 lg:py-4 mx-3 mt-2 text-slate-800 hover:text-slate-800 transform border-b-2 border-rose-500 lg:mt-0 transition-all duration-300">Strona Główna</a>
-                    <a href="#" class="px-1 py-2 xl:px-3 lg:py-4 mx-3 mt-2 text-slate-700 hover:text-slate-800 border-b-2 border-transparent hover:border-yellow-300 transform lg:mt-0 transition-[padding] duration-300">Sklepy</a>
-                    <a href="#" class="px-1 py-2 xl:px-3 lg:py-4 mx-3 mt-2 text-slate-700 hover:text-slate-800 border-b-2 border-transparent hover:border-yellow-300 transform lg:mt-0 transition-[padding] duration-300">Kategorie</a>
+                    <a routerLink="/" 
+                    class="px-1 py-2 xl:px-3 lg:py-4 mx-3 mt-2 hover:text-slate-800 transform border-b-2 lg:mt-0 transition-[padding] duration-300"
+                    routerLinkActive #home="routerLinkActive"
+                    [routerLinkActiveOptions]="{exact: true}"
+                    [ngClass]="{
+                        'border-rose-500 text-slate-800': home.isActive, 
+                        'border-transparent text-slate-700 hover:border-yellow-300': !home.isActive
+                    }">Strona Główna</a>
+                    <a routerLink="/promotions" 
+                    class="px-1 py-2 xl:px-3 lg:py-4 mx-3 mt-2 text-slate-700 hover:text-slate-800 border-b-2 border-transparent transform lg:mt-0 transition-[padding] duration-300"
+                    routerLinkActive #promotions="routerLinkActive"
+                    [ngClass]="{
+                        'border-rose-500 text-slate-800': promotions.isActive, 
+                        'border-transparent text-slate-700 hover:border-yellow-300': !promotions.isActive
+                    }">Promocje</a>
+                    <a routerLink="/test-errors" 
+                    class="px-1 py-2 xl:px-3 lg:py-4 mx-3 mt-2 text-slate-700 hover:text-slate-800 border-b-2 border-transparent transform lg:mt-0 transition-[padding] duration-300"
+                    routerLinkActive #testItems="routerLinkActive"
+                    [ngClass]="{
+                        'border-rose-500 text-slate-800': testItems.isActive, 
+                        'border-transparent text-slate-700 hover:border-yellow-300': !testItems.isActive
+                    }">Test Space</a>
                     <a href="#" class="px-1 py-2 xl:px-3 lg:py-4 mx-3 mt-2 text-slate-700 hover:text-slate-800 border-b-2 border-transparent hover:border-yellow-300 transform lg:mt-0 transition-[padding] duration-300">Jak Korzystać</a>
                 </div>
             </div>

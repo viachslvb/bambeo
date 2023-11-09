@@ -29,11 +29,14 @@ export class PaginatorComponent implements AfterViewInit, OnChanges {
     }
 
     if (changes['pageIndex']) {
-      if (changes['pageIndex'].currentValue === 1) {
+      setTimeout(() => {
+        this.paginator?.changePage(this.pageIndex - 1);
+      });
+      /* if (changes['pageIndex'].currentValue === 1) {
         setTimeout(() => {
           this.paginator?.changePage(0);
         });
-      }
+      } */
     }
   }
 

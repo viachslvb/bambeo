@@ -13,42 +13,6 @@
     src: url("./assets/fonts/Inter-roman.var.woff2?v=3.19") format("woff2");
 }
 
-  
-@font-face {
-    font-family: 'SierraMadre';
-    font-style: normal;
-    font-weight: 900;
-    src: url('./assets/fonts/CeraRoundProBold.woff') format('woff');
-}
-
-@font-face {
-    font-family: 'SiarraMadre';
-    font-style: normal;
-    font-weight: 400;
-    src: url('./assets/fonts/CeraRoundProLightRegular.woff') format('woff');
-}
-
-@font-face {
-    font-family: 'SiarraMadre';
-    font-style: normal;
-    font-weight: 700;
-    src: url('./assets/fonts/CeraRoundProMediumRegular.woff') format('woff');
-}
-
-@font-face {
-    font-family: 'SiarraMadre';
-    font-style: normal;
-    font-weight: 500;
-    src: url('./assets/fonts/CeraRoundProRegular.woff') format('woff');
-}
-
-@font-face {
-    font-family: 'SiarraMadre';
-    font-style: normal;
-    font-weight: 300;
-    src: url('./assets/fonts/CeraRoundProThinRegular.woff') format('woff');
-}
-
 .no-scroll {
     overflow: hidden;
 }
@@ -147,4 +111,9 @@
     color: #64748b;
     opacity: 100%;
     border-color: transparent;
+}
+
+/* Navbar menu */
+.navbar-router-is-active {
+    border-color: 1px solid #f43f5e;
 }

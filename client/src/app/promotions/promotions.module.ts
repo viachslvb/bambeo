@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ListboxModule } from 'primeng/listbox';
 import { CheckboxModule } from 'primeng/checkbox';
 import { FormsModule } from '@angular/forms';
@@ -12,6 +10,9 @@ import { SearchComponent } from './search/search.component';
 import { SortComponent } from './sort/sort.component';
 import { PromotionItemComponent } from './promotion-item/promotion-item.component';
 import { SharedModule } from "../shared/shared.module";
+import { PromotionPageComponent } from './promotion-page/promotion-page.component';
+import { PromotionsRoutingModule } from './promotions-routing.module';
+import { CoreModule } from '../core/core.module';
 
 @NgModule({
     declarations: [
@@ -20,19 +21,20 @@ import { SharedModule } from "../shared/shared.module";
         CategorySelectComponent,
         SearchComponent,
         SortComponent,
-        PromotionItemComponent
+        PromotionItemComponent,
+        PromotionPageComponent
     ],
     exports: [
         PromotionsComponent
     ],
     imports: [
         CommonModule,
-        BrowserModule,
-        BrowserAnimationsModule,
         ListboxModule,
         FormsModule,
         CheckboxModule,
-        SharedModule
+        SharedModule,
+        PromotionsRoutingModule,
+        CoreModule
     ]
 })
 export class PromotionsModule { }

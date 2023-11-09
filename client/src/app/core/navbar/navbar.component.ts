@@ -15,7 +15,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   mobileMenuHeight: string = "0px";
 
   ngOnInit(): void {
-    initFlowbite();
+
   }
 
   ngAfterViewInit(): void {

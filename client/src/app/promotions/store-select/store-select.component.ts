@@ -10,7 +10,6 @@ import { Store } from 'src/app/shared/models/store';
 export class StoreSelectComponent implements OnChanges, AfterViewInit {
   @Input() stores!: Store[];
   @Output() storeSelected = new EventEmitter<Store>();
-  
   @ViewChild('storeSearch') storeSearch!: ElementRef;
   storeSearchInput$ = new Subject<string>();
 

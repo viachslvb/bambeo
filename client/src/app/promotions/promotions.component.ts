@@ -4,26 +4,40 @@ import { Promotion } from 'src/app/shared/models/promotion';
 import { ProductCategory } from 'src/app/shared/models/productCategory';
 import { Store } from 'src/app/shared/models/store';
 import { PromotionParams } from 'src/app/shared/models/promotionParams';
+import { mergeMap } from 'rxjs';
+import { BusyService } from '../core/services/busy.service';
+import { MessageService } from 'primeng/api';
+import { PromotionsStateService } from './promotions-state.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-promotions',
   templateUrl: './promotions.component.html',
-  styleUrls: ['./promotions.component.css']
+  styleUrls: ['./promotions.component.css'],
 })
 
 export class PromotionsComponent implements OnInit {
+  constructor(
+    private promotionService: PromotionsService, 
+    private renderer: Renderer2, 
+    private busyService: BusyService, 
+    private toastService: MessageService,
+    private promotionsState: PromotionsStateService,
+    private titleService: Title) { }
+
   @ViewChild('filterBar', { static: true }) filterBar!: ElementRef;
   @ViewChild('filterPage', { static: true }) filterPage!: ElementRef;
   @ViewChild('toggleFilterPageButton', { static: true }) toggleFilterButton!: ElementRef;
   @ViewChild('spaceForFilterBarWhenFixed') spaceForFilterBarWhenFixed!: ElementRef;
 
   // Data variables
+  usePromotionsState = false;
+  promotionParams = new PromotionParams();
   promotions: Promotion[] = [];
   categories: ProductCategory[] = [];
   stores: Store[] = [];
-  promotionParams = new PromotionParams();
   totalCount = 0;
-  firstElementIndex = 0;
+  isPromotionsLoaded = false;
 
   // Filter page touch events variables
   private filterPagePositionY = 0;
@@ -36,25 +50,37 @@ export class PromotionsComponent implements OnInit {
   isFilterBarFixed: boolean = false;
   isFilterPageOpen: boolean = false;
 
-  constructor(private promotionService: PromotionsService, private renderer: Renderer2) { }
+  // Spinners for loading
+  pageLoadingSpinner = 'pageLoadingSpinner';
+  promotionsLoadingSpinner = 'promotionsLoadingSpinner';
 
   ngOnInit() {
-    // Sort by date desc by default
-    this.promotionParams.sortType = "ByDateDesc";
-    
-    this.getStores();
-    this.getCategories();
-    this.getPromotions();
+    // Set title
+    this.titleService.setTitle('Bambeo • Promocje');
 
-    // Set transition to filter page after 100ms
+    // Load state of filters (if exists)
+    this.loadState();
+
+    // Load all data for promotions page (stores/categories/promotions)
+    this.getCombinedData();
+
+    // Set transition to filter page after 200ms
     setTimeout(() => { 
       this.renderer.setStyle(this.filterPage.nativeElement, 'transition', 'transform ease-in-out 0.3s');
-    }, 100);
+    }, 200);
 
     this.addListeners();
     this.addTouchListenersForFilterPage();
     this.setThresholdToCloseFilterPage();
     this.checkIsMobile();
+  }
+
+  loadState() {
+    const filtersState = this.promotionsState.getFiltersState();
+    if (filtersState) {
+      this.promotionParams = filtersState;
+      this.usePromotionsState = true;
+    }
   }
 
   addListeners() {
@@ -123,42 +149,92 @@ export class PromotionsComponent implements OnInit {
     }
   }
 
+  getCombinedData() {
+    this.busyService.busy(this.pageLoadingSpinner);
+
+    this.promotionService.getStores().pipe(
+      mergeMap(stores => {
+        this.stores = stores;
+        this.stores.forEach(store => {
+          if (this.usePromotionsState) {
+            store.selected = this.promotionParams.storeIds.includes(store.id);
+          }
+          else {
+            store.selected = true;
+            this.promotionParams.storeIds.push(store.id);
+          }
+        });
+        return this.promotionService.getCategories().pipe(
+          mergeMap(categories => {
+            this.categories = categories;
+            this.categories.forEach(category => {
+              category.selected = !this.usePromotionsState;
+            });
+            this.categories.forEach(category => { 
+              category.categories?.forEach(subcategory => { 
+                if (this.usePromotionsState) {
+                  subcategory.selected = this.promotionParams.categoryIds.includes(subcategory.id);
+                  if (subcategory.selected && !category.selected) {
+                    category.selected = true;
+                  }
+                }
+                else {
+                  subcategory.selected = true;
+                  this.promotionParams.categoryIds.push(subcategory.id);
+                }
+                });
+              });
+            return this.promotionService.getPromotions(this.promotionParams);
+          })
+        );
+      })
+    ).subscribe({
+      next: response => {
+        this.promotions = response.data;
+        this.promotionParams.pageIndex = response.pageIndex;
+        this.promotionParams.pageSize = response.pageSize;
+        this.totalCount = response.count;
+
+        this.isPromotionsLoaded = true;
+        this.busyService.idle(this.pageLoadingSpinner);
+      },
+      error: error => {
+        console.log(error);
+        this.busyService.idle(this.pageLoadingSpinner);
+        this.toastService.add({ 
+          severity: 'error', 
+          summary: "Błąd podczas pobierania danych", 
+          detail: "Nie udało się połączyć z serwerem w celu pobrania danych. Prosimy spróbować ponownie później." 
+        });
+      }
+    });
+  }
+
   getPromotions() {
+    this.busyService.busy(this.promotionsLoadingSpinner);
+
+    // Save current state of filters
+    this.promotionsState.setFiltersState(this.promotionParams);
+
     this.promotionService.getPromotions(this.promotionParams).subscribe({
       next: response => {
         this.promotions = response.data;
         this.promotionParams.pageIndex = response.pageIndex;
         this.promotionParams.pageSize = response.pageSize;
         this.totalCount = response.count;
-      },
-      error: error => console.log(error)
-    })
-  }
 
-  getStores() {
-    this.promotionService.getStores().subscribe({
-      next: response => {
-        this.stores = response;
-        this.stores.forEach(store => { 
-          store.selected = true;
-          this.promotionParams.storeIds.push(store.id);
-         });
+        this.isPromotionsLoaded = true;
+        this.busyService.idle(this.promotionsLoadingSpinner);
       },
-      error: error => console.log(error)
-    })
-  }
-
-  getCategories() {
-    this.promotionService.getCategories().subscribe({
-      next: response => {
-        this.categories = response;
-        this.categories.forEach(category => { category.selected = true; });
-        this.categories.forEach(category => { category.categories?.forEach(subcategory => { 
-          subcategory.selected = true;
-          this.promotionParams.categoryIds.push(subcategory.id);
-        }); });
-      },
-      error: error => console.log(error)
+      error: error => {
+        console.log(error);
+        this.busyService.idle(this.promotionsLoadingSpinner);
+        this.toastService.add({ 
+          severity: 'error', 
+          summary: "Błąd podczas pobierania danych", 
+          detail: "Nie udało się połączyć z serwerem w celu pobrania danych. Prosimy spróbować ponownie później." 
+        });
+      }
     })
   }
 

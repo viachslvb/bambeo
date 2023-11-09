@@ -1,0 +1,19 @@
+<section class="container max-w-7xl mx-auto px-6 my-10">
+    <div class="w-max py-1 px-3 rounded-l rounded-r-lg border border-slate-200">
+        <xng-breadcrumb [separator]="separator">
+            <ng-container
+            *xngBreadcrumbItem="let breadcrumb; let info = info; let label = label; let first = first">
+                <ng-container *ngIf="info">
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-house text-rose-500 pr-2" *ngIf="info"></i>
+                        {{ info | titlecase }}
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="!first">{{ breadcrumb | titlecase }}</ng-container>
+          </ng-container>
+        </xng-breadcrumb>
+    </div>
+</section>
+<ng-template #separator>
+    <i class="fa-solid fa-caret-right fa-2xs"></i>
+</ng-template>

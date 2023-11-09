@@ -1,4 +1,5 @@
-<div class="container max-w-7xl min-w-[320px] mx-auto lg:px-6 lg:mt-14">
+<div class="container max-w-7xl min-w-[320px] mx-auto lg:px-6 relative">
+    <ngx-spinner bdColor="rgba(255,255,255,0.2)" size="medium" color="#e11d48" type="ball-spin-rotate" [fullScreen]="false" [name]="pageLoadingSpinner"></ngx-spinner>
     <div class="flex justify-between">
         <div class="lg:w-3/12 lg:min-w-[250px]"
             [ngClass]="{
@@ -25,23 +26,25 @@
             <!-- store search and select -->
             <app-store-select 
                 (storeSelected)="onStoreSelected($event)"
-                [stores]="stores">
+                [stores]="stores"
+                *ngIf="stores.length > 0">
             </app-store-select>
             <!-- category select -->
-            <div class="lg:border lg:border-slate-200 lg:rounded-xl mt-5">
+            <div class="lg:border lg:border-slate-200 lg:rounded-xl mt-5"
+                *ngIf="categories.length > 0">
                 <app-category-select 
                     (categorySelected)="onCategorySelected($event)"
                     [categories]="categories">
                 </app-category-select>
                 <!-- show upcoming promotions -->
                 <div class="p-4 my-5">
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" value=""
-                    class="sr-only peer"
-                    (click)="onShowUpcomingPromotions()" 
-                    [(ngModel)]="promotionParams.includeUpcomingPromotions">
-                    <div class="w-11 h-6 bg-slate-100 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-fuchsia-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-fuchsia-600"></div>
-                    <span class="ml-3 text-sm font-medium text-slate-900">Nadchodzące promocji</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" value=""
+                        class="sr-only peer"
+                        (click)="onShowUpcomingPromotions()" 
+                        [(ngModel)]="promotionParams.includeUpcomingPromotions">
+                        <div class="w-11 h-6 bg-slate-100 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-fuchsia-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-fuchsia-600"></div>
+                        <span class="ml-3 text-sm font-medium text-slate-900">Nadchodzące promocji</span>
                     </label>
                 </div>
             </div>
@@ -50,7 +53,8 @@
         <div class="w-full lg:w-9/12 lg:ml-10">
             <div class="h-0" #spaceForFilterBarWhenFixed></div>
             <div class="flex w-full justify-between lg:justify-end items-center bg-white lg:bg-transparent py-2 px-2 lg:px-0 shadow lg:shadow-none" #filterBar>
-                <div class="flex w-full justify-between lg:justify-end items-center mx-2">
+                <div class="flex w-full justify-between lg:justify-end items-center mx-2" 
+                *ngIf="isPromotionsLoaded">
                     <div class="lg:hidden flex sm:flex-1">
                         <button #toggleFilterPageButton
                         class="items-center p-2.5 text-slate-500 hover:text-slate-500 bg-slate-50 rounded-lg"
@@ -80,8 +84,12 @@
                 </div>
             </div>
             <!-- promotions list -->
-            <div class="flex flex-wrap justify-between items-center mt-3 lg:mt-0">
-                <div class="flex w-full xs:w-1/2" *ngFor="let promotion of promotions">
+            <div class="flex flex-wrap justify-between items-center mt-3 lg:mt-0 relative"
+                *ngIf="isPromotionsLoaded">
+                <ngx-spinner bdColor="rgba(255,255,255,0.2)" size="medium" color="#e11d48" type="ball-spin-rotate" 
+                [fullScreen]="false" [name]="promotionsLoadingSpinner"></ngx-spinner>
+                <div class="flex w-full xs:w-1/2" 
+                    *ngFor="let promotion of promotions">
                     <app-promotion-item class="m-2 w-full"
                         [promotion]="promotion">
                     </app-promotion-item>
@@ -100,7 +108,6 @@
                         <div class="pl-4 text-sm font-normal">Szukaliśmy, szukaliśmy, ale nie znaleźliśmy nic, co by spełniło twoje oczekiwania :(</div>
                     </div>
                 </div>
-                
             </div>
             <!-- user search filters -->
             <!-- <div class="flex flex-wrap w-full items-center p-2 border border-slate-200 rounded bg-slate-50 mt-5"

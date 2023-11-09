@@ -16,30 +16,17 @@ export class PromotionsService {
   constructor(private http: HttpClient) { }
 
   getPromotions(promotionParams: PromotionParams) {
-    let params = new HttpParams();
+    const body = {
+      categoryIds: promotionParams.categoryIds,
+      storeIds: promotionParams.storeIds,
+      sortType: promotionParams.sortType,
+      pageIndex: promotionParams.pageIndex,
+      pageSize: promotionParams.pageSize,
+      includeUpcomingPromotions: promotionParams.includeUpcomingPromotions,
+      search: promotionParams.search
+    };
 
-    if (promotionParams.categoryIds.length > 0) {
-      promotionParams.categoryIds.forEach(categoryId => {
-        params = params.append('categoryIds', categoryId.toString());
-      });
-    }
-
-    if (promotionParams.storeIds.length > 0) {
-      promotionParams.storeIds.forEach(storeId => {
-        params = params.append('storeIds', storeId.toString());
-      });
-    }
-
-    console.log('params: ' + promotionParams.pageIndex);
-
-    params = params.append('sortType', promotionParams.sortType);
-    params = params.append('pageIndex', promotionParams.pageIndex);
-    params = params.append('pageSize', promotionParams.pageSize);
-    params = params.append('includeUpcomingPromotions', promotionParams.includeUpcomingPromotions);
-
-    if (promotionParams.search) params = params.append('search', promotionParams.search);
-
-    return this.http.get<Pagination<Promotion[]>>(this.baseUrl + 'promotions', {params});
+    return this.http.post<Pagination<Promotion[]>>(this.baseUrl + 'promotions', body);
   }
 
   getPromotion(id: number) {

@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { Subject, debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
+import { PromotionsStateService } from '../promotions-state.service';
 
 @Component({
   selector: 'app-search',
@@ -7,6 +8,8 @@ import { Subject, debounceTime, distinctUntilChanged, fromEvent, map } from 'rxj
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements AfterViewInit {
+  constructor(private promotionsState: PromotionsStateService) { }
+
   @Output() queryChanged = new EventEmitter<string>();
   @ViewChild('promotionSearch') promotionSearch!: ElementRef;
   @ViewChild('searchSvgIcon', { static: true }) searchSvgIcon!: ElementRef;
@@ -14,6 +17,12 @@ export class SearchComponent implements AfterViewInit {
   promotionSearchInput$ = new Subject<string>();
 
   ngAfterViewInit(): void {
+    const filtersState = this.promotionsState.getFiltersState();
+
+    if (filtersState && filtersState.search !== '') {
+      this.promotionSearch.nativeElement.value = filtersState.search;
+    }
+
     this.addSearchInputListener();
   }
 

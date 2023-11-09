@@ -1,10 +1,12 @@
 ﻿using API.Dtos;
+using API.Errors;
 using API.Helpers;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -20,8 +22,23 @@ namespace API.Controllers
         }
 
         // GET api/promotions
-        [HttpGet]
-        public async Task<ActionResult<List<Promotion>>> GetPromotions([FromQuery] PromotionSpecParams promotionParams)
+        //[HttpGet]
+        //public async Task<ActionResult<List<Promotion>>> GetPromotions([FromQuery] PromotionSpecParams promotionParams)
+        //{
+        //    var spec = new PromotionsWithFiltersSpecification(promotionParams);
+        //    var countSpec = new PromotionsWithFiltersForCountSpecification(promotionParams);
+
+        //    var totalItems = await _promotionsRepo.CountAsync(countSpec);
+        //    var promotions = await _promotionsRepo.ListAsync(spec);
+
+        //    var data = _mapper.Map<IReadOnlyList<PromotionToReturnDto>>(promotions);
+
+        //    return Ok(new Pagination<PromotionToReturnDto>(promotionParams.PageIndex,
+        //        promotionParams.PageSize, totalItems, data));
+        //}
+
+        [HttpPost]
+        public async Task<ActionResult<List<Promotion>>> GetPromotions([FromBody] PromotionSpecParams promotionParams)
         {
             var spec = new PromotionsWithFiltersSpecification(promotionParams);
             var countSpec = new PromotionsWithFiltersForCountSpecification(promotionParams);
@@ -34,5 +51,20 @@ namespace API.Controllers
             return Ok(new Pagination<PromotionToReturnDto>(promotionParams.PageIndex,
                 promotionParams.PageSize, totalItems, data));
         }
+
+        // GET api/promotions/5
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<PromotionToReturnDto>> GetPromotion(int id)
+        {
+            var spec = new PromotionsWithFiltersSpecification(id);
+            var promotion = await _promotionsRepo.GetEntityWithSpec(spec);
+
+            if (promotion == null) return NotFound(new ApiResponse(404));
+
+            return _mapper.Map<PromotionToReturnDto>(promotion);
+        }
+        
     }
 }

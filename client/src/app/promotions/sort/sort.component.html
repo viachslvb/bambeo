@@ -1,32 +1,36 @@
 <!-- sorting settings -->
-<div class="flex sm:items-center lg:order-1 lg:border-r lg:border-slate-200 lg:pr-5 group">
+<div class="flex sm:items-center lg:order-1 lg:border-r lg:border-slate-200 lg:pr-5 group relative">
     <div class="hidden min-w-max lg:flex mr-4 text-slate-700 font-light text-sm">{{ selectedSortTypeLabel }}</div>
-    <button id="changeSortButton"
+    <button #changeSortButton
     class="group flex items-center justify-center p-2.5 bg-slate-50 rounded-lg lg:bg-slate-100 lg:rounded-lg lg:border lg:border-slate-200 lg:focus:border-rose-500 lg:focus:bg-rose-500 lg:focus:ring-4 lg:focus:ring-rose-200 lg:focus:outline-none"
-    (click)="onSortDropdownToggle()"
+    (click)="sortDropdownToggle()"
     type="button">
         <svg class="w-[1.15rem] h-[1.15rem] md:w-5 md:h-5 lg:w-4 lg:h-4 flex-shrink-0 text-slate-500 group-hover:text-slate-500 lg:text-slate-500 lg:group-focus:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6v13m0 0 3-3m-3 3-3-3m11-2V1m0 0L9 4m3-3 3 3"/>
         </svg>
     </button>
-</div>
-<!-- Sort dropdown menu -->
-<div id="changeSortDropdown" 
-class="z-10 hidden divide-y divide-slate-100 rounded-lg shadow-xl bg-white border border-slate-200 w-50">
-    <ul class="text-sm text-slate-700" aria-labelledby="changeSortButton">
-        <li *ngFor="let sortType of sortTypes; let first = first; let last = last"
-            class="flex px-5 py-1.5 cursor-pointer rounded-t-lg border-b border-slate-200 hover:bg-slate-100"
-            [ngClass]="{
-                'bg-slate-100': sortType.selected, 
-                'rounded-b-lg': last,
-                'rounded-t-lg': first}"
-            (click)="onSortTypeChange(sortType)">
-            <input type="radio" [value]="sortType.name" class="hidden" [(ngModel)]="selectedSortType">
-            <div class="text-sm">
-                <div class="text-slate-700 cursor-pointer">
-                    {{ sortType.label }}
+    <!-- Sort dropdown menu -->
+    <div #changeSortDropdown
+    class="z-10 divide-y divide-slate-100 rounded-lg shadow-xl bg-white border border-slate-200 w-max"
+    [ngClass]="{
+        'hidden': !isDropdownVisible,
+        'absolute': isDropdownVisible }"
+    [ngStyle]="{'top': isDropdownVisible ? 'calc(100% + 15px)' : 'auto', 'right': isDropdownVisible ? '0' : 'auto'}">
+        <ul class="text-sm text-slate-700" aria-labelledby="changeSortButton">
+            <li *ngFor="let sortType of sortTypes; let first = first; let last = last"
+                class="flex px-5 py-1.5 cursor-pointer rounded-t-lg border-b border-slate-200 hover:bg-slate-100"
+                [ngClass]="{
+                    'bg-slate-100': sortType.selected, 
+                    'rounded-b-lg': last,
+                    'rounded-t-lg': first}"
+                (click)="onSortTypeChange(sortType)">
+                <input type="radio" [value]="sortType.name" class="hidden" [(ngModel)]="selectedSortType">
+                <div class="text-sm">
+                    <div class="text-slate-700 cursor-pointer">
+                        {{ sortType.label }}
+                    </div>
                 </div>
-            </div>
-        </li>
-    </ul>
+            </li>
+        </ul>
+    </div>
 </div>
