@@ -18,25 +18,16 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error) {
-          if (error.status === 400) {
-            if (error.error.errors) {
-              throw error.error;
-            } else {
-              this.toastService.add({ severity: 'error', summary: error.status.toString(), detail: error.error.message });
-            }
-          }
-          if (error.status === 400) {
-            this.toastService.add({ severity: 'error', summary: error.status.toString(), detail: error.error.message });
-          }
           if (error.status === 404) {
             this.router.navigateByUrl('/not-found');
           };
           if (error.status === 500) {
-            const navigationExtras: NavigationExtras = {state: { error: error.error }};
+            const navigationExtras: NavigationExtras = { state: { error: error.error } };
             this.router.navigateByUrl('/server-error', navigationExtras );
           }
         }
-        return throwError(() => new Error(error.message))
+        
+        return throwError(() => error);
       })
     )
   }

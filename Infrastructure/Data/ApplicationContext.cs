@@ -1,12 +1,14 @@
 ﻿using Core.Entities;
+using Core.Entities.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace Infrastructure.Data
 {
-    public class PromotionContext : DbContext
+    public class ApplicationContext : IdentityDbContext<AppUser>
     {
-        public PromotionContext(DbContextOptions<PromotionContext> options) : base(options)
+        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
         }
 

@@ -83,6 +83,12 @@
                     </app-sort>
                 </div>
             </div>
+            <!-- user search filters -->
+            <app-user-filters 
+                *ngIf="isPromotionsLoaded && userFilters.length > 0"
+                [userFilters]="userFilters"
+                (onResetFilters)="resetFilters()">
+            </app-user-filters>
             <!-- promotions list -->
             <div class="flex flex-wrap justify-between items-center mt-3 lg:mt-0 relative"
                 *ngIf="isPromotionsLoaded">
@@ -109,13 +115,7 @@
                     </div>
                 </div>
             </div>
-            <!-- user search filters -->
-            <!-- <div class="flex flex-wrap w-full items-center p-2 border border-slate-200 rounded bg-slate-50 mt-5"
-                *ngIf="userFilters && userFilters.length > 0">
-                <span class="flex p-1 rounded text-white text-xs mx-2 my-1"
-                    *ngFor="let filter of userFilters"
-                    [ngClass]="{'bg-rose-500': filter.type === 0, 'bg-yellow-300': filter.type === 1, 'bg-fuchsia-500': filter.type === 2}">{{ filter.name }}</span>
-            </div> -->
+            
         </div>
     </div>
 </div>

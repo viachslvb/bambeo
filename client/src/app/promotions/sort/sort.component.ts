@@ -1,5 +1,7 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 import { SortTypeItem } from 'src/app/shared/models/sortTypeItem';
+import { PromotionsStateService } from '../promotions-state.service';
 
 @Component({
   selector: 'app-sort',
@@ -7,13 +9,15 @@ import { SortTypeItem } from 'src/app/shared/models/sortTypeItem';
   styleUrls: ['./sort.component.css'],
 })
 
-export class SortComponent implements OnInit {
+export class SortComponent implements OnInit, OnDestroy {
+  constructor(private promotionsState: PromotionsStateService) { }
   @Input() selectedSortType!: string;
   @Output() sortTypeChanged = new EventEmitter<string>();
   @ViewChild('changeSortDropdown', { static: true }) changeSortDropdown!: ElementRef;
   @ViewChild('changeSortButton', { static: true }) changeSortButton!: ElementRef;
   selectedSortTypeLabel!: string;
   isDropdownVisible: boolean = false;
+  private ngUnsubscribe = new Subject<void>();
 
   sortTypes: SortTypeItem[] = [
     { id: 1, name: 'ByDateDesc', label: 'Najnowsze', selected: false },
@@ -25,6 +29,24 @@ export class SortComponent implements OnInit {
   ngOnInit(): void {
     // By default: sort by date descending
     this.setSortTypeOnInit();
+
+    this.promotionsState.wasRecentlyReset().pipe(
+      takeUntil(this.ngUnsubscribe)
+    ).subscribe(() => {
+      this.setSortTypeByDefault();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
+  private setSortTypeByDefault() {
+    this.sortTypes.forEach(sortType => sortType.selected = false);
+    this.sortTypes[0].selected = true;
+    this.selectedSortType = this.sortTypes[0].name;
+    this.selectedSortTypeLabel = this.sortTypes[0].label;
   }
 
   setSortTypeOnInit() {
@@ -34,9 +56,7 @@ export class SortComponent implements OnInit {
       this.selectedSortTypeLabel = selectedSortItem.label;
     }
     else {
-      this.sortTypes[0].selected = true;
-      this.selectedSortType = this.sortTypes[0].name;
-      this.selectedSortTypeLabel = this.sortTypes[0].label;
+      this.setSortTypeByDefault();
     }
   }
 

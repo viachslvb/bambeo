@@ -1,11 +1,14 @@
-﻿using System.Text.Json;
+﻿using System.Net;
+using System.Text.Json;
 using Core.Entities;
+using Core.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Data
 {
-    public class PromotionContextSeed
+    public class ApplicationContextSeed
     {
-        public static async Task SeedAsync(PromotionContext context)
+        public static async Task SeedAsync(ApplicationContext context, UserManager<AppUser> userManager)
         {
             //if (!context.ProductCategories.Any())
             //{
@@ -34,6 +37,18 @@ namespace Infrastructure.Data
             //    var promotions = JsonSerializer.Deserialize<List<Promotion>>(promotionsData);
             //    context.Promotions.AddRange(promotions);
             //}
+
+            if (!userManager.Users.Any())
+            {
+                var user = new AppUser
+                {
+                    DisplayName = "Viacheslav",
+                    Email = "viacheslav.borys@gmail.com",
+                    UserName = "viachslvb",
+                };
+
+                await userManager.CreateAsync(user, "uUA1Q1(4$@Zc");
+            }
 
 
             if (context.ChangeTracker.HasChanges()) await context.SaveChangesAsync();

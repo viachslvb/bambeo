@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using API.Models.ApiResponses;
+using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,7 @@ namespace API.Controllers
         public async Task<ActionResult<List<Store>>> GetStores()
         {
             var stores = await _storesRepo.ListAllAsync();
-            return Ok(stores);
+            return Ok(new ApiResponse<IReadOnlyList<Store>>(stores));
         }
     }
 }

@@ -13,6 +13,10 @@ export class LoadingInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     // Use delay for loading promotions/categories/products/stores only
-    return next.handle(request).pipe(delay(100));
+    if (request.url.includes("promotions") || request.url.includes("categories") || request.url.includes("products") || request.url.includes("stores")) {
+      return next.handle(request).pipe(delay(100));
+    }
+
+    return next.handle(request).pipe(delay(5000));
   }
 }

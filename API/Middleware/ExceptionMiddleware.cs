@@ -1,4 +1,5 @@
-﻿using API.Errors;
+﻿using API.Models.ApiResponses;
+using API.Models.Enums;
 using System.Net;
 using System.Text.Json;
 
@@ -29,9 +30,11 @@ namespace API.Middleware
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                var response = _env.IsDevelopment()
-                    ? new ApiException((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace.ToString())
-                    : new ApiException((int)HttpStatusCode.InternalServerError);
+                //var response = _env.IsDevelopment()
+                //    ? new ApiExceptionResponse<string>((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace.ToString())
+                //    : new ApiExceptionResponse<string>((int)HttpStatusCode.InternalServerError);
+
+                var response = new ApiExceptionResponse(HttpStatusCode.InternalServerError);
 
                 var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 

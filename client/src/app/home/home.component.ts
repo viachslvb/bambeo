@@ -6,10 +6,6 @@ import { Title } from '@angular/platform-browser';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
-  constructor(private titleService: Title) {}
-  ngOnInit(): void {
-    this.titleService.setTitle('Bambeo • Strona główna');
-  }
+export class HomeComponent {
 
 }

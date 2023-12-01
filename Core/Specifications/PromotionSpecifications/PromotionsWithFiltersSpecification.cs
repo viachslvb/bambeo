@@ -1,18 +1,11 @@
 ﻿using Core.Entities;
-using System.Linq;
 
 namespace Core.Specifications
 {
     public class PromotionsWithFiltersSpecification : BaseSpecification<Promotion>
     {
         public PromotionsWithFiltersSpecification(PromotionSpecParams promotionParams)
-            : base(x =>
-                (string.IsNullOrEmpty(promotionParams.Search) || x.Product.Name.ToLower().Contains(promotionParams.Search)) &&
-                (!promotionParams.CategoryIds.Any() || promotionParams.CategoryIds.Contains(x.Product.ProductCategoryId)) &&
-                (!promotionParams.StoreIds.Any() || promotionParams.StoreIds.Contains(x.Product.StoreId)) &&
-                ((!promotionParams.IncludeUpcomingPromotions && DateTime.Now >= x.StartDate && DateTime.Now <= x.EndDate) ||
-                (promotionParams.IncludeUpcomingPromotions && DateTime.Now <= x.EndDate))
-            )
+            : base(PromotionSpecificationBuilder.BuildCriteria(promotionParams))
         {
             AddInclude(x => x.Product);
             AddInclude(x => x.Product.ProductCategory);

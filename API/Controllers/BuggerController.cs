@@ -1,13 +1,16 @@
-﻿using API.Errors;
+﻿using API.Models.ApiResponses;
+using API.Models.Enums;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace API.Controllers
 {
     public class BuggerController : BaseApiController
     {
-        private readonly PromotionContext _context;
-        public BuggerController(PromotionContext context)
+        private readonly ApplicationContext _context;
+        public BuggerController(ApplicationContext context)
         {
             _context = context;
         }
@@ -24,7 +27,14 @@ namespace API.Controllers
         [HttpGet("badrequest")]
         public ActionResult GetBadRequest()
         {
-            return BadRequest(new ApiResponse(400));
+            return BadRequest(new ApiExceptionResponse(HttpStatusCode.BadRequest));
+        }
+
+        [HttpGet("testauth")]
+        [Authorize]
+        public ActionResult<string> GetSecret()
+        {
+            return "this is secret stuff.";
         }
     }
 }

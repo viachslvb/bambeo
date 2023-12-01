@@ -1,5 +1,5 @@
-export interface UserFilter {
-    id: number,
-    name: string,
-    type: number
-  }
+export interface UserFilterItem {
+  id: string,
+  name: string,
+  type: number
+}

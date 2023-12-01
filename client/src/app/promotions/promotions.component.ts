@@ -8,7 +8,7 @@ import { mergeMap } from 'rxjs';
 import { BusyService } from '../core/services/busy.service';
 import { MessageService } from 'primeng/api';
 import { PromotionsStateService } from './promotions-state.service';
-import { Title } from '@angular/platform-browser';
+import { UserFilterItem } from '../shared/models/userFilterItem';
 
 @Component({
   selector: 'app-promotions',
@@ -22,8 +22,7 @@ export class PromotionsComponent implements OnInit {
     private renderer: Renderer2, 
     private busyService: BusyService, 
     private toastService: MessageService,
-    private promotionsState: PromotionsStateService,
-    private titleService: Title) { }
+    private promotionsState: PromotionsStateService) { }
 
   @ViewChild('filterBar', { static: true }) filterBar!: ElementRef;
   @ViewChild('filterPage', { static: true }) filterPage!: ElementRef;
@@ -36,6 +35,7 @@ export class PromotionsComponent implements OnInit {
   promotions: Promotion[] = [];
   categories: ProductCategory[] = [];
   stores: Store[] = [];
+  userFilters: UserFilterItem[] = [];
   totalCount = 0;
   isPromotionsLoaded = false;
 
@@ -55,9 +55,6 @@ export class PromotionsComponent implements OnInit {
   promotionsLoadingSpinner = 'promotionsLoadingSpinner';
 
   ngOnInit() {
-    // Set title
-    this.titleService.setTitle('Bambeo • Promocje');
-
     // Load state of filters (if exists)
     this.loadState();
 
@@ -170,7 +167,7 @@ export class PromotionsComponent implements OnInit {
             this.categories.forEach(category => {
               category.selected = !this.usePromotionsState;
             });
-            this.categories.forEach(category => { 
+            this.categories.forEach(category => {
               category.categories?.forEach(subcategory => { 
                 if (this.usePromotionsState) {
                   subcategory.selected = this.promotionParams.categoryIds.includes(subcategory.id);
@@ -182,8 +179,9 @@ export class PromotionsComponent implements OnInit {
                   subcategory.selected = true;
                   this.promotionParams.categoryIds.push(subcategory.id);
                 }
-                });
               });
+            });
+            this.updateUserFilters();
             return this.promotionService.getPromotions(this.promotionParams);
           })
         );
@@ -201,11 +199,6 @@ export class PromotionsComponent implements OnInit {
       error: error => {
         console.log(error);
         this.busyService.idle(this.pageLoadingSpinner);
-        this.toastService.add({ 
-          severity: 'error', 
-          summary: "Błąd podczas pobierania danych", 
-          detail: "Nie udało się połączyć z serwerem w celu pobrania danych. Prosimy spróbować ponownie później." 
-        });
       }
     });
   }
@@ -218,12 +211,15 @@ export class PromotionsComponent implements OnInit {
 
     this.promotionService.getPromotions(this.promotionParams).subscribe({
       next: response => {
-        this.promotions = response.data;
-        this.promotionParams.pageIndex = response.pageIndex;
-        this.promotionParams.pageSize = response.pageSize;
-        this.totalCount = response.count;
+        if (response) {
+          this.promotions = response.data;
+          this.promotionParams.pageIndex = response.pageIndex;
+          this.promotionParams.pageSize = response.pageSize;
+          this.totalCount = response.count;
+  
+          this.isPromotionsLoaded = true;
+        }
 
-        this.isPromotionsLoaded = true;
         this.busyService.idle(this.promotionsLoadingSpinner);
       },
       error: error => {
@@ -236,6 +232,153 @@ export class PromotionsComponent implements OnInit {
         });
       }
     })
+  }
+
+  private updateUserFilters() {
+    this.updateStoreUserFilters();
+    this.updateCategoryUserFilters();
+    this.updateUncomingPromotionsUserFilter();
+  }
+
+  private updateStoreUserFilters() {
+    const allStores: UserFilterItem = { id: "Wszystkie sklepy", name: 'Wszystkie sklepy', type: 0 };
+    const storePrefixId = 'store-';
+
+    if (this.stores) {
+      const allStoresSelected = this.stores.every(store => store.selected);
+      const indexFilter = this.userFilters.findIndex(f => f.name === allStores.name);
+
+      if (allStoresSelected) {
+        if (indexFilter === -1) {
+          this.userFilters.push(allStores);
+
+          this.stores.forEach(store => {
+            const indexFilter = this.userFilters.findIndex(f => f.id === storePrefixId + store.id);
+            if (indexFilter !== -1) {
+              this.userFilters.splice(indexFilter, 1);
+            }
+          });
+        }
+      }
+      else {
+        if (indexFilter !== -1) {
+          this.userFilters.splice(indexFilter, 1);
+        }
+
+        this.stores.forEach(store => {
+          const indexFilter = this.userFilters.findIndex(f => f.id === storePrefixId + store.id);
+          if (store.selected && indexFilter === -1) {
+            this.userFilters.push({
+              id: storePrefixId + store.id,
+              name: store.name,
+              type: 0,
+            });
+          }
+          else if (!store.selected && indexFilter !== -1) {
+            this.userFilters.splice(indexFilter, 1);
+          }
+        });
+      }
+    }
+  }
+
+  private updateCategoryUserFilters() {
+    const allCategories: UserFilterItem = { id: 'Wszystkie kategorie', name: 'Wszystkie kategorie', type: 1 };
+    const categoryPrefixId = 'category-';
+    
+    if (this.categories) {
+      const allCategoriesSelected = this.categories.every(category => {
+        if (category.categories) {
+          return category.categories.every(subcategory => subcategory.selected);
+        }
+        else {
+          return category.selected;
+        }
+      });
+      const index1 = this.userFilters.findIndex(f => f.name === allCategories.name);
+
+      if (allCategoriesSelected) {
+        if (index1 === -1) {
+          this.userFilters.push(allCategories);
+
+          this.categories.forEach(category => {
+            const indexFilter = this.userFilters.findIndex(f => f.id === categoryPrefixId + category.id);
+            if (indexFilter !== -1) {
+              this.userFilters.splice(indexFilter, 1);
+            }
+
+            category.categories?.forEach(subcategory => {
+              const indexFilter = this.userFilters.findIndex(f => f.id === categoryPrefixId + subcategory.id);
+              if (indexFilter !== -1) {
+                this.userFilters.splice(indexFilter, 1);
+              }
+            });
+          });
+        }
+      }
+      else {
+        if (index1 !== -1) {
+          this.userFilters.splice(index1, 1);
+        }
+
+        this.categories.forEach(category => { 
+          const allSubcategoriesSelected = category.categories?.every(subcategory => subcategory.selected);
+          const index2 = this.userFilters.findIndex(f => f.id === categoryPrefixId + category.id);
+
+          if (allSubcategoriesSelected) {
+            if (index2 === -1) {
+              this.userFilters.push({ 
+                id: categoryPrefixId + category.id,
+                name: category.name, 
+                type: 1
+              });
+            }
+
+            category.categories?.forEach(subcategory => {
+              const index3 = this.userFilters.findIndex(f => f.id === categoryPrefixId + subcategory.id);
+              if (index3 !== -1) {
+                this.userFilters.splice(index3, 1);
+              }
+            });
+          }
+          else {
+            if (index2 !== -1) {
+              this.userFilters.splice(index2, 1);
+            }
+
+            category.categories?.forEach(subcategory => {
+              const index4 = this.userFilters.findIndex(f => f.id === categoryPrefixId + subcategory.id);
+              if (subcategory.selected && index4 === -1) {
+                this.userFilters.push({
+                  id: categoryPrefixId + subcategory.id,
+                  name: subcategory.name,
+                  type: 2
+                });
+              }
+              else if (!subcategory.selected && index4 !== -1) {
+                this.userFilters.splice(index4, 1);
+              }
+            });
+          }
+        });
+      }
+    }
+  }
+
+  private updateUncomingPromotionsUserFilter() {
+    const upcomingPromotions: UserFilterItem = { id: 'Nadchodzące promocje', name: 'Nadchodzące promocje', type: 3 };
+    const index = this.userFilters.findIndex(f => f.name === upcomingPromotions.name);
+
+    if (this.promotionParams.includeUpcomingPromotions) {
+      if (index === -1) {
+        this.userFilters.push(upcomingPromotions);
+      }
+    }
+    else {
+      if (index !== -1) {
+        this.userFilters.splice(index, 1);
+      }
+    }
   }
 
   setThresholdToCloseFilterPage() {
@@ -281,6 +424,7 @@ export class PromotionsComponent implements OnInit {
       }
     }
     
+    this.updateStoreUserFilters();
     this.promotionParams.pageIndex = 1;
     this.getPromotions();
   }
@@ -297,6 +441,7 @@ export class PromotionsComponent implements OnInit {
       this.updateCategoryIdsParams(category.id, category.selected || false);
     }
 
+    this.updateCategoryUserFilters();
     this.promotionParams.pageIndex = 1;
     this.getPromotions();
   }
@@ -330,6 +475,8 @@ export class PromotionsComponent implements OnInit {
   onShowUpcomingPromotions() {
     this.promotionParams.includeUpcomingPromotions = !this.promotionParams.includeUpcomingPromotions;
     this.promotionParams.pageIndex = 1;
+
+    this.updateUncomingPromotionsUserFilter();
     this.getPromotions();
   }
 
@@ -357,5 +504,28 @@ export class PromotionsComponent implements OnInit {
       this.promotionParams.pageIndex = pageIndex;
       this.getPromotions();
     }
+  }
+
+  resetPromotionParams() {
+    this.promotionParams = new PromotionParams();
+    this.stores.forEach(store => {
+      store.selected = true;
+      this.promotionParams.storeIds.push(store.id);
+    });
+    this.categories.forEach(category => {
+      category.selected = true;
+      category.categories?.forEach(subcategory => {
+        subcategory.selected = true;
+        this.promotionParams.categoryIds.push(subcategory.id);
+      });
+    });
+  }
+
+  resetFilters() {
+    this.promotionsState.resetFiltersState();
+    this.resetPromotionParams();
+    this.userFilters = [];
+    this.updateUserFilters();
+    this.getPromotions();
   }
 }

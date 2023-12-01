@@ -1,8 +1,8 @@
-﻿namespace API.Helpers
+﻿namespace API.Models.ApiResponses
 {
-    public class Pagination<T> where T : class
+    public class PaginationResponse<T> where T : class
     {
-        public Pagination(int pageIndex, int pageSize, int count, IReadOnlyList<T> data)
+        public PaginationResponse(int pageIndex, int pageSize, int count, IReadOnlyList<T> data)
         {
             PageIndex = pageIndex;
             PageSize = pageSize;

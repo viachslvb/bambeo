@@ -1,0 +1,19 @@
+<div class="my-3">
+    <label 
+        for="{{name}}"
+        class="block mb-2 text-sm font-medium text-slate-700">
+        {{label}}
+    </label>
+    <input
+        type="{{type}}"
+        name="{{name}}"
+        [formControl]="control"
+        class="border text-slate-600 text-sm rounded-lg focus:bg-white focus:border-slate-300 focus:ring-4 focus:ring-slate-200 transition-colors duration-300 focus:outline-none block w-full p-2.5" 
+        placeholder="{{placeholder}}"
+        [ngClass]="(control.touched || control.dirty) ? control.invalid ? 'bg-rose-100 border-rose-200' : 'bg-slate-50 border-slate-200' : 'bg-slate-50 border-slate-200'"
+    >
+    <div *ngIf="(control.touched || control.dirty) && control.errors?.['required']" class="text-xs text-rose-600 px-1 pt-1">To pole musi być wypełnione</div>
+    <div *ngIf="(control.touched || control.dirty) && control.errors?.['email']" class="text-xs text-rose-600 px-1 pt-1">Nieprawidłowy adres email</div>
+    <div *ngIf="(control.touched || control.dirty) && control.errors?.['pattern']" class="text-xs text-rose-600 px-1 pt-1">Password not complex enough</div>
+    <div *ngIf="(control.touched || control.dirty) && control.errors?.['emailExists']" class="text-xs text-rose-600 px-1 pt-1">Adres email jest już używany</div>
+</div>

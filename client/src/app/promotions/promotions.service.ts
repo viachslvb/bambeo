@@ -1,21 +1,23 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { PromotionParams } from '../shared/models/promotionParams';
 import { Pagination } from '../shared/models/pagination';
 import { Promotion } from '../shared/models/promotion';
 import { Store } from '../shared/models/store';
 import { ProductCategory } from '../shared/models/productCategory';
+import { Observable } from 'rxjs';
+import { ApiService } from '../services/api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class PromotionsService {
-  baseUrl = 'https://localhost:5002/api/';
+  constructor (
+    private apiService: ApiService
+  ) { }
 
-  constructor(private http: HttpClient) { }
-
-  getPromotions(promotionParams: PromotionParams) {
+  getPromotions(promotionParams: PromotionParams): Observable<Pagination<Promotion[]>> {
+    const endpoint = 'promotions';
     const body = {
       categoryIds: promotionParams.categoryIds,
       storeIds: promotionParams.storeIds,
@@ -26,18 +28,21 @@ export class PromotionsService {
       search: promotionParams.search
     };
 
-    return this.http.post<Pagination<Promotion[]>>(this.baseUrl + 'promotions', body);
+    return this.apiService.post<Pagination<Promotion[]>>(endpoint, body);
   }
 
-  getPromotion(id: number) {
-    return this.http.get<Promotion>(this.baseUrl + 'promotions/' + id);
+  getPromotion(id: number): Observable<Promotion> {
+    const endpoint = `promotions/${id}`;
+    return this.apiService.get<Promotion>(endpoint);
   }
 
-  getStores() {
-    return this.http.get<Store[]>(this.baseUrl + 'stores');
+  getStores(): Observable<Store[]> {
+    const endpoint = 'stores';
+    return this.apiService.get<Store[]>(endpoint);
   }
 
-  getCategories() {
-    return this.http.get<ProductCategory[]>(this.baseUrl + 'products/categories');
+  getCategories(): Observable<ProductCategory[]> {
+    const endpoint = 'products/categories';
+    return this.apiService.get<ProductCategory[]>(endpoint);
   }
 }

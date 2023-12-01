@@ -1,9 +1,12 @@
-﻿using API.Errors;
+﻿using API.Models.ApiResponses;
+using API.Models.Enums;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
+using System.Net;
 
 namespace API.Extensions
 {
@@ -14,9 +17,10 @@ namespace API.Extensions
             // Add services to the container.
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
-            services.AddDbContext<PromotionContext>(options => options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped(typeof(ITestRedisRepository), typeof(TestItemRepository));
+            services.AddScoped<ITestRedisRepository, TestItemRepository>();
+            services.AddScoped<ITokenService, TokenService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSingleton<IConnectionMultiplexer>(c =>
             {
@@ -32,7 +36,7 @@ namespace API.Extensions
                         .SelectMany(x => x.Value.Errors)
                         .Select(x => x.ErrorMessage).ToArray();
 
-                    var errorResponse = new ApiValidationErrorResponse
+                    var errorResponse = new ApiValidationErrorResponse(HttpStatusCode.BadRequest, ApiErrorCode.ValidationFailed)
                     {
                         Errors = errors
                     };

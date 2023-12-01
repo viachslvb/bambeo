@@ -13,6 +13,7 @@ import { SharedModule } from "../shared/shared.module";
 import { PromotionPageComponent } from './promotion-page/promotion-page.component';
 import { PromotionsRoutingModule } from './promotions-routing.module';
 import { CoreModule } from '../core/core.module';
+import { UserFiltersComponent } from './user-filters/user-filters.component';
 
 @NgModule({
     declarations: [
@@ -22,7 +23,8 @@ import { CoreModule } from '../core/core.module';
         SearchComponent,
         SortComponent,
         PromotionItemComponent,
-        PromotionPageComponent
+        PromotionPageComponent,
+        UserFiltersComponent
     ],
     exports: [
         PromotionsComponent

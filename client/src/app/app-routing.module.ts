@@ -6,15 +6,19 @@ import { NotFoundComponent } from './core/not-found/not-found.component';
 import { ServerErrorComponent } from './core/server-error/server-error.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent, data: { breadcrumb: { info: 'Bambeo' } } },
+  { path: '', component: HomeComponent, title: 'Bambeo • Strona główna', data: { breadcrumb: { info: 'Bambeo' } } },
+  { path: 'promotions', title: 'Bambeo • Promocje',
+    loadChildren: () => import('./promotions/promotions.module').then(m => m.PromotionsModule), 
+    data: { breadcrumb: 'Promocje' }
+  },
+  { path: 'account', title: 'Bambeo • Moje Konto',
+    loadChildren: () => import('./account/account.module').then(m => m.AccountModule), 
+    data: { breadcrumb: 'Moje Konto' }
+  },
   { path: 'not-found', component: NotFoundComponent },
   { path: 'test-errors', component: TestErrorsComponent },
   { path: 'server-error', component: ServerErrorComponent },
   { path: 'test-errors', component: TestErrorsComponent },
-  { path: 'promotions', 
-    loadChildren: () => import('./promotions/promotions.module').then(m => m.PromotionsModule), 
-    data: { breadcrumb: 'Promocje' }
-  },
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];
 

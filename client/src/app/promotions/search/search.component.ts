@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { Subject, debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Subject, debounceTime, distinctUntilChanged, fromEvent, map, takeUntil } from 'rxjs';
 import { PromotionsStateService } from '../promotions-state.service';
 
 @Component({
@@ -7,13 +7,13 @@ import { PromotionsStateService } from '../promotions-state.service';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css']
 })
-export class SearchComponent implements AfterViewInit {
+export class SearchComponent implements AfterViewInit, OnDestroy {
   constructor(private promotionsState: PromotionsStateService) { }
 
   @Output() queryChanged = new EventEmitter<string>();
   @ViewChild('promotionSearch') promotionSearch!: ElementRef;
   @ViewChild('searchSvgIcon', { static: true }) searchSvgIcon!: ElementRef;
-  
+  private ngUnsubscribe = new Subject<void>();
   promotionSearchInput$ = new Subject<string>();
 
   ngAfterViewInit(): void {
@@ -24,6 +24,17 @@ export class SearchComponent implements AfterViewInit {
     }
 
     this.addSearchInputListener();
+
+    this.promotionsState.wasRecentlyReset().pipe(
+      takeUntil(this.ngUnsubscribe)
+    ).subscribe(() => {
+      this.promotionSearch.nativeElement.value = '';
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   addSearchInputListener() {

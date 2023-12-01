@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Data.Migrations
 {
-    [DbContext(typeof(PromotionContext))]
+    [DbContext(typeof(ApplicationContext))]
     [Migration("20231102155258_ChangedNameDiscounPercentage")]
     partial class ChangedNameDiscounPercentage
     {

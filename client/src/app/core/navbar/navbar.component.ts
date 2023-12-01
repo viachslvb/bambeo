@@ -1,12 +1,13 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { initFlowbite } from 'flowbite';
+import { AccountService } from 'src/app/account/account.service';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements OnInit, AfterViewInit {
+export class NavbarComponent implements AfterViewInit {
   @ViewChild("mobileMenu") mobileMenu!: ElementRef;
 
   isAuth: boolean = false;
@@ -14,9 +15,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   isOpenUserMenu: boolean = false;
   mobileMenuHeight: string = "0px";
 
-  ngOnInit(): void {
-
-  }
+  constructor(public accountService: AccountService) { }
 
   ngAfterViewInit(): void {
     this.defineMenuHeight();

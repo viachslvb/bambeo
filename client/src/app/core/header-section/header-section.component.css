@@ -1,6 +1,6 @@
 :host ::ng-deep .xng-breadcrumb-list {
-    font-weight: 300;
-    font-size: 14px;
+    font-weight: 500;
+    font-size: 13px;
 }
 
 :host ::ng-deep .xng-breadcrumb-link {
@@ -10,4 +10,8 @@
 :host ::ng-deep .xng-breadcrumb-link:hover {
     color: #475569;
     text-decoration: none;
+}
+
+:host ::ng-deep .xng-breadcrumb-trail {
+    color: #334155;
 }

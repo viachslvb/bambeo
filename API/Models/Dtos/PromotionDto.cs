@@ -1,9 +1,9 @@
-﻿namespace API.Dtos
+﻿namespace API.Models.Dtos
 {
-    public class PromotionToReturnDto
+    public class PromotionDto
     {
         public int Id { get; set; }
-        public ProductToReturnDto Product { get; set; }
+        public ProductDto Product { get; set; }
         public decimal Price { get; set; }
         public decimal PreviousPrice { get; set; }
         public int DiscountPercentage { get; set; }
