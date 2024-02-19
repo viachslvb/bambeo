@@ -21,6 +21,10 @@ export class ErrorInformationService {
       displayMessage: true,
       message: "Adres email jest już używany."
     },
+    [ApiErrorCode.ValidationFailed]: {
+      displayMessage: true,
+      message: "Wprowadzono nieprawidłowe dane."
+    },
     [ApiErrorCode.Unknown]: { },
 
     // Add entries for other error codes

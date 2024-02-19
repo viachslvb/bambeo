@@ -9,6 +9,7 @@ using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Net;
 
 namespace API.Controllers
@@ -73,10 +74,12 @@ namespace API.Controllers
         }
 
         [HttpPost("signup")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        public async Task<ActionResult<ApiResponse<UserDto>>> Register(RegisterDto registerDto)
         {
-            if (CheckEmailExistsAsync(registerDto.Email).Result.Value)
-            {
+            var existingUser = await _userManager.FindByEmailAsync(registerDto.Email);
+
+            if (existingUser != null)
+            { 
                 return BadRequest(new ApiValidationErrorResponse(HttpStatusCode.BadRequest, ApiErrorCode.EmailAlreadyInUse)
                 {
                     Errors = new[] { "Adres email jest już używany" }
@@ -109,7 +112,7 @@ namespace API.Controllers
         }
 
         [HttpGet("emailexists")]
-        public async Task<ActionResult<bool>> CheckEmailExistsAsync([FromQuery] string email)
+        public async Task<ActionResult<ApiResponse<EmailExistsResponse>>> CheckEmailExistsAsync([FromQuery] string email)
         {
             var result = await _userManager.FindByEmailAsync(email) != null;
 
