@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Data.Migrations
 {
-    [DbContext(typeof(ApplicationContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20231110135741_AddIdentity")]
     partial class AddIdentity
     {

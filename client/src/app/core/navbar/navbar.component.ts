@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { initFlowbite } from 'flowbite';
-import { AccountService } from 'src/app/account/account.service';
+import { Router } from '@angular/router';
+import { UserService } from 'src/app/account/user.service';
 
 @Component({
   selector: 'app-navbar',
@@ -15,7 +15,7 @@ export class NavbarComponent implements AfterViewInit {
   isOpenUserMenu: boolean = false;
   mobileMenuHeight: string = "0px";
 
-  constructor(public accountService: AccountService) { }
+  constructor(public userService: UserService, private router: Router) { }
 
   ngAfterViewInit(): void {
     this.defineMenuHeight();
@@ -44,5 +44,13 @@ export class NavbarComponent implements AfterViewInit {
 
   toggleUserMenu() {
     this.isOpenUserMenu = !this.isOpenUserMenu;
+  }
+
+  logout() {
+    this.userService.signOut().subscribe({
+      next: () => {
+        this.router.navigateByUrl('/');
+      }
+    });
   }
 }

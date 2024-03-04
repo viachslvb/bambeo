@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class PromotionContextModelSnapshot : ModelSnapshot
+    [Migration("20240219185354_AddRefreshTokensToDb")]
+    partial class AddRefreshTokensToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,6 +109,9 @@ namespace Infrastructure.Data.Migrations
 
                     b.Property<DateTime>("Expires")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ReplacedByToken")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("Revoked")
                         .HasColumnType("datetime2");

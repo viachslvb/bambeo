@@ -67,7 +67,6 @@ export class ErrorHandlingService {
       error &&
       typeof error === 'object' &&
       'success' in error &&
-      'statusCode' in error &&
       'message' in error
     );
   }

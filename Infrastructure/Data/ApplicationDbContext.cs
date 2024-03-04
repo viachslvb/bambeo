@@ -6,9 +6,9 @@ using System.Reflection;
 
 namespace Infrastructure.Data
 {
-    public class ApplicationContext : IdentityDbContext<AppUser>
+    public class ApplicationDbContext : IdentityDbContext<AppUser>
     {
-        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
@@ -16,6 +16,7 @@ namespace Infrastructure.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<Store> Stores { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

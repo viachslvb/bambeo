@@ -17,9 +17,10 @@ namespace API.Extensions
             // Add services to the container.
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
-            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<ITestRedisRepository, TestItemRepository>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSingleton<IConnectionMultiplexer>(c =>
@@ -36,7 +37,7 @@ namespace API.Extensions
                         .SelectMany(x => x.Value.Errors)
                         .Select(x => x.ErrorMessage).ToArray();
 
-                    var errorResponse = new ApiValidationErrorResponse(HttpStatusCode.BadRequest, ApiErrorCode.ValidationFailed)
+                    var errorResponse = new ApiValidationErrorResponse(ApiErrorCode.ValidationFailed)
                     {
                         Errors = errors
                     };
@@ -49,7 +50,7 @@ namespace API.Extensions
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                    policy.AllowAnyHeader().AllowCredentials().AllowAnyMethod().WithOrigins("https://localhost:4200");
                 });
             });
             

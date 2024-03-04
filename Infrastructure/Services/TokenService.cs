@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Infrastructure.Services
@@ -11,11 +12,14 @@ namespace Infrastructure.Services
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _config;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly SymmetricSecurityKey _key;
-        public TokenService(IConfiguration config)
+
+        public TokenService(IConfiguration config, IRefreshTokenRepository refreshTokenRepository)
         {
             _config = config;
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]));
+            _refreshTokenRepository = refreshTokenRepository;
         }
 
         public string CreateToken(AppUser user)
@@ -31,7 +35,7 @@ namespace Infrastructure.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(7),
+                Expires = DateTime.Now.AddMinutes(15),
                 SigningCredentials = creds,
                 Issuer = _config["Token:Issuer"]
             };
@@ -41,6 +45,36 @@ namespace Infrastructure.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
+        }
+
+        public async Task<RefreshToken> GenerateRefreshTokenAsync(AppUser user, string ipAddress)
+        {
+            var refreshToken = new RefreshToken
+            {
+                User = user,
+                UserId = user.Id,
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Expires = DateTime.UtcNow.AddDays(7),
+                Created = DateTime.UtcNow,
+                CreatedByIp = ipAddress
+            };
+
+            // Store refreshToken in the database
+            await _refreshTokenRepository.CreateTokenAsync(refreshToken);
+
+            return refreshToken;
+        }
+
+        public async Task<RefreshToken> GetRefreshTokenAsync(string token)
+        {
+            return await _refreshTokenRepository.GetByTokenAsync(token);
+        }
+
+        public async Task RevokeRefreshTokenAsync(RefreshToken refreshToken, string ipAddress)
+        {
+            refreshToken.Revoked = DateTime.UtcNow;
+            refreshToken.RevokedByIp = ipAddress;
+            await _refreshTokenRepository.UpdateTokenAsync(refreshToken);
         }
     }
 }

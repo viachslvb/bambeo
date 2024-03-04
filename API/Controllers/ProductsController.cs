@@ -57,7 +57,7 @@ namespace API.Controllers
             var spec = new ProductsWithFiltersSpecification(id);
             var product = await _productsRepo.GetEntityWithSpec(spec);
 
-            if (product == null) return NotFound(new ApiExceptionResponse(HttpStatusCode.NotFound));
+            if (product == null) return NotFound(new ApiErrorResponse(ApiErrorCode.NotFound));
 
             // 
             return Ok(new ApiResponse<ProductDto>(

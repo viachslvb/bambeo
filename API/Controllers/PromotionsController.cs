@@ -61,13 +61,13 @@ namespace API.Controllers
         // GET api/promotions/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiExceptionResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<PromotionDto>> GetPromotion(int id)
         {
             var spec = new PromotionsWithFiltersSpecification(id);
             var promotion = await _promotionsRepo.GetEntityWithSpec(spec);
 
-            if (promotion == null) return NotFound(new ApiExceptionResponse(HttpStatusCode.NotFound));
+            if (promotion == null) return NotFound(new ApiErrorResponse(ApiErrorCode.NotFound));
 
             return Ok(new ApiResponse<PromotionDto>
             (

@@ -5,8 +5,8 @@ namespace API.Models.ApiResponses
 {
     public class ApiValidationErrorResponse : ApiErrorResponse
     {
-        public ApiValidationErrorResponse(HttpStatusCode statusCode, ApiErrorCode errorCode)
-            : base(statusCode, errorCode)
+        public ApiValidationErrorResponse(ApiErrorCode errorCode)
+            : base(errorCode)
         {
         }
 

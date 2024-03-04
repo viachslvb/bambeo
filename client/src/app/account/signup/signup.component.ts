@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
-import { AccountService } from '../account.service';
+import { UserService } from '../user.service';
 import { Router } from '@angular/router';
-import { Observable, debounceTime, finalize, map, of, switchMap, take } from 'rxjs';
+import { Observable, Subject, debounceTime, finalize, map, of, switchMap, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-signup',
@@ -10,8 +10,8 @@ import { Observable, debounceTime, finalize, map, of, switchMap, take } from 'rx
   styleUrls: ['./signup.component.css']
 })
 
-export class SignupComponent implements OnInit {
-  constructor(private fb: FormBuilder, private accountService: AccountService, private router: Router) {}
+export class SignupComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   errors: string[] | null = null;
   strongPasswordRegx: RegExp = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{":;'?/>.<,])(?!.*\s).{8,16}$/;
   loadingData = false;
@@ -23,14 +23,23 @@ export class SignupComponent implements OnInit {
     confirmPassword: ['', [Validators.required], [this.validatePasswordMatch()]]
   })
 
+  constructor (private fb: FormBuilder, private userService: UserService, private router: Router) {}
+
   ngOnInit(): void {
     const passwordControl = this.registerForm.get('password');
 
     if (passwordControl) {
-      passwordControl.valueChanges.subscribe(() => {
-        this.registerForm.get('confirmPassword')?.updateValueAndValidity();
-      });
+      passwordControl.valueChanges
+        .pipe(takeUntil(this.destroy$))  
+        .subscribe(() => {
+          this.registerForm.get('confirmPassword')?.updateValueAndValidity();
+        });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onSubmit() {
@@ -40,7 +49,7 @@ export class SignupComponent implements OnInit {
       // Create a new object with all fields except 'confirmPassword'
       const formData = this.createFormDataExcludingField(this.registerForm.value, 'confirmPassword');
 
-      this.accountService.signUp(formData).subscribe({
+      this.userService.signUp(formData).subscribe({
         next: () => {
           this.loadingData = false;
           this.router.navigateByUrl('/promotions');
@@ -59,7 +68,7 @@ export class SignupComponent implements OnInit {
     } else {
       this.registerForm.markAllAsTouched();
     }
-  } 
+  }
 
   validateEmailNotTaken(): AsyncValidatorFn {
     return (control: AbstractControl) => {
@@ -67,7 +76,7 @@ export class SignupComponent implements OnInit {
         debounceTime(1000),
         take(1),
         switchMap(() => {
-          return this.accountService.checkEmailExists(control.value).pipe(
+          return this.userService.checkEmailExists(control.value).pipe(
             map(result => result ? {emailExists: true} : null),
             finalize(() => control.markAsTouched())
           )

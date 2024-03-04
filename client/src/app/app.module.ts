@@ -11,7 +11,7 @@ import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
-import { ErrorHandlingService } from './services/error-handling.service';
+import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 
 @NgModule({
     declarations: [
@@ -32,6 +32,7 @@ import { ErrorHandlingService } from './services/error-handling.service';
         MessageService,
         { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     ],
 })
 export class AppModule { }

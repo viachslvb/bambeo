@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
+using System.Security.Cryptography;
 
 namespace API.Controllers
 {
@@ -36,25 +37,25 @@ namespace API.Controllers
         {
             var user = await _userManager.FindByEmailFromClaimsPrincipal(User);
 
-            if (user == null) return Unauthorized(new ApiExceptionResponse(HttpStatusCode.Unauthorized));
+            if (user == null) return Unauthorized(new ApiErrorResponse(ApiErrorCode.AuthorizationRequired));
 
             return Ok(new ApiResponse<UserDto>
             (
                 new UserDto
                 {
                     Email = user.Email,
-                    Token = _tokenService.CreateToken(user),
                     DisplayName = user.DisplayName
                 }
             ));
         }
 
+        [DisallowAuthenticated]
         [HttpPost("signin")]
-        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+        public async Task<ActionResult<AuthResponse>> Login(LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
-            var loginFailedApiResponse = new ApiErrorResponse(HttpStatusCode.BadRequest, ApiErrorCode.LoginFailed);
+            var loginFailedApiResponse = new ApiErrorResponse(ApiErrorCode.LoginFailed);
 
             if (user == null) return BadRequest(loginFailedApiResponse);
 
@@ -62,25 +63,36 @@ namespace API.Controllers
 
             if (!result.Succeeded) return BadRequest(loginFailedApiResponse);
 
-            return Ok(new ApiResponse<UserDto>
+            // Generate JWT and Refresh Token
+            var token = _tokenService.CreateToken(user);
+            var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, Request.HttpContext.Connection.RemoteIpAddress.ToString());
+
+            // Set the refresh token in an HTTP-only cookie
+            Response.Cookies.Append("refreshToken", refreshToken.Token, new CookieOptions { HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict, Expires = DateTime.UtcNow.AddDays(7) });
+
+            return Ok(new ApiResponse<AuthResponse>
             (
-                new UserDto
+                new AuthResponse
                 {
-                    Email = user.Email,
-                    Token = _tokenService.CreateToken(user),
-                    DisplayName = user.DisplayName
+                    User = new UserDto
+                    {
+                        Email = user.Email,
+                        DisplayName = user.DisplayName
+                    },
+                    Token = token
                 }
             ));
         }
 
+        [DisallowAuthenticated]
         [HttpPost("signup")]
-        public async Task<ActionResult<ApiResponse<UserDto>>> Register(RegisterDto registerDto)
+        public async Task<ActionResult<ApiResponse<AuthResponse>>> Register(RegisterDto registerDto)
         {
             var existingUser = await _userManager.FindByEmailAsync(registerDto.Email);
 
             if (existingUser != null)
             { 
-                return BadRequest(new ApiValidationErrorResponse(HttpStatusCode.BadRequest, ApiErrorCode.EmailAlreadyInUse)
+                return BadRequest(new ApiValidationErrorResponse(ApiErrorCode.EmailAlreadyInUse)
                 {
                     Errors = new[] { "Adres email jest już używany" }
                 });
@@ -97,17 +109,93 @@ namespace API.Controllers
 
             if (!result.Succeeded)
             {
-                return BadRequest(new ApiExceptionResponse(HttpStatusCode.BadRequest));
+                return BadRequest(new ApiErrorResponse(ApiErrorCode.BadRequest));
             }
 
-            return Ok(new ApiResponse<UserDto>
+            // Generate JWT and Refresh Token
+            var token = _tokenService.CreateToken(user);
+            var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, Request.HttpContext.Connection.RemoteIpAddress.ToString());
+
+            // Set the refresh token in an HTTP-only cookie
+            Response.Cookies.Append("refreshToken", refreshToken.Token, new CookieOptions { HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict, Expires = DateTime.UtcNow.AddDays(7) });
+
+            return Ok(new ApiResponse<AuthResponse>
             (
-                new UserDto
+                new AuthResponse
                 {
-                    Email = user.Email,
-                    Token = _tokenService.CreateToken(user),
-                    DisplayName = user.DisplayName
+                    User = new UserDto
+                    {
+                        Email = user.Email,
+                        DisplayName = user.DisplayName
+                    },
+                    Token = token
                 }
+            ));
+        }
+
+        [Authorize]
+        [HttpGet("logout")]
+        public IActionResult LogOut()
+        {
+            if (HttpContext.Request.Cookies.ContainsKey("refreshToken"))
+            {
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddDays(-1)
+                };
+                Response.Cookies.Append("refreshToken", string.Empty, cookieOptions);
+            }
+
+            return Ok(new ApiResponse<string>
+            ("Logged out successfully."));
+        }
+
+        [HttpGet("refresh-token")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var unauthorizedApiErrorResponse = new ApiErrorResponse(ApiErrorCode.InvalidRefreshToken);
+
+            if (!HttpContext.Request.Cookies.ContainsKey("refreshToken"))
+            {
+                return Unauthorized(unauthorizedApiErrorResponse);
+            }
+
+            var oldRefreshToken = Request.Cookies["refreshToken"];
+            var refreshToken = await _tokenService.GetRefreshTokenAsync(oldRefreshToken);
+
+            if (refreshToken == null || !refreshToken.IsActive)
+            {
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddDays(-1)
+                };
+                Response.Cookies.Append("refreshToken", string.Empty, cookieOptions);
+
+                return Unauthorized(unauthorizedApiErrorResponse);
+            }
+
+            string ipAddress = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
+
+            await _tokenService.RevokeRefreshTokenAsync(refreshToken, ipAddress);
+
+            // Generate a new refresh token for the user
+            var newRefreshToken = await _tokenService.GenerateRefreshTokenAsync(refreshToken.User, ipAddress);
+
+            // Issue new JWT
+            var jwtToken = _tokenService.CreateToken(refreshToken.User);
+
+            // Set the new refresh token in an HTTP-only cookie
+            Response.Cookies.Append("refreshToken", newRefreshToken.Token, new CookieOptions { HttpOnly = true, Secure = true, Expires = DateTime.UtcNow.AddDays(7) });
+
+            return Ok(new ApiResponse<string>
+            (
+                jwtToken
             ));
         }
 

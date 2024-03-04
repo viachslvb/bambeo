@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { UserService } from 'src/app/account/user.service';
 import { environment } from 'src/environments/environment.development';
 
 @Component({
@@ -8,7 +9,7 @@ import { environment } from 'src/environments/environment.development';
   styleUrls: ['./test-errors.component.css']
 })
 export class TestErrorsComponent {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private userService: UserService) { }
 
   baseUrl = environment.apiUrl;
 
@@ -31,5 +32,9 @@ export class TestErrorsComponent {
       next: response => console.log(response),
       error: err => console.log(err)
     });
+  }
+
+  checkExpiredAccessToken() {
+    this.userService.loadCurrentUser().subscribe();
   }
 }

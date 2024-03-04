@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AccountService } from './account/account.service';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -9,14 +9,9 @@ import { AccountService } from './account/account.service';
 export class AppComponent implements OnInit {
   title = 'client';
 
-  constructor(private accountService: AccountService) { }
-
+  constructor(private authService: AuthService) { }
+  
   ngOnInit(): void {
-    this.loadCurrentUser();
-  }
-
-  loadCurrentUser() {
-    const token = localStorage.getItem('token');
-    this.accountService.loadCurrentUser(token).subscribe();
+    this.authService.initializeAuthState().subscribe();
   }
 }

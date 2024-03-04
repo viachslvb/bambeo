@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AccountService } from '../account.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiErrorInfo } from 'src/app/shared/models/api/apiErrorInfo';
-import { delay } from 'rxjs';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-signin',
@@ -20,7 +18,7 @@ export class SigninComponent {
   errorMessage?: string;
   loadingData = false;
 
-  constructor(private accountService: AccountService, private router: Router, 
+  constructor(private userService: UserService, private router: Router, 
     private activatedRoute: ActivatedRoute) {
       this.returnUrl = this.activatedRoute.snapshot.queryParams['returnUrl'] || '/promotions'
   }
@@ -28,7 +26,7 @@ export class SigninComponent {
   onSubmit() {
     if (this.loginForm.valid) {
       this.loadingData = true;
-      this.accountService.signIn(this.loginForm.value).subscribe({
+      this.userService.signIn(this.loginForm.value).subscribe({
         next: () => {
           this.loadingData = false;
           this.router.navigateByUrl(this.returnUrl);

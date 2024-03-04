@@ -17,7 +17,7 @@ export class ApiService {
   baseUrl = environment.apiUrl;
 
   get<T>(endpoint: string, headers?: HttpHeaders): Observable<T> {
-    const options = headers ? { headers: headers } : {};
+    const options = headers ? { headers: headers, withCredentials: true } : { withCredentials: true };
 
     return this.http.get<ApiResponse<T>>(this.baseUrl + endpoint, options).pipe(
       map((response: ApiResponse<T>) => {
@@ -35,7 +35,7 @@ export class ApiService {
 
   post<T>(endpoint: string, data: any, headers?: HttpHeaders): Observable<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    const options = headers ? { headers: headers } : {};
+    const options = headers ? { headers: headers, withCredentials: true } : { withCredentials: true };
 
     return this.http.post<ApiResponse<T>>(url, data, options).pipe(
       map((response: ApiResponse<T>) => {

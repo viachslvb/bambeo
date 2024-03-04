@@ -9,8 +9,8 @@ namespace API.Controllers
 {
     public class BuggerController : BaseApiController
     {
-        private readonly ApplicationContext _context;
-        public BuggerController(ApplicationContext context)
+        private readonly ApplicationDbContext _context;
+        public BuggerController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -27,7 +27,7 @@ namespace API.Controllers
         [HttpGet("badrequest")]
         public ActionResult GetBadRequest()
         {
-            return BadRequest(new ApiExceptionResponse(HttpStatusCode.BadRequest));
+            return BadRequest(new ApiExceptionResponse());
         }
 
         [HttpGet("testauth")]

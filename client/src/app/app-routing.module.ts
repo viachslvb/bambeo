@@ -12,7 +12,7 @@ const routes: Routes = [
     data: { breadcrumb: 'Promocje' }
   },
   { path: 'account', title: 'Bambeo • Moje Konto',
-    loadChildren: () => import('./account/account.module').then(m => m.AccountModule), 
+    loadChildren: () => import('./account/account.module').then(m => m.AccountModule),
     data: { breadcrumb: 'Moje Konto' }
   },
   { path: 'not-found', component: NotFoundComponent },

@@ -36,7 +36,7 @@
             </div>
             <div class="flex items-center">
                 <!-- sign in / sign up -->
-                <div class="hidden sm:block" *ngIf="(accountService.currentUser$ | async) === null">
+                <div class="hidden sm:block" *ngIf="(userService.currentUser$ | async) === null">
                     <button 
                         routerLink="account/signin" 
                         type="button" 
@@ -53,15 +53,15 @@
                         Zarejestruj Się
                     </button>
                 </div>
-                <div class="hidden sm:block" *ngIf="accountService.currentUser$ | async as user">
+                <div class="hidden sm:block" *ngIf="userService.currentUser$ | async as user">
                     <div class="flex items-center">
                         <div class="flex flex-col text-sm">
                             Witaj, {{ user.displayName }}
                         </div>
                         <div class="ml-8">
                             <button
-                                (click)="accountService.logout()"
-                                type="button" 
+                                (click)="logout()"
+                                type="button"
                                 class="text-white bg-rose-500 hover:bg-rose-600 focus:ring-4 focus:ring-rose-300 font-medium rounded-lg text-sm py-2 px-3 md:px-5 md:py-2.5 transition-[padding] duration-300 focus:outline-none text-center inline-flex items-center">
                                 Wyloguj Się
                                 <i class="fa-solid fa-right-from-bracket pl-2"></i>
