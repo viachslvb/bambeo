@@ -1,9 +1,11 @@
 using API.Extensions;
 using API.Middleware;
 using Core.Entities.Identity;
+using Hangfire;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +34,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseHangfireDashboard();
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
@@ -47,5 +50,5 @@ catch (Exception ex)
 {
     logger.LogError(ex, "An error occured during migration");
 }
-
 app.Run();
+

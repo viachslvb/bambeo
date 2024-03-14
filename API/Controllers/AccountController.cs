@@ -1,4 +1,5 @@
-﻿using API.Extensions;
+﻿using API.BackgroundTasks;
+using API.Extensions;
 using API.Models.ApiResponses;
 using API.Models.Dtos;
 using API.Models.Enums;
@@ -6,12 +7,15 @@ using API.Models.Responses;
 using AutoMapper;
 using Core.Entities.Identity;
 using Core.Interfaces;
+using FluentEmail.Core;
+using Hangfire;
+using Mailer.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Net;
-using System.Security.Cryptography;
+using Microsoft.AspNetCore.WebUtilities;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
+using System.Text;
 
 namespace API.Controllers
 {
@@ -21,10 +25,13 @@ namespace API.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
+        private readonly ILogger<AccountController> _logger;
+
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            ITokenService tokenService, IMapper mapper)
+            ITokenService tokenService, ILogger<AccountController> logger, IMapper mapper)
         {
+            _logger = logger;
             _mapper = mapper;
             _tokenService = tokenService;
             _signInManager = signInManager;
@@ -119,6 +126,9 @@ namespace API.Controllers
             // Set the refresh token in an HTTP-only cookie
             Response.Cookies.Append("refreshToken", refreshToken.Token, new CookieOptions { HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict, Expires = DateTime.UtcNow.AddDays(7) });
 
+            // Send a welcome email
+            BackgroundJob.Enqueue<IEmailBackgroundTasks>(x => x.SendWelcomeEmailAsync(user.Id));
+
             return Ok(new ApiResponse<AuthResponse>
             (
                 new AuthResponse
@@ -199,7 +209,7 @@ namespace API.Controllers
             ));
         }
 
-        [HttpGet("emailexists")]
+        [HttpGet("email-exists")]
         public async Task<ActionResult<ApiResponse<EmailExistsResponse>>> CheckEmailExistsAsync([FromQuery] string email)
         {
             var result = await _userManager.FindByEmailAsync(email) != null;
@@ -208,6 +218,62 @@ namespace API.Controllers
                 new EmailExistsResponse
                 {
                     Exists = result
+                }
+            ));
+        }
+
+        [HttpGet("confirm-email")]
+        public async Task<ActionResult<ApiResponse<EmailConfirmationResponse>>> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string token)
+        {
+            if (userId == null || token == null)
+            {
+                return BadRequest(new ApiErrorResponse(ApiErrorCode.BadRequest));
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                _logger.LogError($"User with ID '{user.Id}' is not found.");
+                return BadRequest(new ApiErrorResponse(ApiErrorCode.BadRequest));
+            }
+
+            if (user.EmailConfirmed)
+            {
+                _logger.LogInformation($"User with ID '{user.Id}' has already confirmed their email.");
+
+                return Ok(new ApiResponse<EmailConfirmationResponse>(
+                new EmailConfirmationResponse
+                {
+                    IsConfirmed = true
+                }
+            ));
+            }
+
+            var tokenDecodedBytes = WebEncoders.Base64UrlDecode(token);
+            var tokenDecoded = Encoding.UTF8.GetString(tokenDecodedBytes);
+
+            var result = await _userManager.ConfirmEmailAsync(user, tokenDecoded);
+
+            if (!result.Succeeded)
+            {
+                var tokenError = result.Errors.FirstOrDefault(e => e.Code == "InvalidToken");
+                if (tokenError != null)
+                {
+                    return BadRequest(new ApiErrorResponse(ApiErrorCode.InvalidEmailConfirmationToken));
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    _logger.LogError($"An error occurred while confirming the email for user with ID '{user.Id}': Error Code: {error.Code}, Description: {error.Description}");
+                }
+
+                return BadRequest(new ApiErrorResponse(ApiErrorCode.EmailConfirmationFailed));
+            }
+
+            return Ok(new ApiResponse<EmailConfirmationResponse>(
+                new EmailConfirmationResponse
+                {
+                    IsConfirmed = result.Succeeded
                 }
             ));
         }

@@ -16,6 +16,8 @@ namespace API.Models
             { ApiErrorCode.InvalidRefreshToken, "Invalid refresh token." },
             { ApiErrorCode.InvalidAccessToken, "Invalid access token." },
             { ApiErrorCode.AccessTokenExpired, "Access token is expired." },
+            { ApiErrorCode.EmailConfirmationFailed, "Nie udało się zweryfikować Twojego adresu email." },
+            { ApiErrorCode.InvalidEmailConfirmationToken, "Link jest nieprawidłowy lub wygasł. Proszę o ponowną próbę lub zgłoszenie się po nowy link weryfikacyjny." },
             { ApiErrorCode.ValidationFailed, "Wprowadzone dane nie spełniają wymagań walidacji." },
 
             // Others

@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{707AFBCA-FC55-4640-9B8E-2F175FC38ACD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{707AFBCA-FC55-4640-9B8E-2F175FC38ACD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{A1571D86-5920-4263-B94C-25FAC41D60DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{A1571D86-5920-4263-B94C-25FAC41D60DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{EE56D99B-5155-489C-B74A-543273B6BCC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{EE56D99B-5155-489C-B74A-543273B6BCC6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mailer", "EmailService\Mailer.csproj", "{C59A9480-D65B-41EC-85D5-088514A05111}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{EE56D99B-5155-489C-B74A-543273B6BCC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE56D99B-5155-489C-B74A-543273B6BCC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE56D99B-5155-489C-B74A-543273B6BCC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C59A9480-D65B-41EC-85D5-088514A05111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C59A9480-D65B-41EC-85D5-088514A05111}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C59A9480-D65B-41EC-85D5-088514A05111}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C59A9480-D65B-41EC-85D5-088514A05111}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

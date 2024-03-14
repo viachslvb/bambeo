@@ -5,7 +5,7 @@ import { ProductCategory } from 'src/app/shared/models/productCategory';
 import { Store } from 'src/app/shared/models/store';
 import { PromotionParams } from 'src/app/shared/models/promotionParams';
 import { mergeMap } from 'rxjs';
-import { BusyService } from '../core/services/busy.service';
+import { BusyService } from '../services/busy.service';
 import { MessageService } from 'primeng/api';
 import { PromotionsStateService } from './promotions-state.service';
 import { UserFilterItem } from '../shared/models/userFilterItem';

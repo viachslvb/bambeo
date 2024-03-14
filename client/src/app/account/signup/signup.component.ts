@@ -71,7 +71,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   }
 
   validateEmailNotTaken(): AsyncValidatorFn {
-    return (control: AbstractControl) => {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
       return control.valueChanges.pipe(
         debounceTime(1000),
         take(1),

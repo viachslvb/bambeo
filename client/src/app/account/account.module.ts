@@ -5,12 +5,14 @@ import { SignupComponent } from './signup/signup.component';
 import { AccountRoutingModule } from './account-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { ProfileComponent } from './profile/profile.component';
+import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 
 @NgModule({
   declarations: [
     SigninComponent,
     SignupComponent,
-    ProfileComponent
+    ProfileComponent,
+    ConfirmEmailComponent
   ],
   imports: [
     CommonModule,

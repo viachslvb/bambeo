@@ -11,6 +11,11 @@ export class ErrorInformationService {
   constructor() { }
 
   private static errorInfoMap: Record<ApiErrorCode, Partial<ApiErrorInfo>> = {
+    [ApiErrorCode.BadRequest]: {
+      displayNotification: true,
+      title: "Błąd walidacji",
+      message: "Prosimy sprawdzić wprowadzone informacje. Jeśli problem będzie się powtarzał, skontaktuj się z nami."
+    },
     [ApiErrorCode.LoginFailed]: {
       displayNotification: true,
       displayMessage: true,
@@ -30,12 +35,16 @@ export class ErrorInformationService {
       displayMessage: true,
       message: "Wprowadzono nieprawidłowe dane."
     },
-    [ApiErrorCode.InvalidRefreshToken]: {
-      displayNotification: true,
-      title: "Wymagana autoryzacja",
-      message: "Sesja wygasła. Proszę zaloguj się ponownie, aby kontynuować."
-    },
+    [ApiErrorCode.InvalidRefreshToken]: {},
     [ApiErrorCode.AccessTokenExpired]: {},
+    [ApiErrorCode.InvalidEmailConfirmationToken]: {
+      displayMessage: true,
+      message: "Link jest nieprawidłowy lub wygasł. Proszę o ponowną próbę lub zgłoszenie się po nowy link weryfikacyjny."
+    },
+    [ApiErrorCode.EmailConfirmationFailed]: {
+      displayMessage: true,
+      message: "Nie udało się zweryfikować Twojego adresu email. Prosimy o ponowną próbę lub skontaktuj się z nami w przypadku dalszych problemów."
+    },
     [ApiErrorCode.Unknown]: { },
 
     // Add entries for other error codes

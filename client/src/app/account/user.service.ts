@@ -5,6 +5,8 @@ import { ApiService } from '../services/api.service';
 import { EmailExistsResponse } from '../shared/models/api/emailExistsResponse';
 import { AuthService } from '../services/auth.service';
 import { AuthResponse } from '../shared/models/api/authResponse';
+import { EmailConfirmationResponse } from '../shared/models/api/emailConfirmationResponse';
+import { MessageService } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root'
@@ -94,7 +96,7 @@ export class UserService implements OnDestroy {
   }
 
   checkEmailExists(email: string): Observable<boolean> {
-    const endpoint = `account/emailExists?email=${email}`;
+    const endpoint = `account/email-exists?email=${email}`;
     
     return this.apiService.get<EmailExistsResponse>(endpoint).pipe(
       map(response => response.exists),
@@ -102,6 +104,14 @@ export class UserService implements OnDestroy {
         console.error('Error checking email existence:', error);
         return of(false);
       })
+    );
+  }
+
+  confirmEmail(userId: string, token: string): Observable<boolean> {
+    const endpoint = `account/confirm-email?userId=${userId}&token=${token}`;
+
+    return this.apiService.get<EmailConfirmationResponse>(endpoint).pipe(
+      map(response => response.isConfirmed)
     );
   }
 }

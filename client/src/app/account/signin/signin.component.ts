@@ -16,7 +16,7 @@ export class SigninComponent {
   
   returnUrl: string;
   errorMessage?: string;
-  loadingData = false;
+  isLoading = false;
 
   constructor(private userService: UserService, private router: Router, 
     private activatedRoute: ActivatedRoute) {
@@ -25,10 +25,10 @@ export class SigninComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      this.loadingData = true;
+      this.isLoading = true;
       this.userService.signIn(this.loginForm.value).subscribe({
         next: () => {
-          this.loadingData = false;
+          this.isLoading = false;
           this.router.navigateByUrl(this.returnUrl);
         },
         error: (error) => {
@@ -38,7 +38,7 @@ export class SigninComponent {
           else {
             console.error(error);
           }
-          this.loadingData = false;
+          this.isLoading = false;
         }
       })
     } else {
