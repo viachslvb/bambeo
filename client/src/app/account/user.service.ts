@@ -6,7 +6,14 @@ import { EmailExistsResponse } from '../shared/models/api/emailExistsResponse';
 import { AuthService } from '../services/auth.service';
 import { AuthResponse } from '../shared/models/api/authResponse';
 import { EmailConfirmationResponse } from '../shared/models/api/emailConfirmationResponse';
-import { MessageService } from 'primeng/api';
+import { ForgotPasswordResponse } from '../shared/models/api/forgotPasswordResponse';
+import { PasswordResetModel } from '../shared/models/api/requests/passwordResetModel';
+import { ForgotPasswordModel } from '../shared/models/api/requests/forgotPasswordModel';
+import { PasswordResetResponse } from '../shared/models/api/responses/passwordResetResponse';
+import { SignupModel } from '../shared/models/api/requests/signupModel';
+import { LoginModel } from '../shared/models/api/requests/loginModel';
+import { ConfirmEmailModel } from '../shared/models/api/requests/confirmEmailModel';
+import { CheckEmailModel } from '../shared/models/api/requests/checkEmailModel';
 
 @Injectable({
   providedIn: 'root'
@@ -61,8 +68,8 @@ export class UserService implements OnDestroy {
     );
   }
 
-  signIn(values: any): Observable<User> {
-    const endpoint = 'account/signin';
+  login(values: LoginModel): Observable<User> {
+    const endpoint = 'account/login';
 
     return this.apiService.post<AuthResponse>(endpoint, values).pipe(
       map(response => {
@@ -73,7 +80,7 @@ export class UserService implements OnDestroy {
     );
   }
 
-  signUp(values: any): Observable<User> {
+  signup(values: SignupModel): Observable<User> {
     const endpoint = 'account/signup';
 
     return this.apiService.post<AuthResponse>(endpoint, values).pipe(
@@ -85,7 +92,7 @@ export class UserService implements OnDestroy {
     )
   }
 
-  signOut(): Observable<void> {
+  logout(): Observable<void> {
     const endpoint = 'account/logout';
 
     return this.apiService.get<any>(endpoint).pipe(
@@ -95,8 +102,8 @@ export class UserService implements OnDestroy {
     );
   }
 
-  checkEmailExists(email: string): Observable<boolean> {
-    const endpoint = `account/email-exists?email=${email}`;
+  checkEmailExists(values: CheckEmailModel): Observable<boolean> {
+    const endpoint = `account/email-exists?email=${values.email}`;
     
     return this.apiService.get<EmailExistsResponse>(endpoint).pipe(
       map(response => response.exists),
@@ -107,11 +114,27 @@ export class UserService implements OnDestroy {
     );
   }
 
-  confirmEmail(userId: string, token: string): Observable<boolean> {
-    const endpoint = `account/confirm-email?userId=${userId}&token=${token}`;
+  confirmEmail(values: ConfirmEmailModel): Observable<boolean> {
+    const endpoint = `account/confirm-email?userId=${values.userId}&token=${values.token}`;
 
     return this.apiService.get<EmailConfirmationResponse>(endpoint).pipe(
       map(response => response.isConfirmed)
+    );
+  }
+
+  sendPasswordResetLink(values: ForgotPasswordModel): Observable<boolean> {
+    const endpoint = 'account/forgot-password';
+
+    return this.apiService.post<ForgotPasswordResponse>(endpoint, values).pipe(
+      map(response => response.success)
+    );
+  }
+
+  resetPassword(values: PasswordResetModel): Observable<boolean> {
+    const endpoint = 'account/reset-password';
+
+    return this.apiService.post<PasswordResetResponse>(endpoint, values).pipe(
+      map(response => response.success)
     );
   }
 }

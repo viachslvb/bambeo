@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { UserService } from '../user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { ApiErrorCode } from 'src/app/shared/models/api/apiErrorCode';
+import { ConfirmEmailModel } from 'src/app/shared/models/api/requests/confirmEmailModel';
 
 @Component({
   selector: 'app-confirm-email',
@@ -10,11 +12,11 @@ import { MessageService } from 'primeng/api';
 })
 
 export class ConfirmEmailComponent {
-  title = "Potwierdzenie adresu email...";
-  redirectMessage = "";
+  title = "Potwierdzenie adresu e-mail...";
   isLoading = false;
+  isError = false;
   errorMessage?: string;
-  countdown = 10;
+  countdown = 30;
 
   constructor(private userService: UserService, private router: Router, 
     private route: ActivatedRoute, private toastService: MessageService) {
@@ -30,15 +32,21 @@ export class ConfirmEmailComponent {
 
   confirmEmail(userId: string, token: string) {
     this.isLoading = true;
-    this.userService.confirmEmail(userId, token).subscribe({
+
+    const ConfirmEmailData: ConfirmEmailModel = {
+      userId: userId,
+      token: token
+    };
+
+    this.userService.confirmEmail(ConfirmEmailData).subscribe({
       next: () => {
         this.isLoading = false;
 
         this.toastService.add({ 
           severity: 'success', 
           life: 10000,
-          summary: 'Email Zweryfikowany',
-          detail: 'Twój adres email został pomyślnie potwierdzony.'
+          summary: 'E-mail potwierdzony',
+          detail: 'Twój adres e-mail został pomyślnie zweryfikowany.'
         });
 
         this.router.navigateByUrl('/');
@@ -46,25 +54,19 @@ export class ConfirmEmailComponent {
       error: (error) => {
         this.isLoading = false;
 
-        this.title = "Nie udało się :(";
+        this.title = error.type === ApiErrorCode.EmailAlreadyConfirmed 
+            ? "Twój e-mail jest już potwierdzony" 
+            : 'Nie Udało Się :(';
+
+        this.isError = error.type !== ApiErrorCode.EmailAlreadyConfirmed;
+
         if (error.displayMessage) {
           this.errorMessage = error.message;
         }
-
-        this.startCountdownAndRedirect();
+        else {
+          this.router.navigateByUrl('/');
+        }
       }
     });
-  }
-
-  startCountdownAndRedirect() {
-    this.redirectMessage = `Zostaniesz przekierowany za ${this.countdown} sekund.`;
-    const interval = setInterval(() => {
-      this.countdown--;
-      this.redirectMessage = `Zostaniesz przekierowany za ${this.countdown} sekund.`;
-      if (this.countdown === 0) {
-        clearInterval(interval);
-        this.router.navigateByUrl('/');
-      }
-    }, 1000);
   }
 }

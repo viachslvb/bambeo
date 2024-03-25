@@ -1,4 +1,5 @@
-﻿using API.Models.ApiResponses;
+﻿using API.Extensions.CustomTokenProviders;
+using API.Models.ApiResponses;
 using API.Models.Enums;
 using Core.Entities.Identity;
 using Infrastructure.Data;
@@ -18,11 +19,14 @@ namespace API.Extensions
             services.AddIdentityCore<AppUser>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
+                options.Tokens.EmailConfirmationTokenProvider = "EmailConfirmation";
+                options.Tokens.PasswordResetTokenProvider = "PasswordReset";
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager<SignInManager<AppUser>>()
-            .AddDefaultTokenProviders();
-
+            .AddDefaultTokenProviders()
+            .AddTokenProvider<CustomEmailConfirmationTokenProvider<AppUser>>("EmailConfirmation")
+            .AddTokenProvider<CustomPasswordResetTokenProvider<AppUser>>("PasswordReset");
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

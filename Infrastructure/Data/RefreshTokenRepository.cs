@@ -32,5 +32,14 @@ namespace Infrastructure.Data
             await _context.SaveChangesAsync();
             return token;
         }
+
+        public async Task<IReadOnlyList<RefreshToken>> GetAllTokensByUserIdAsync(string userId)
+        {
+            var tokens = await _context.RefreshTokens
+                                   .Where(rt => rt.UserId == userId)
+                                   .ToListAsync();
+
+            return tokens.AsReadOnly();
+        }
     }
 }

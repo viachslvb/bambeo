@@ -17,8 +17,10 @@ namespace API.Models
             { ApiErrorCode.InvalidAccessToken, "Invalid access token." },
             { ApiErrorCode.AccessTokenExpired, "Access token is expired." },
             { ApiErrorCode.EmailConfirmationFailed, "Nie udało się zweryfikować Twojego adresu email." },
+            { ApiErrorCode.EmailAlreadyConfirmed, "Twój email został już potwierdzony wcześniej." },
             { ApiErrorCode.InvalidEmailConfirmationToken, "Link jest nieprawidłowy lub wygasł. Proszę o ponowną próbę lub zgłoszenie się po nowy link weryfikacyjny." },
             { ApiErrorCode.ValidationFailed, "Wprowadzone dane nie spełniają wymagań walidacji." },
+            { ApiErrorCode.PasswordResetFailed, "Link do resetowania hasła jest nieprawidłowy lub wygasł. Prosimy o ponowne złożenie wniosku o resetowanie hasła." },
 
             // Others
             { ApiErrorCode.UserNotFound, "Użytkownik nie został znaleziony." },

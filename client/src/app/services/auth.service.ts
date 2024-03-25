@@ -71,7 +71,7 @@ export class AuthService {
         if (this.isLoggedIn()) {
           this.refreshToken().subscribe({
             error: () => {
-              this.router.navigateByUrl('/account/signin');
+              this.router.navigateByUrl('/account/login');
             }
           });
         }

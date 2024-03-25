@@ -1,18 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SigninComponent } from './signin/signin.component';
+import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { AccountRoutingModule } from './account-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { ProfileComponent } from './profile/profile.component';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { PasswordResetComponent } from './password-reset/password-reset.component';
 
 @NgModule({
   declarations: [
-    SigninComponent,
+    LoginComponent,
     SignupComponent,
     ProfileComponent,
-    ConfirmEmailComponent
+    ConfirmEmailComponent,
+    ForgotPasswordComponent,
+    PasswordResetComponent
   ],
   imports: [
     CommonModule,

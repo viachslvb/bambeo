@@ -3,5 +3,6 @@
     public interface IEmailBackgroundTasks
     {
         Task SendWelcomeEmailAsync(string userId);
+        Task SendPasswordResetEmailAsync(string userId);
     }
 }

@@ -3,6 +3,7 @@ import { AbstractControl, AsyncValidatorFn, FormBuilder, ValidationErrors, Valid
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
 import { Observable, Subject, debounceTime, finalize, map, of, switchMap, take, takeUntil } from 'rxjs';
+import { SignupModel } from 'src/app/shared/models/api/requests/signupModel';
 
 @Component({
   selector: 'app-signup',
@@ -14,9 +15,9 @@ export class SignupComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   errors: string[] | null = null;
   strongPasswordRegx: RegExp = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{":;'?/>.<,])(?!.*\s).{8,16}$/;
-  loadingData = false;
+  isLoading = false;
 
-  registerForm = this.fb.group({
+  signupForm = this.fb.group({
     displayName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email], [this.validateEmailNotTaken()]],
     password: ['', [Validators.required, Validators.pattern(this.strongPasswordRegx)]],
@@ -26,13 +27,13 @@ export class SignupComponent implements OnInit, OnDestroy {
   constructor (private fb: FormBuilder, private userService: UserService, private router: Router) {}
 
   ngOnInit(): void {
-    const passwordControl = this.registerForm.get('password');
+    const passwordControl = this.signupForm.get('password');
 
     if (passwordControl) {
       passwordControl.valueChanges
         .pipe(takeUntil(this.destroy$))  
         .subscribe(() => {
-          this.registerForm.get('confirmPassword')?.updateValueAndValidity();
+          this.signupForm.get('confirmPassword')?.updateValueAndValidity();
         });
     }
   }
@@ -43,15 +44,18 @@ export class SignupComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    if (this.registerForm.valid) {
-      this.loadingData = true;
+    if (this.signupForm.valid) {
+      this.isLoading = true;
 
-      // Create a new object with all fields except 'confirmPassword'
-      const formData = this.createFormDataExcludingField(this.registerForm.value, 'confirmPassword');
+      const signupData: SignupModel = {
+        displayName: this.signupForm.get('displayName')!.value!,
+        email: this.signupForm.get('email')!.value!,
+        password: this.signupForm.get('password')!.value!
+      };
 
-      this.userService.signUp(formData).subscribe({
+      this.userService.signup(signupData).subscribe({
         next: () => {
-          this.loadingData = false;
+          this.isLoading = false;
           this.router.navigateByUrl('/promotions');
         },
         error: (error) => {
@@ -62,11 +66,11 @@ export class SignupComponent implements OnInit, OnDestroy {
           else {
             console.log(error);
           }
-          this.loadingData = false;
+          this.isLoading = false;
         }
       })
     } else {
-      this.registerForm.markAllAsTouched();
+      this.signupForm.markAllAsTouched();
     }
   }
 
@@ -87,7 +91,7 @@ export class SignupComponent implements OnInit, OnDestroy {
 
   validatePasswordMatch(): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      const passwordControl = this.registerForm.get('password')?.value;
+      const passwordControl = this.signupForm.get('password')?.value;
       const confirmPasswordControl = control.value;
   
       if (passwordControl && confirmPasswordControl) {
@@ -99,14 +103,5 @@ export class SignupComponent implements OnInit, OnDestroy {
   
       return of(null);
     };
-  }
-
-  createFormDataExcludingField(formValue: any, excludedField: string): { [key: string]: any } {
-    return Object.keys(formValue).reduce((acc, key) => {
-      if (key !== excludedField) {
-        acc[key] = formValue[key];
-      }
-      return acc;
-    }, {} as { [key: string]: any });
   }
 }

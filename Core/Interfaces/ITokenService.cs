@@ -8,5 +8,6 @@ namespace Core.Interfaces
         Task<RefreshToken> GenerateRefreshTokenAsync(AppUser user, string ipAddress);
         Task<RefreshToken> GetRefreshTokenAsync(string token);
         Task RevokeRefreshTokenAsync(RefreshToken refreshToken, string ipAddress);
+        Task RevokeAllRefreshTokensByUserIdAsync(string userId, string ipAddress);
     }
 }

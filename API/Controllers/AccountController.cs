@@ -7,14 +7,11 @@ using API.Models.Responses;
 using AutoMapper;
 using Core.Entities.Identity;
 using Core.Interfaces;
-using FluentEmail.Core;
 using Hangfire;
-using Mailer.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 using System.Text;
 
 namespace API.Controllers
@@ -57,7 +54,7 @@ namespace API.Controllers
         }
 
         [DisallowAuthenticated]
-        [HttpPost("signin")]
+        [HttpPost("login")]
         public async Task<ActionResult<AuthResponse>> Login(LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
@@ -200,7 +197,6 @@ namespace API.Controllers
             // Issue new JWT
             var jwtToken = _tokenService.CreateToken(refreshToken.User);
 
-            // Set the new refresh token in an HTTP-only cookie
             Response.Cookies.Append("refreshToken", newRefreshToken.Token, new CookieOptions { HttpOnly = true, Secure = true, Expires = DateTime.UtcNow.AddDays(7) });
 
             return Ok(new ApiResponse<string>
@@ -212,6 +208,11 @@ namespace API.Controllers
         [HttpGet("email-exists")]
         public async Task<ActionResult<ApiResponse<EmailExistsResponse>>> CheckEmailExistsAsync([FromQuery] string email)
         {
+            if (email == null)
+            {
+                return BadRequest(new ApiErrorResponse(ApiErrorCode.BadRequest));
+            }
+
             var result = await _userManager.FindByEmailAsync(email) != null;
 
             return Ok(new ApiResponse<EmailExistsResponse>(
@@ -233,49 +234,120 @@ namespace API.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                _logger.LogError($"User with ID '{user.Id}' is not found.");
-                return BadRequest(new ApiErrorResponse(ApiErrorCode.BadRequest));
-            }
-
-            if (user.EmailConfirmed)
-            {
-                _logger.LogInformation($"User with ID '{user.Id}' has already confirmed their email.");
-
-                return Ok(new ApiResponse<EmailConfirmationResponse>(
-                new EmailConfirmationResponse
-                {
-                    IsConfirmed = true
-                }
-            ));
-            }
-
-            var tokenDecodedBytes = WebEncoders.Base64UrlDecode(token);
-            var tokenDecoded = Encoding.UTF8.GetString(tokenDecodedBytes);
-
-            var result = await _userManager.ConfirmEmailAsync(user, tokenDecoded);
-
-            if (!result.Succeeded)
-            {
-                var tokenError = result.Errors.FirstOrDefault(e => e.Code == "InvalidToken");
-                if (tokenError != null)
-                {
-                    return BadRequest(new ApiErrorResponse(ApiErrorCode.InvalidEmailConfirmationToken));
-                }
-
-                foreach (var error in result.Errors)
-                {
-                    _logger.LogError($"An error occurred while confirming the email for user with ID '{user.Id}': Error Code: {error.Code}, Description: {error.Description}");
-                }
-
+                _logger.LogError($"User with ID '{userId}' is not found.");
                 return BadRequest(new ApiErrorResponse(ApiErrorCode.EmailConfirmationFailed));
             }
 
-            return Ok(new ApiResponse<EmailConfirmationResponse>(
-                new EmailConfirmationResponse
+            var emailAlreadyConfirmed = user.EmailConfirmed;
+
+            try
+            {
+                var tokenDecodedBytes = WebEncoders.Base64UrlDecode(token);
+                var tokenDecoded = Encoding.UTF8.GetString(tokenDecodedBytes);
+
+                var result = await _userManager.ConfirmEmailAsync(user, tokenDecoded);
+
+                if (!result.Succeeded)
                 {
-                    IsConfirmed = result.Succeeded
+                    foreach (var error in result.Errors)
+                    {
+                        _logger.LogError($"An error occurred while confirming the email for user with ID '{user.Id}': Error Code: {error.Code}, Description: {error.Description}");
+                    }
+
+                    return BadRequest(new ApiErrorResponse(ApiErrorCode.InvalidEmailConfirmationToken));
+                }
+
+                if (emailAlreadyConfirmed)
+                {
+                    return BadRequest(new ApiErrorResponse(ApiErrorCode.EmailAlreadyConfirmed));
+                }
+
+                return Ok(new ApiResponse<EmailConfirmationResponse>(
+                    new EmailConfirmationResponse
+                    {
+                        IsConfirmed = result.Succeeded
+                    }
+                ));
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"An error occurred while confirming the email for user with ID '{user.Id}': Error Message: {ex.Message}");
+                return BadRequest(new ApiErrorResponse(ApiErrorCode.EmailConfirmationFailed));
+            }
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null || !await _userManager.IsEmailConfirmedAsync(user))
+            {
+                _logger.LogError($"User with email '{model.Email}' is not found or email is not confirmed.");
+
+                // Don't reveal that the user does not exist or is not confirmed
+                return Ok(new ApiResponse<ForgotPasswordResponse>(
+                    new ForgotPasswordResponse
+                    {
+                        Success = true
+                    }
+                ));
+            }
+
+            BackgroundJob.Enqueue<IEmailBackgroundTasks>(x => x.SendPasswordResetEmailAsync(user.Id));
+
+            return Ok(new ApiResponse<ForgotPasswordResponse>(
+                new ForgotPasswordResponse
+                {
+                    Success = true
                 }
             ));
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(PasswordResetDto model)
+        {
+            var user = await _userManager.FindByIdAsync(model.UserId);
+
+            if (user == null)
+            {
+                _logger.LogError($"User with ID '{model.UserId}' is not found.");
+
+                return BadRequest(new ApiErrorResponse(ApiErrorCode.PasswordResetFailed));
+            }
+
+            try
+            {
+                var tokenDecodedBytes = WebEncoders.Base64UrlDecode(model.Token);
+                var tokenDecoded = Encoding.UTF8.GetString(tokenDecodedBytes);
+
+                var passwordResetResult = await _userManager.ResetPasswordAsync(user, tokenDecoded, model.Password);
+
+                if (!passwordResetResult.Succeeded)
+                {
+                    foreach (var error in passwordResetResult.Errors)
+                    {
+                        _logger.LogError($"An error occurred while resetting the password for user with ID '{user.Id}': Error Code: {error.Code}, Description: {error.Description}");
+                    }
+
+                    return BadRequest(new ApiErrorResponse(ApiErrorCode.PasswordResetFailed));
+                }
+
+                string ipAddress = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
+                await _tokenService.RevokeAllRefreshTokensByUserIdAsync(user.Id, ipAddress);
+
+                return Ok(new ApiResponse<PasswordResetResponse>(
+                    new PasswordResetResponse
+                    {
+                        Success = true
+                    }
+                ));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred while resetting the password for user with ID '{user.Id}': Error Message: {ex.Message}");
+                return BadRequest(new ApiErrorResponse(ApiErrorCode.PasswordResetFailed));
+            }
         }
     }
 }

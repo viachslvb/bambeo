@@ -5,7 +5,7 @@
                 <i class="fa-solid fa-hands mr-3"></i> Logowanie
             </h1>
             <form [formGroup]="loginForm" class="space-y-4 md:space-y-6" (ngSubmit)="onSubmit()">
-                <app-text-input [formControl]="loginForm.controls['email']" [label]="'Email'" [type]="'email'" [name]="'email'" [placeholder]="'maciej.wysocki@gmail.com'"></app-text-input>
+                <app-text-input [formControl]="loginForm.controls['email']" [label]="'E-mail'" [type]="'email'" [name]="'email'" [placeholder]="'maciej.wysocki@gmail.com'"></app-text-input>
                 <app-text-input [formControl]="loginForm.controls['password']" [label]="'Hasło'" [type]="'password'" [name]="'password'" [placeholder]="'••••••••'"></app-text-input>
                 <div class="flex items-center justify-between text-xs xs:text-sm">
                     <div class="flex items-start cursor-pointer">
@@ -16,7 +16,7 @@
                             <label for="remember" class="text-slate-500 cursor-pointer">Zapamiętaj mnie</label>
                         </div>
                     </div>
-                    <a href="#" class="font-medium text-slate-600 hover:underline">Zapomniałeś hasła?</a>
+                    <a routerLink="/account/forgot-password" class="font-medium text-slate-600 hover:underline">Nie pamiętam hasła</a>
                 </div>
                 <div *ngIf="errorMessage" class="text-xs text-rose-600 px-1">{{errorMessage}}</div>
                 <button type="submit"

@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Templates\PasswordResetEmail.cshtml" />
     <None Remove="Templates\WelcomeEmail.cshtml" />
   </ItemGroup>
 

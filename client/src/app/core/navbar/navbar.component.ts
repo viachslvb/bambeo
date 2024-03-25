@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/account/user.service';
 
@@ -47,7 +47,7 @@ export class NavbarComponent implements AfterViewInit {
   }
 
   logout() {
-    this.userService.signOut().subscribe({
+    this.userService.logout().subscribe({
       next: () => {
         this.router.navigateByUrl('/');
       }

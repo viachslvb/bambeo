@@ -36,7 +36,7 @@ export class AuthInterceptor implements HttpInterceptor {
             return this.handleTokenExpiredError(request, next);
           }
 
-          this.router.navigateByUrl('/account/signin');
+          this.router.navigateByUrl('/account/login');
         }
 
         return throwError(() => error);
@@ -62,7 +62,7 @@ export class AuthInterceptor implements HttpInterceptor {
         catchError((error): Observable<HttpEvent<any>> => {
           this.isRefreshing = false;
           if (error.type && error.type === ApiErrorCode.InvalidRefreshToken) {
-            this.router.navigateByUrl('/account/signin');
+            this.router.navigateByUrl('/account/login');
             return EMPTY;
           }
           return throwError(() => error);

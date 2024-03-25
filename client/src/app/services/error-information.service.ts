@@ -20,7 +20,7 @@ export class ErrorInformationService {
       displayNotification: true,
       displayMessage: true,
       title: "Błąd logowania",
-      message: "Nieprawidłowy adres email lub hasło. Spróbuj ponownie, proszę."
+      message: "Nieprawidłowy adres e-mail lub hasło. Spróbuj ponownie, proszę."
     },
     [ApiErrorCode.AlreadyAuthenticated]: {
       displayNotification: true,
@@ -29,21 +29,33 @@ export class ErrorInformationService {
     },
     [ApiErrorCode.EmailAlreadyInUse]: {
       displayMessage: true,
-      message: "Adres email jest już używany."
+      message: "Adres e-mail jest już używany."
     },
     [ApiErrorCode.ValidationFailed]: {
       displayMessage: true,
       message: "Wprowadzono nieprawidłowe dane."
     },
-    [ApiErrorCode.InvalidRefreshToken]: {},
+    [ApiErrorCode.InvalidRefreshToken]: {
+      displayNotification: true,
+      title: "Wymagana autoryzacja",
+      message: "Sesja wygasła. Proszę zaloguj się ponownie, aby kontynuować."
+    },
     [ApiErrorCode.AccessTokenExpired]: {},
     [ApiErrorCode.InvalidEmailConfirmationToken]: {
       displayMessage: true,
-      message: "Link jest nieprawidłowy lub wygasł. Proszę o ponowną próbę lub zgłoszenie się po nowy link weryfikacyjny."
+      message: "Link weryfikacyjny jest już nieaktualny. Może się to zdarzyć, jeśli link wygasł lub został wprowadzony nieprawidłowo. Proszę zażądać nowego linku weryfikacyjnego przez naszą aplikację."
     },
     [ApiErrorCode.EmailConfirmationFailed]: {
       displayMessage: true,
-      message: "Nie udało się zweryfikować Twojego adresu email. Prosimy o ponowną próbę lub skontaktuj się z nami w przypadku dalszych problemów."
+      message: "Wystąpił problem z weryfikacją Twojego konta. Może to mieć różne przyczyny, w tym wcześniejsze użycie linku lub zmiany danych konta. Proszę spróbować zażądać nowego linku weryfikacyjnego lub skontaktować się z pomocą techniczną w celu uzyskania pomocy."
+    },
+    [ApiErrorCode.EmailAlreadyConfirmed]: {
+      displayMessage: true,
+      message: "Twoje konto zostało już potwierdzone. Nie wymagane są żadne dalsze działania. Możesz korzystać z naszych usług."
+    },
+    [ApiErrorCode.PasswordResetFailed]: {
+      displayMessage: true,
+      message: "Link do resetowania hasła jest nieprawidłowy lub wygasł. Prosimy o ponowne złożenie wniosku o resetowanie hasła."
     },
     [ApiErrorCode.Unknown]: { },
 

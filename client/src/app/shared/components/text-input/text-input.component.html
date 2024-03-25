@@ -34,8 +34,8 @@
         </span>
     </div>
     <div *ngIf="(control.touched || control.dirty) && control.errors?.['required']" class="text-xs text-rose-600 px-1 pt-1">To pole nie może być puste</div>
-    <div *ngIf="(control.touched || control.dirty) && control.errors?.['email']" class="text-xs text-rose-600 px-1 pt-1">Nieprawidłowy adres email</div>
+    <div *ngIf="(control.touched || control.dirty) && control.errors?.['email']" class="text-xs text-rose-600 px-1 pt-1">Nieprawidłowy adres e-mail</div>
     <div *ngIf="(control.touched || control.dirty) && control.errors?.['pattern']" class="text-xs text-rose-600 px-1 pt-1">Hasło musi mieć od 8 do 16 znaków, zawierać przynajmniej jedną dużą literę, jedną małą literę, jedną cyfrę i jeden znak specjalny</div>
-    <div *ngIf="(control.touched || control.dirty) && control.errors?.['emailExists']" class="text-xs text-rose-600 px-1 pt-1">Adres email jest już używany</div>
+    <div *ngIf="(control.touched || control.dirty) && control.errors?.['emailExists']" class="text-xs text-rose-600 px-1 pt-1">Adres e-mail jest już używany</div>
     <div *ngIf="(control.touched || control.dirty) && control.errors?.['passwordMismatch']" class="text-xs text-rose-600 px-1 pt-1">Wprowadzone hasła nie są identyczne</div>
 </div>

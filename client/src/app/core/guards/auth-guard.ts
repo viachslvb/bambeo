@@ -15,7 +15,7 @@ export const AuthGuard: CanActivateFn = (): Observable<boolean | UrlTree> | Prom
       }),
       map(isAuthenticated => {
         if (!isAuthenticated) {
-          router.navigate(['/account/signin']);
+          router.navigate(['/account/login']);
           return false;
         }
         return true;

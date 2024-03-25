@@ -7,6 +7,8 @@ export enum ApiErrorCode {
   AccessTokenExpired = 1012,
   InvalidEmailConfirmationToken = 1013,
   EmailConfirmationFailed = 1014,
+  EmailAlreadyConfirmed = 1015,
+  PasswordResetFailed = 1016,
   // Validation errors
   ValidationFailed = 2001,
   // ...

@@ -35,10 +35,10 @@
                 </div>
             </div>
             <div class="flex items-center">
-                <!-- sign in / sign up -->
+                <!-- log in / sign up -->
                 <div class="hidden sm:block" *ngIf="(userService.currentUser$ | async) === null">
                     <button 
-                        routerLink="account/signin" 
+                        routerLink="account/login" 
                         type="button" 
                         class="text-slate-800 hover:bg-slate-50 focus:ring-4 focus:ring-slate-300 font-medium rounded-lg text-sm py-2 px-3 md:px-5 md:py-2.5 mr-2 ml-4 transition-[padding] duration-300 focus:outline-none">
                         Zaloguj
@@ -85,7 +85,7 @@
                             <span class=" text-slate-400 text-sm">Zarejestruj się i korzystaj na całego</span>
                             <div class="flex mt-2 xs:mt-0">
                                 <button
-                                    routerLink="account/signin"
+                                    routerLink="account/login"
                                     type="button" 
                                     class="text-slate-700 bg-slate-100 hover:bg-slate-200 focus:ring-4 focus:ring-slate-300 font-medium rounded-lg text-sm py-2 px-3 md:px-5 md:py-2.5 mr-2 ml-4 focus:outline-none">
                                     Logowanie

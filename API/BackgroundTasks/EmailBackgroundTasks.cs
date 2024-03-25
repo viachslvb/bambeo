@@ -32,14 +32,14 @@ namespace API.BackgroundTasks
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user == null) return;
 
-                var emailConfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(emailConfirmationToken);
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(token);
                 var tokenEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
 
                 var clientUrl = _config["ClientUrl"];
                 var callbackUrl = $"{clientUrl}/account/confirm-email?userId={user.Id}&token={tokenEncoded}";
 
-                string subject = "Zweryfikuj swój adres e-mail";
+                string subject = "Zweryfikuj swój adres email";
                 
                 var welcomeEmailModel = new WelcomeEmailModel
                 {
@@ -52,7 +52,39 @@ namespace API.BackgroundTasks
             }
             catch(Exception ex)
             {
-                _logger.LogError($"An error occurred while sending the email: {ex.Message}");
+                _logger.LogError($"An error occurred while sending the welcome email: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task SendPasswordResetEmailAsync(string userId)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null) return;
+
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(token);
+                var tokenEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
+
+                var clientUrl = _config["ClientUrl"];
+                var callbackUrl = $"{clientUrl}/account/password-reset?userId={user.Id}&token={tokenEncoded}";
+
+                string subject = "Zmiana hasła";
+
+                var passwordResetEmailModel = new PasswordResetEmailModel
+                {
+                    Firstname = user.DisplayName,
+                    PasswordResetLink = callbackUrl
+                };
+                var content = _templateService.GenerateContent("PasswordResetEmail", passwordResetEmailModel);
+
+                await _emailService.SendEmailAsync(user.Email, subject, content, tag: "Password Reset Mails");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred while sending the password reset email: {ex.Message}");
                 throw;
             }
         }

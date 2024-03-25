@@ -18,18 +18,18 @@ namespace Infrastructure.Services
         public TokenService(IConfiguration config, IRefreshTokenRepository refreshTokenRepository)
         {
             _config = config;
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]));
             _refreshTokenRepository = refreshTokenRepository;
+            _key = GenerateSymmetricSecurityKey();
+        }
+
+        private SymmetricSecurityKey GenerateSymmetricSecurityKey()
+        {
+            return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]));
         }
 
         public string CreateToken(AppUser user)
         {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.GivenName, user.DisplayName)
-            };
-
+            var claims = GenerateClaims(user);
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -47,6 +47,15 @@ namespace Infrastructure.Services
             return tokenHandler.WriteToken(token);
         }
 
+        private List<Claim> GenerateClaims(AppUser user)
+        {
+            return new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.GivenName, user.DisplayName)
+            };
+        }
+
         public async Task<RefreshToken> GenerateRefreshTokenAsync(AppUser user, string ipAddress)
         {
             var refreshToken = new RefreshToken
@@ -59,7 +68,6 @@ namespace Infrastructure.Services
                 CreatedByIp = ipAddress
             };
 
-            // Store refreshToken in the database
             await _refreshTokenRepository.CreateTokenAsync(refreshToken);
 
             return refreshToken;
@@ -75,6 +83,16 @@ namespace Infrastructure.Services
             refreshToken.Revoked = DateTime.UtcNow;
             refreshToken.RevokedByIp = ipAddress;
             await _refreshTokenRepository.UpdateTokenAsync(refreshToken);
+        }
+
+        public async Task RevokeAllRefreshTokensByUserIdAsync(string userId, string ipAddress)
+        {
+            var userTokens = await _refreshTokenRepository.GetAllTokensByUserIdAsync(userId);
+
+            foreach (var refreshToken in userTokens)
+            {
+                await RevokeRefreshTokenAsync(refreshToken, ipAddress);
+            }
         }
     }
 }
