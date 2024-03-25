@@ -9,11 +9,20 @@ import { BusyService } from '../services/busy.service';
 import { MessageService } from 'primeng/api';
 import { PromotionsStateService } from './promotions-state.service';
 import { UserFilterItem } from '../shared/models/userFilterItem';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-promotions',
   templateUrl: './promotions.component.html',
   styleUrls: ['./promotions.component.css'],
+  animations: [
+    trigger('fadeIn', [
+      state('void', style({ opacity: 0 })),
+      transition('void => *', [
+        animate('0.35s ease-in')
+      ]),
+    ])
+  ]
 })
 
 export class PromotionsComponent implements OnInit {

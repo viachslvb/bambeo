@@ -1,21 +1,42 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { first, skipWhile } from 'rxjs';
 import { UserService } from 'src/app/account/user.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  styleUrls: ['./navbar.component.css'],
+  animations: [
+    trigger('fadeIn', [
+      state('void', style({ opacity: 0 })),
+      transition('void => *', [
+        animate('0.25s ease-in')
+      ]),
+    ])
+  ]
 })
 export class NavbarComponent implements AfterViewInit {
   @ViewChild("mobileMenu") mobileMenu!: ElementRef;
 
+  isAuthStateLoading = true;
   isAuth: boolean = false;
   isOpenMobileMenu: boolean = false;
   isOpenUserMenu: boolean = false;
   mobileMenuHeight: string = "0px";
 
-  constructor(public userService: UserService, private router: Router) { }
+  constructor(public userService: UserService, private authService: AuthService,  private router: Router) {
+    this.authService.authCheckCompleted$.pipe(
+      skipWhile(value => value === false),
+      first()
+    ).subscribe((isCompleted) => {
+      if (isCompleted) {
+        this.isAuthStateLoading = false;
+      }
+    });
+  }
 
   ngAfterViewInit(): void {
     this.defineMenuHeight();
@@ -47,10 +68,7 @@ export class NavbarComponent implements AfterViewInit {
   }
 
   logout() {
-    this.userService.logout().subscribe({
-      next: () => {
-        this.router.navigateByUrl('/');
-      }
-    });
+    this.userService.logout().subscribe();
+    this.router.navigateByUrl('/');
   }
 }

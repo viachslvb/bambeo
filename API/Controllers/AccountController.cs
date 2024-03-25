@@ -69,10 +69,11 @@ namespace API.Controllers
 
             // Generate JWT and Refresh Token
             var token = _tokenService.CreateToken(user);
-            var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            var ipAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, ipAddress, loginDto.RememberMe);
 
             // Set the refresh token in an HTTP-only cookie
-            Response.Cookies.Append("refreshToken", refreshToken.Token, new CookieOptions { HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict, Expires = DateTime.UtcNow.AddDays(7) });
+            Response.Cookies.Append("refreshToken", refreshToken.Token, new CookieOptions { HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict, Expires = DateTime.UtcNow.AddDays(30) });
 
             return Ok(new ApiResponse<AuthResponse>
             (
@@ -118,10 +119,11 @@ namespace API.Controllers
 
             // Generate JWT and Refresh Token
             var token = _tokenService.CreateToken(user);
-            var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            var ipAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, ipAddress);
 
             // Set the refresh token in an HTTP-only cookie
-            Response.Cookies.Append("refreshToken", refreshToken.Token, new CookieOptions { HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict, Expires = DateTime.UtcNow.AddDays(7) });
+            Response.Cookies.Append("refreshToken", refreshToken.Token, new CookieOptions { HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict, Expires = DateTime.UtcNow.AddDays(30) });
 
             // Send a welcome email
             BackgroundJob.Enqueue<IEmailBackgroundTasks>(x => x.SendWelcomeEmailAsync(user.Id));
@@ -192,12 +194,12 @@ namespace API.Controllers
             await _tokenService.RevokeRefreshTokenAsync(refreshToken, ipAddress);
 
             // Generate a new refresh token for the user
-            var newRefreshToken = await _tokenService.GenerateRefreshTokenAsync(refreshToken.User, ipAddress);
+            var newRefreshToken = await _tokenService.GenerateRefreshTokenAsync(refreshToken.User, ipAddress, refreshToken.RememberMe);
 
             // Issue new JWT
             var jwtToken = _tokenService.CreateToken(refreshToken.User);
 
-            Response.Cookies.Append("refreshToken", newRefreshToken.Token, new CookieOptions { HttpOnly = true, Secure = true, Expires = DateTime.UtcNow.AddDays(7) });
+            Response.Cookies.Append("refreshToken", newRefreshToken.Token, new CookieOptions { HttpOnly = true, Secure = true, Expires = DateTime.UtcNow.AddDays(30) });
 
             return Ok(new ApiResponse<string>
             (

@@ -56,14 +56,17 @@ namespace Infrastructure.Services
             };
         }
 
-        public async Task<RefreshToken> GenerateRefreshTokenAsync(AppUser user, string ipAddress)
+        public async Task<RefreshToken> GenerateRefreshTokenAsync(AppUser user, string ipAddress, bool extendedExpiry = false)
         {
+            var tokenExpiryDurationDays = extendedExpiry ? 30 : 3;
+
             var refreshToken = new RefreshToken
             {
                 User = user,
                 UserId = user.Id,
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddDays(tokenExpiryDurationDays),
+                RememberMe = extendedExpiry,
                 Created = DateTime.UtcNow,
                 CreatedByIp = ipAddress
             };

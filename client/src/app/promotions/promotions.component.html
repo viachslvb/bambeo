@@ -1,7 +1,7 @@
 <div class="container max-w-7xl min-w-[320px] mx-auto lg:px-6 relative">
-    <ngx-spinner bdColor="rgba(255,255,255,0.2)" size="medium" color="#e11d48" type="ball-spin-rotate" [fullScreen]="false" [name]="pageLoadingSpinner"></ngx-spinner>
+    <ngx-spinner bdColor="rgba(255,255,255,0)" size="medium" color="#e11d48" type="ball-spin-rotate" [fullScreen]="true" [name]="pageLoadingSpinner"></ngx-spinner>
     <div class="flex justify-between">
-        <div class="lg:w-3/12 lg:min-w-[250px]"
+        <div class="lg:w-3/12 lg:min-w-[250px]" @fadeIn
             [ngClass]="{
                 'fixed inset-y-0 left-0 z-[199] w-full h-full bg-white shadow-black shadow-lg transform overflow-y-scroll': isMobileVersion, 
                 '-translate-y-0': isFilterPageOpen && isMobileVersion, 
@@ -25,6 +25,7 @@
             </div>
             <!-- store search and select -->
             <app-store-select 
+                
                 (storeSelected)="onStoreSelected($event)"
                 [stores]="stores"
                 *ngIf="stores.length > 0">
@@ -50,7 +51,7 @@
             </div>
         </div>
         <!-- products -->
-        <div class="w-full lg:w-9/12 lg:ml-10">
+        <div class="w-full lg:w-9/12 lg:ml-10" @fadeIn>
             <div class="h-0" #spaceForFilterBarWhenFixed></div>
             <div class="flex w-full justify-between lg:justify-end items-center bg-white lg:bg-transparent py-2 px-2 lg:px-0 shadow lg:shadow-none" #filterBar>
                 <div class="flex w-full justify-between lg:justify-end items-center mx-2" 
@@ -92,8 +93,8 @@
             <!-- promotions list -->
             <div class="flex flex-wrap justify-between items-center mt-3 lg:mt-0 relative"
                 *ngIf="isPromotionsLoaded">
-                <ngx-spinner bdColor="rgba(255,255,255,0.2)" size="medium" color="#e11d48" type="ball-spin-rotate" 
-                [fullScreen]="false" [name]="promotionsLoadingSpinner"></ngx-spinner>
+                <ngx-spinner bdColor="rgba(255,255,255,0.0)" size="medium" color="#e11d48" type="ball-spin-rotate" 
+                [fullScreen]="true" [name]="promotionsLoadingSpinner"></ngx-spinner>
                 <div class="flex w-full xs:w-1/2" 
                     *ngFor="let promotion of promotions">
                     <app-promotion-item class="m-2 w-full"

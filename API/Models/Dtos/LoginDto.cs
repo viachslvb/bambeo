@@ -10,5 +10,6 @@ namespace API.Models.Dtos
 
         [Required]
         public string Password { get; set; }
+        public bool RememberMe { get; set; }
     }
 }
