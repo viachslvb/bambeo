@@ -1,16 +1,22 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from './navbar/navbar.component';
-import { FooterComponent } from './footer/footer.component';
-import { HeaderComponent } from './header/header.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { HeaderComponent } from './components/header/header.component';
 import { RouterModule } from '@angular/router';
-import { TestErrorsComponent } from './test-errors/test-errors.component';
-import { NotFoundComponent } from './not-found/not-found.component';
-import { ServerErrorComponent } from './server-error/server-error.component';
-import { ToastModule } from 'primeng/toast';
-import { HeaderSectionComponent } from './header-section/header-section.component';
-import { BreadcrumbModule } from 'xng-breadcrumb';
-import { NgxSpinnerModule } from 'ngx-spinner';
+import { TestErrorsComponent } from './components/test-errors/test-errors.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
+import { ServerErrorComponent } from './components/server-error/server-error.component';
+import { HeaderSectionComponent } from './components/header-section/header-section.component';
+import { SharedModule } from '../shared/shared.module';
+import { MessageService } from 'primeng/api';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { LoadingInterceptor } from './interceptors/loading.interceptor';
+import { ErrorInterceptor } from './interceptors/error.interceptor';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { HomeComponent } from './components/home/home.component';
+import { PromotionsModule } from '../feature/promotions/promotions.module';
+import { PromotionsComponent } from '../feature/promotions/promotions.component';
 
 @NgModule({
   declarations: [
@@ -20,21 +26,33 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     TestErrorsComponent,
     NotFoundComponent,
     ServerErrorComponent,
-    HeaderSectionComponent
+    HeaderSectionComponent,
+    HomeComponent
   ],
   imports: [
     CommonModule,
+    SharedModule,
     RouterModule,
-    ToastModule,
-    BreadcrumbModule,
-    NgxSpinnerModule
+    PromotionsModule,
   ],
   exports: [
     NavbarComponent,
     HeaderComponent,
     FooterComponent,
     HeaderSectionComponent,
-    NgxSpinnerModule
-  ]
+    PromotionsComponent
+  ],
+  providers: [
+    MessageService,
+    { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
 })
-export class CoreModule { }
+export class CoreModule { 
+  constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
+    if (parentModule) {
+      throw new Error(`CoreModule has already been loaded. Import it in the AppModule only.`);
+    }
+  }
+}

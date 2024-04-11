@@ -1,10 +1,9 @@
-import { Component, ElementRef, Input, OnInit, Self, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, Self } from '@angular/core';
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 
 @Component({
-  selector: 'app-text-input',
-  templateUrl: './text-input.component.html',
-  styleUrls: ['./text-input.component.css']
+  selector: 'bb-text-input',
+  templateUrl: './text-input.component.html'
 })
 export class TextInputComponent implements OnInit, ControlValueAccessor {
   @Input() type = 'text';

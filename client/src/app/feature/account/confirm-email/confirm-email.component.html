@@ -1,0 +1,27 @@
+<section class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
+    <div class="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
+        <div class="p-6 sm:p-8"
+            [ngClass]="{'text-center': isLoading}"
+        >
+            <h1 class="text-xl font-bold leading-tight tracking-tight text-slate-800 mb-3">
+                <i [ngClass]="{'fa-solid fa-circle-xmark mr-3': isError, 'fa-solid fa-circle-check mr-3': !isLoading && !isError}"></i> {{ title }}
+            </h1>
+            <div
+                *ngIf="isLoading"
+                class="text-center mt-5">
+                <bb-loading-spinner [width]="'2rem'" [height]="'2rem'"></bb-loading-spinner>
+            </div>
+            <ng-container *ngIf="errorMessage">
+                <div class="flex flex-col text-slate-500 mt-3 text-sm">
+                    {{ errorMessage }}
+                </div>
+                <a routerLink="/">
+                    <button type="submit"
+                    class="w-full text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-200 font-medium rounded-lg text-sm px-5 py-2.5 mt-5 text-center">
+                        Powrót do Strony Głównej
+                    </button>
+                </a>
+            </ng-container>
+        </div>
+    </div>
+</section>

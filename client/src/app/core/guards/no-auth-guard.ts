@@ -1,7 +1,7 @@
 import { inject } from "@angular/core";
 import { CanActivateFn, Router } from "@angular/router";
 import { Observable, filter, map, switchMap, take } from "rxjs";
-import { AuthService } from "src/app/services/auth.service";
+import { AuthService } from "../services/auth.service";
 
 export const NoAuthGuard: CanActivateFn = (): Observable<boolean> => {
     const router: Router = inject(Router);
@@ -15,7 +15,7 @@ export const NoAuthGuard: CanActivateFn = (): Observable<boolean> => {
       }),
       map(isAuthenticated => {
         if (isAuthenticated) {
-          router.navigate(['/account']);
+          router.navigate(['/']);
           return false;
         }
         return true;
