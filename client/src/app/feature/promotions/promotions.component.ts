@@ -19,7 +19,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
     trigger('fadeIn', [
       state('void', style({ opacity: 0 })),
       transition('void => *', [
-        animate('0.35s ease-in')
+        animate('0.20s ease-in')
       ]),
     ])
   ]
@@ -31,7 +31,8 @@ export class PromotionsComponent implements OnInit {
     private renderer: Renderer2, 
     private busyService: BusyService, 
     private toastService: MessageService,
-    private promotionsState: PromotionsStateService) { }
+    private promotionsState: PromotionsStateService
+  ) { }
 
   @ViewChild('filterBar', { static: true }) filterBar!: ElementRef;
   @ViewChild('filterPage', { static: true }) filterPage!: ElementRef;
@@ -60,7 +61,9 @@ export class PromotionsComponent implements OnInit {
   isFilterPageOpen: boolean = false;
 
   // Spinners for loading
-  pageLoadingSpinner = 'pageLoadingSpinner';
+  private dataLoadingSpinnerTimeout: any;
+  private promotionsLoadingSpinnerTimeout: any;
+  /* pageLoadingSpinner = 'pageLoadingSpinner'; */
   promotionsLoadingSpinner = 'promotionsLoadingSpinner';
 
   ngOnInit() {
@@ -156,7 +159,9 @@ export class PromotionsComponent implements OnInit {
   }
 
   getCombinedData() {
-    this.busyService.busy(this.pageLoadingSpinner);
+    this.dataLoadingSpinnerTimeout = setTimeout(() => {
+      this.busyService.busy();
+    }, 70);
 
     this.promotionService.getStores().pipe(
       mergeMap(stores => {
@@ -203,17 +208,21 @@ export class PromotionsComponent implements OnInit {
         this.totalCount = response.count;
 
         this.isPromotionsLoaded = true;
-        this.busyService.idle(this.pageLoadingSpinner);
+        clearTimeout(this.dataLoadingSpinnerTimeout);
+        this.busyService.idle();
       },
       error: error => {
         console.log(error);
-        this.busyService.idle(this.pageLoadingSpinner);
+        clearTimeout(this.dataLoadingSpinnerTimeout);
+        this.busyService.idle();
       }
     });
   }
 
   getPromotions() {
-    this.busyService.busy(this.promotionsLoadingSpinner);
+    this.promotionsLoadingSpinnerTimeout = setTimeout(() => {
+      this.busyService.busy(this.promotionsLoadingSpinner);
+    }, 70);
 
     // Save current state of filters
     this.promotionsState.setFiltersState(this.promotionParams);
@@ -229,11 +238,15 @@ export class PromotionsComponent implements OnInit {
           this.isPromotionsLoaded = true;
         }
 
+        clearTimeout(this.promotionsLoadingSpinnerTimeout);
         this.busyService.idle(this.promotionsLoadingSpinner);
       },
       error: error => {
         console.log(error);
+
+        clearTimeout(this.promotionsLoadingSpinnerTimeout);
         this.busyService.idle(this.promotionsLoadingSpinner);
+
         this.toastService.add({ 
           severity: 'error', 
           summary: "Błąd podczas pobierania danych", 

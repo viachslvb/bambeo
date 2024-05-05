@@ -1,152 +1,137 @@
-﻿using API.BackgroundTasks;
-using API.Extensions;
-using API.Models.ApiResponses;
-using API.Models.Dtos;
-using API.Models.Enums;
-using API.Models.Responses;
-using AutoMapper;
-using Core.Entities.Identity;
-using Core.Interfaces;
-using Hangfire;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using System.Text;
+using API.Helpers;
+using Application.Interfaces;
+using API.Responses;
+using API.Responses.Account;
+using Application.Models.Dtos;
+using API.Extensions;
+using Application.Helpers;
+using Application.Enums;
 
 namespace API.Controllers
 {
     public class AccountController : BaseApiController
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
+        private readonly IAccountService _accountService;
         private readonly ITokenService _tokenService;
-        private readonly IMapper _mapper;
-        private readonly ILogger<AccountController> _logger;
 
-
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            ITokenService tokenService, ILogger<AccountController> logger, IMapper mapper)
+        public AccountController(IAccountService accountService,
+            ITokenService tokenService)
         {
-            _logger = logger;
-            _mapper = mapper;
+            _accountService = accountService;
             _tokenService = tokenService;
-            _signInManager = signInManager;
-            _userManager = userManager;
         }
 
         [Authorize]
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
-            var user = await _userManager.FindByEmailFromClaimsPrincipal(User);
+            var result = await _accountService.GetUserByEmailAsync(User.GetEmail());
 
-            if (user == null) return Unauthorized(new ApiErrorResponse(ApiErrorCode.AuthorizationRequired));
+            if (!result.Success)
+            {
+                return StatusCode(ApiHelper.GetHttpStatusCode(result.ErrorCode), new ApiErrorResponse(result.ErrorCode));
+            }
+            
+            return Ok(new ApiResponse<UserDto>(result.Data));
+        }
 
-            return Ok(new ApiResponse<UserDto>
-            (
-                new UserDto
-                {
-                    Email = user.Email,
-                    DisplayName = user.DisplayName
-                }
-            ));
+        [Authorize]
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<DeleteAccountResponse>> DeleteAccount()
+        {
+            ServiceResult<bool> result = await _accountService.DeleteUserByEmailAsync(User.GetEmail());
+
+            if (!result.Success)
+            {
+                return StatusCode(ApiHelper.GetHttpStatusCode(result.ErrorCode), new ApiErrorResponse(result.ErrorCode));
+            }
+
+            DeleteAccountResponse deleteAccountResponse = new()
+            {
+                AccountIsDeleted = true
+            };
+
+            return Ok(new ApiResponse<DeleteAccountResponse>(deleteAccountResponse));
         }
 
         [DisallowAuthenticated]
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<AuthResponse>> Login(LoginDto loginDto)
         {
-            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            string ipAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
-            var loginFailedApiResponse = new ApiErrorResponse(ApiErrorCode.LoginFailed);
+            ServiceResult<LoginToReturnDto> result = await _accountService.LoginUserAsync(loginDto, ipAddress);
 
-            if (user == null) return BadRequest(loginFailedApiResponse);
+            if (!result.Success)
+            {
+                return StatusCode(ApiHelper.GetHttpStatusCode(result.ErrorCode), new ApiErrorResponse(result.ErrorCode));
+            }
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+            Response.Cookies.Append("refreshToken", result.Data.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(30)
+            });
+            
+            AuthResponse authResponse = new()
+            {
+                User = result.Data.User,
+                Token = result.Data.Token
+            };
 
-            if (!result.Succeeded) return BadRequest(loginFailedApiResponse);
-
-            // Generate JWT and Refresh Token
-            var token = _tokenService.CreateToken(user);
-            var ipAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
-            var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, ipAddress, loginDto.RememberMe);
-
-            // Set the refresh token in an HTTP-only cookie
-            Response.Cookies.Append("refreshToken", refreshToken.Token, new CookieOptions { HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict, Expires = DateTime.UtcNow.AddDays(30) });
-
-            return Ok(new ApiResponse<AuthResponse>
-            (
-                new AuthResponse
-                {
-                    User = new UserDto
-                    {
-                        Email = user.Email,
-                        DisplayName = user.DisplayName
-                    },
-                    Token = token
-                }
-            ));
+            return Ok(new ApiResponse<AuthResponse>(authResponse));
         }
 
         [DisallowAuthenticated]
         [HttpPost("signup")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ApiResponse<AuthResponse>>> Register(RegisterDto registerDto)
         {
-            var existingUser = await _userManager.FindByEmailAsync(registerDto.Email);
+            var ipAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
-            if (existingUser != null)
-            { 
-                return BadRequest(new ApiValidationErrorResponse(ApiErrorCode.EmailAlreadyInUse)
-                {
-                    Errors = new[] { "Adres email jest już używany" }
-                });
+            ServiceResult<RegisterToReturnDto> result = await _accountService.RegisterUserAsync(registerDto, ipAddress);
+
+            if (!result.Success)
+            {
+                return StatusCode(ApiHelper.GetHttpStatusCode(result.ErrorCode), new ApiErrorResponse(result.ErrorCode));
             }
 
-            var user = new AppUser
+            Response.Cookies.Append("refreshToken", result.Data.RefreshToken, new CookieOptions
             {
-                DisplayName = registerDto.DisplayName,
-                Email = registerDto.Email,
-                UserName = registerDto.Email
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(30)
+            });
+
+            AuthResponse authResponse = new()
+            {
+                User = result.Data.User,
+                Token = result.Data.Token
             };
 
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
-
-            if (!result.Succeeded)
-            {
-                return BadRequest(new ApiErrorResponse(ApiErrorCode.BadRequest));
-            }
-
-            // Generate JWT and Refresh Token
-            var token = _tokenService.CreateToken(user);
-            var ipAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
-            var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, ipAddress);
-
-            // Set the refresh token in an HTTP-only cookie
-            Response.Cookies.Append("refreshToken", refreshToken.Token, new CookieOptions { HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict, Expires = DateTime.UtcNow.AddDays(30) });
-
-            // Send a welcome email
-            BackgroundJob.Enqueue<IEmailBackgroundTasks>(x => x.SendWelcomeEmailAsync(user.Id));
-
-            return Ok(new ApiResponse<AuthResponse>
-            (
-                new AuthResponse
-                {
-                    User = new UserDto
-                    {
-                        Email = user.Email,
-                        DisplayName = user.DisplayName
-                    },
-                    Token = token
-                }
-            ));
+            return StatusCode(StatusCodes.Status201Created, new ApiResponse<AuthResponse>(authResponse));
         }
 
         [Authorize]
-        [HttpGet("logout")]
+        [HttpDelete("logout")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult LogOut()
         {
-            if (HttpContext.Request.Cookies.ContainsKey("refreshToken"))
+            if (Request.Cookies.ContainsKey("refreshToken"))
             {
                 var cookieOptions = new CookieOptions
                 {
@@ -158,24 +143,23 @@ namespace API.Controllers
                 Response.Cookies.Append("refreshToken", string.Empty, cookieOptions);
             }
 
-            return Ok(new ApiResponse<string>
-            ("Logged out successfully."));
+            return NoContent();
         }
 
         [HttpGet("refresh-token")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> RefreshToken()
         {
-            var unauthorizedApiErrorResponse = new ApiErrorResponse(ApiErrorCode.InvalidRefreshToken);
-
-            if (!HttpContext.Request.Cookies.ContainsKey("refreshToken"))
+            if (!Request.Cookies.ContainsKey("refreshToken"))
             {
-                return Unauthorized(unauthorizedApiErrorResponse);
+                return Unauthorized(new ApiErrorResponse(ErrorCode.InvalidRefreshToken));
             }
 
-            var oldRefreshToken = Request.Cookies["refreshToken"];
-            var refreshToken = await _tokenService.GetRefreshTokenAsync(oldRefreshToken);
+            var refreshTokenFromCookies = Request.Cookies["refreshToken"];
+            var currentRefreshToken = await _tokenService.GetTokenAsync(refreshTokenFromCookies);
 
-            if (refreshToken == null || !refreshToken.IsActive)
+            if (currentRefreshToken == null || !currentRefreshToken.IsActive)
             {
                 var cookieOptions = new CookieOptions
                 {
@@ -186,170 +170,96 @@ namespace API.Controllers
                 };
                 Response.Cookies.Append("refreshToken", string.Empty, cookieOptions);
 
-                return Unauthorized(unauthorizedApiErrorResponse);
+                return Unauthorized(new ApiErrorResponse(ErrorCode.InvalidRefreshToken));
             }
 
             string ipAddress = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
+            var newRefreshToken = await _tokenService.UpdateToken(currentRefreshToken, ipAddress);
 
-            await _tokenService.RevokeRefreshTokenAsync(refreshToken, ipAddress);
+            Response.Cookies.Append("refreshToken", newRefreshToken.Token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(30)
+            });
 
-            // Generate a new refresh token for the user
-            var newRefreshToken = await _tokenService.GenerateRefreshTokenAsync(refreshToken.User, ipAddress, refreshToken.RememberMe);
+            var accessToken = _tokenService.CreateAccessToken(currentRefreshToken.User);
 
-            // Issue new JWT
-            var jwtToken = _tokenService.CreateToken(refreshToken.User);
-
-            Response.Cookies.Append("refreshToken", newRefreshToken.Token, new CookieOptions { HttpOnly = true, Secure = true, Expires = DateTime.UtcNow.AddDays(30) });
-
-            return Ok(new ApiResponse<string>
-            (
-                jwtToken
-            ));
+            return Ok(new ApiResponse<string>(accessToken));
         }
 
         [HttpGet("email-exists")]
-        public async Task<ActionResult<ApiResponse<EmailExistsResponse>>> CheckEmailExistsAsync([FromQuery] string email)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ApiResponse<EmailExistsResponse>>> EmailExists([FromQuery] EmailExistsDto emailExistsDto)
         {
-            if (email == null)
+            ServiceResult<bool> result = await _accountService.EmailExistsAsync(emailExistsDto);
+
+            EmailExistsResponse emailExistsResponse = new()
             {
-                return BadRequest(new ApiErrorResponse(ApiErrorCode.BadRequest));
-            }
+                Exists = result.Data
+            };
 
-            var result = await _userManager.FindByEmailAsync(email) != null;
-
-            return Ok(new ApiResponse<EmailExistsResponse>(
-                new EmailExistsResponse
-                {
-                    Exists = result
-                }
-            ));
+            return Ok(new ApiResponse<EmailExistsResponse>(emailExistsResponse));
         }
 
         [HttpGet("confirm-email")]
-        public async Task<ActionResult<ApiResponse<EmailConfirmationResponse>>> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string token)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ApiResponse<EmailConfirmationResponse>>> ConfirmEmail([FromQuery] ConfirmEmailDto confirmEmailDto)
         {
-            if (userId == null || token == null)
+            ServiceResult<bool> result = await _accountService.ConfirmEmailAsync(confirmEmailDto);
+
+            if (!result.Success)
             {
-                return BadRequest(new ApiErrorResponse(ApiErrorCode.BadRequest));
+                return StatusCode(ApiHelper.GetHttpStatusCode(result.ErrorCode), new ApiErrorResponse(result.ErrorCode));
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
+            EmailConfirmationResponse emailConfirmationResponse = new()
             {
-                _logger.LogError($"User with ID '{userId}' is not found.");
-                return BadRequest(new ApiErrorResponse(ApiErrorCode.EmailConfirmationFailed));
-            }
+                IsConfirmed = result.Data
+            };
 
-            var emailAlreadyConfirmed = user.EmailConfirmed;
-
-            try
-            {
-                var tokenDecodedBytes = WebEncoders.Base64UrlDecode(token);
-                var tokenDecoded = Encoding.UTF8.GetString(tokenDecodedBytes);
-
-                var result = await _userManager.ConfirmEmailAsync(user, tokenDecoded);
-
-                if (!result.Succeeded)
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        _logger.LogError($"An error occurred while confirming the email for user with ID '{user.Id}': Error Code: {error.Code}, Description: {error.Description}");
-                    }
-
-                    return BadRequest(new ApiErrorResponse(ApiErrorCode.InvalidEmailConfirmationToken));
-                }
-
-                if (emailAlreadyConfirmed)
-                {
-                    return BadRequest(new ApiErrorResponse(ApiErrorCode.EmailAlreadyConfirmed));
-                }
-
-                return Ok(new ApiResponse<EmailConfirmationResponse>(
-                    new EmailConfirmationResponse
-                    {
-                        IsConfirmed = result.Succeeded
-                    }
-                ));
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError($"An error occurred while confirming the email for user with ID '{user.Id}': Error Message: {ex.Message}");
-                return BadRequest(new ApiErrorResponse(ApiErrorCode.EmailConfirmationFailed));
-            }
+            return Ok(new ApiResponse<EmailConfirmationResponse>(emailConfirmationResponse));
         }
 
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto model)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ForgotPasswordResponse>> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            _ = await _accountService.SendResetPasswordLinkAsync(forgotPasswordDto);
 
-            if (user == null || !await _userManager.IsEmailConfirmedAsync(user))
+            ForgotPasswordResponse forgotPasswordResponse = new()
             {
-                _logger.LogError($"User with email '{model.Email}' is not found or email is not confirmed.");
-
                 // Don't reveal that the user does not exist or is not confirmed
-                return Ok(new ApiResponse<ForgotPasswordResponse>(
-                    new ForgotPasswordResponse
-                    {
-                        Success = true
-                    }
-                ));
-            }
-
-            BackgroundJob.Enqueue<IEmailBackgroundTasks>(x => x.SendPasswordResetEmailAsync(user.Id));
-
-            return Ok(new ApiResponse<ForgotPasswordResponse>(
-                new ForgotPasswordResponse
-                {
-                    Success = true
-                }
-            ));
+                Success = true
+            };
+            
+            return Ok(new ApiResponse<ForgotPasswordResponse>(forgotPasswordResponse));
         }
 
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword(PasswordResetDto model)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ResetPasswordResponse>> ResetPassword(ResetPasswordDto resetPasswordDto)
         {
-            var user = await _userManager.FindByIdAsync(model.UserId);
+            string ipAddress = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
 
-            if (user == null)
+            ServiceResult<bool> result = await _accountService.ResetPasswordAsync(resetPasswordDto, ipAddress);
+
+            if (!result.Success)
             {
-                _logger.LogError($"User with ID '{model.UserId}' is not found.");
-
-                return BadRequest(new ApiErrorResponse(ApiErrorCode.PasswordResetFailed));
+                return StatusCode(ApiHelper.GetHttpStatusCode(result.ErrorCode), new ApiErrorResponse(result.ErrorCode));
             }
 
-            try
+            ResetPasswordResponse resetPasswordResponse = new()
             {
-                var tokenDecodedBytes = WebEncoders.Base64UrlDecode(model.Token);
-                var tokenDecoded = Encoding.UTF8.GetString(tokenDecodedBytes);
+                Success = result.Data
+            };
 
-                var passwordResetResult = await _userManager.ResetPasswordAsync(user, tokenDecoded, model.Password);
-
-                if (!passwordResetResult.Succeeded)
-                {
-                    foreach (var error in passwordResetResult.Errors)
-                    {
-                        _logger.LogError($"An error occurred while resetting the password for user with ID '{user.Id}': Error Code: {error.Code}, Description: {error.Description}");
-                    }
-
-                    return BadRequest(new ApiErrorResponse(ApiErrorCode.PasswordResetFailed));
-                }
-
-                string ipAddress = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
-                await _tokenService.RevokeAllRefreshTokensByUserIdAsync(user.Id, ipAddress);
-
-                return Ok(new ApiResponse<PasswordResetResponse>(
-                    new PasswordResetResponse
-                    {
-                        Success = true
-                    }
-                ));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"An error occurred while resetting the password for user with ID '{user.Id}': Error Message: {ex.Message}");
-                return BadRequest(new ApiErrorResponse(ApiErrorCode.PasswordResetFailed));
-            }
+            return Ok(new ApiResponse<ResetPasswordResponse>(resetPasswordResponse));
         }
     }
 }

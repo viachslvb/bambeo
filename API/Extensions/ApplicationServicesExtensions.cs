@@ -1,17 +1,15 @@
-﻿using API.BackgroundTasks;
-using API.Models.ApiResponses;
-using API.Models.Enums;
-using Core.Interfaces;
+﻿using Core.Interfaces;
+using Core.Interfaces.Repositories;
 using Hangfire;
 using Infrastructure.Data;
-using Infrastructure.Data.Config;
 using Infrastructure.Services;
-using Mailer.Interfaces;
-using Mailer.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using StackExchange.Redis;
+using Infrastructure.Data.Repositories;
+using Application.Interfaces;
+using Application.Services;
+using API.Responses;
+using Application.Enums;
 
 namespace API.Extensions
 {
@@ -25,9 +23,16 @@ namespace API.Extensions
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped<ITestRedisRepository, TestItemRepository>();
+            services.AddScoped(typeof(ISpecificationRepository<>), typeof(SpecificationRepository<>));
+            services.AddScoped<IUserSettingsRepository, UserSettingsRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IStoreService, StoreService>();
+            services.AddScoped<IPromotionService, PromotionService>();
+            services.AddScoped<IProductService, ProductService>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -37,7 +42,6 @@ namespace API.Extensions
                .AddRazorRenderer()
                .AddSendGridSender(config["EmailSettings:SendGridApiKey"]);
 
-            //services.Configure<EmailConfiguration>(config.GetSection("EmailConfiguration"));
             services.AddSingleton<IEmailTemplateService, EmailTemplateService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IEmailBackgroundTasks, EmailBackgroundTasks>();
@@ -53,11 +57,6 @@ namespace API.Extensions
             // Add the processing server as IHostedService
             services.AddHangfireServer();
 
-            services.AddSingleton<IConnectionMultiplexer>(c =>
-            {
-                var options = ConfigurationOptions.Parse(config.GetConnectionString("Redis"));
-                return ConnectionMultiplexer.Connect(options);
-            });
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.InvalidModelStateResponseFactory = actionContext =>
@@ -67,7 +66,7 @@ namespace API.Extensions
                         .SelectMany(x => x.Value.Errors)
                         .Select(x => x.ErrorMessage).ToArray();
 
-                    var errorResponse = new ApiValidationErrorResponse(ApiErrorCode.ValidationFailed)
+                    var errorResponse = new ApiValidationErrorResponse(ErrorCode.ValidationFailed)
                     {
                         Errors = errors
                     };

@@ -1,13 +1,13 @@
-﻿using API.Extensions.CustomTokenProviders;
-using API.Models.ApiResponses;
-using API.Models.Enums;
-using Core.Entities.Identity;
+﻿using Core.Entities.Identity;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json;
+using API.Extensions.CustomTokenProviders;
+using API.Responses;
+using Application.Enums;
 
 namespace API.Extensions
 {
@@ -48,15 +48,15 @@ namespace API.Extensions
                         {
                             context.HandleResponse();
 
-                            var apiResponse = new ApiErrorResponse(ApiErrorCode.AuthorizationRequired);
+                            var apiResponse = new ApiErrorResponse(ErrorCode.AuthorizationRequired);
 
                             if (context.Error == "invalid_token" && context.ErrorDescription.Contains("The token expired"))
                             {
-                                apiResponse = new ApiErrorResponse(ApiErrorCode.AccessTokenExpired);
+                                apiResponse = new ApiErrorResponse(ErrorCode.AccessTokenExpired);
                             }
                             else if (context.Error == "invalid_token")
                             {
-                                apiResponse = new ApiErrorResponse(ApiErrorCode.InvalidAccessToken);
+                                apiResponse = new ApiErrorResponse(ErrorCode.InvalidAccessToken);
                             }
 
                             context.Response.ContentType = "application/json";

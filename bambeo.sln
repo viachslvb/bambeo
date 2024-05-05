@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{EE56D99B-5155-489C-B74A-543273B6BCC6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mailer", "EmailService\Mailer.csproj", "{C59A9480-D65B-41EC-85D5-088514A05111}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{240673D9-A472-4D43-A59F-2AA0A4177B2C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{EE56D99B-5155-489C-B74A-543273B6BCC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE56D99B-5155-489C-B74A-543273B6BCC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE56D99B-5155-489C-B74A-543273B6BCC6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C59A9480-D65B-41EC-85D5-088514A05111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C59A9480-D65B-41EC-85D5-088514A05111}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C59A9480-D65B-41EC-85D5-088514A05111}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C59A9480-D65B-41EC-85D5-088514A05111}.Release|Any CPU.Build.0 = Release|Any CPU
+		{240673D9-A472-4D43-A59F-2AA0A4177B2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{240673D9-A472-4D43-A59F-2AA0A4177B2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{240673D9-A472-4D43-A59F-2AA0A4177B2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{240673D9-A472-4D43-A59F-2AA0A4177B2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

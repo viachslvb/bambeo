@@ -1,0 +1,32 @@
+<div class="container max-w-7xl mx-auto my-12 px-6" @fadeIn>
+  <div class="flex">
+    <!-- Sidebar -->
+    <div class="flex flex-col w-64">
+      <a routerLink="/" 
+        routerLinkActive="bg-gray-100"
+        [routerLinkActiveOptions]="{exact: true}"
+        class="flex items-center mb-8 px-5 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50">
+        <i class="fa-solid fa-arrow-left w-4"></i>
+        <span class="ml-3 align-middle">Powrót do Głównej</span>
+      </a>
+      <a routerLink="./" 
+        routerLinkActive="bg-gray-100"
+        [routerLinkActiveOptions]="{exact: true}"
+        class="flex items-center px-5 py-2 text-gray-800 rounded-lg hover:bg-gray-100">
+        <i class="fa-solid fa-user w-4"></i>
+        <span class="ml-3 align-middle">Moje Konto</span>
+      </a>
+      <a routerLink="settings"
+        routerLinkActive="bg-gray-100"
+        class="flex items-center px-5 py-2 text-gray-800 rounded-lg my-1 hover:bg-gray-100">
+        <i class="fa-solid fa-gear w-4"></i>
+        <span class="ml-3 align-middle">Ustawienia</span>
+      </a>
+    </div>
+    <div class="flex border-r mt-16 mx-10"></div>
+    <!-- Content area -->
+    <div class="flex-1">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

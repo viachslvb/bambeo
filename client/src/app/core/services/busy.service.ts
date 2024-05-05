@@ -8,11 +8,13 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class BusyService {
   constructor(private spinnerService: NgxSpinnerService) { }
 
-  busy(name: string) {
+  mainSpinner = 'pageLoadingSpinner';
+
+  busy(name: string = this.mainSpinner) {
     this.spinnerService.show(name);
   }
 
-  idle(name: string) {
+  idle(name: string = this.mainSpinner) {
     this.spinnerService.hide(name);
   }
 }

@@ -15,7 +15,7 @@ export const NoAuthGuard: CanActivateFn = (): Observable<boolean> => {
       }),
       map(isAuthenticated => {
         if (isAuthenticated) {
-          router.navigate(['/']);
+          router.navigate(['/user']);
           return false;
         }
         return true;

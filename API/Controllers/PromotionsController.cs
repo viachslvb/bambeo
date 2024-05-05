@@ -1,27 +1,22 @@
-﻿using API.Models.ApiResponses;
-using API.Models.Dtos;
-using API.Models.Enums;
-using AutoMapper;
-using Core.Entities;
-using Core.Interfaces;
-using Core.Specifications;
+﻿using API.Helpers;
+using API.Responses;
+using Application.Helpers;
+using Application.Interfaces;
+using Application.Models;
+using Application.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace API.Controllers
 {
     public class PromotionsController : BaseApiController
     {
-        private readonly IGenericRepository<Promotion> _promotionsRepo;
-        private readonly IMapper _mapper;
+        private readonly IPromotionService _promotionService;
 
-        public PromotionsController(IGenericRepository<Promotion> promotionsRepo, IMapper mapper)
+        public PromotionsController(IPromotionService promotionService)
         {
-            _promotionsRepo = promotionsRepo;
-            _mapper = mapper;
+            _promotionService = promotionService;
         }
-
-        // GET api/promotions
+        
         //[HttpGet]
         //public async Task<ActionResult<List<Promotion>>> GetPromotions([FromQuery] PromotionSpecParams promotionParams)
         //{
@@ -38,42 +33,27 @@ namespace API.Controllers
         //}
 
         [HttpPost]
-        public async Task<ActionResult<List<Promotion>>> GetPromotions([FromBody] PromotionSpecParams promotionParams)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<PromotionDto>>> GetPromotions([FromBody] PromotionSpecParamsDto promotionSpecParamsDto)
         {
-            var spec = new PromotionsWithFiltersSpecification(promotionParams);
-            var countSpec = new PromotionsWithFiltersForCountSpecification(promotionParams);
+            ServiceResult<PageableCollection<PromotionDto>> result = await _promotionService.GetPromotionsWithSpec(promotionSpecParamsDto);
 
-            var totalItems = await _promotionsRepo.CountAsync(countSpec);
-            var promotions = await _promotionsRepo.ListAsync(spec);
-
-            var data = _mapper.Map<IReadOnlyList<PromotionDto>>(promotions);
-
-            return Ok(new ApiResponse<PaginationResponse<PromotionDto>>
-            (
-                new PaginationResponse<PromotionDto>(
-                    promotionParams.PageIndex,
-                    promotionParams.PageSize, 
-                    totalItems, 
-                    data)
-            ));;
+            return Ok(new ApiResponse<PageableCollection<PromotionDto>>(result.Data));
         }
 
-        // GET api/promotions/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<PromotionDto>> GetPromotion(int id)
         {
-            var spec = new PromotionsWithFiltersSpecification(id);
-            var promotion = await _promotionsRepo.GetEntityWithSpec(spec);
+            ServiceResult<PromotionDto> result = await _promotionService.GetPromotionById(id);
 
-            if (promotion == null) return NotFound(new ApiErrorResponse(ApiErrorCode.NotFound));
+            if (!result.Success)
+            {
+                return StatusCode(ApiHelper.GetHttpStatusCode(result.ErrorCode), new ApiErrorResponse(result.ErrorCode));
+            }
 
-            return Ok(new ApiResponse<PromotionDto>
-            (
-                _mapper.Map<PromotionDto>(promotion)
-            ));
+            return Ok(new ApiResponse<PromotionDto>(result.Data));
         }
-        
     }
 }

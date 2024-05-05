@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../account.service';
+import { AccountService } from '../account.service';
 import { LoginModel } from 'src/app/core/models/api/requests/loginModel';
 
 @Component({
@@ -20,7 +20,7 @@ export class LoginComponent {
   errorMessage?: string;
   isLoading = false;
 
-  constructor(private userService: UserService, private router: Router, 
+  constructor(private accountService: AccountService, private router: Router, 
     private activatedRoute: ActivatedRoute) {
       this.returnUrl = this.activatedRoute.snapshot.queryParams['returnUrl'] || '/promotions'
   }
@@ -28,7 +28,7 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.valid) {
       this.isLoading = true;
-      this.userService.login(this.loginForm.value as LoginModel).subscribe({
+      this.accountService.login(this.loginForm.value as LoginModel).subscribe({
         next: () => {
           this.isLoading = false;
           this.router.navigateByUrl(this.returnUrl);

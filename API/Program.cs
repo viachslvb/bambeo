@@ -1,11 +1,10 @@
-using API.Extensions;
-using API.Middleware;
 using Core.Entities.Identity;
 using Hangfire;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using static Org.BouncyCastle.Math.EC.ECCurve;
+using API.Middleware;
+using API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +40,7 @@ var services = scope.ServiceProvider;
 var context = services.GetRequiredService<ApplicationDbContext>();
 var userManager = services.GetRequiredService<UserManager<AppUser>>();
 var logger = services.GetRequiredService<ILogger<Program>>();
+
 try
 {
     await context.Database.MigrateAsync();
@@ -50,5 +50,6 @@ catch (Exception ex)
 {
     logger.LogError(ex, "An error occured during migration");
 }
+
 app.Run();
 

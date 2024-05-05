@@ -1,0 +1,132 @@
+<!-- Loading Indicator Section -->
+<ng-container *ngIf="!dataLoaded; else accountData">
+  <bb-loading-spinner *ngIf="showLoadingSpinner" [width]="'1rem'" [height]="'1rem'"></bb-loading-spinner>
+</ng-container>
+<!-- Data Display Section -->
+<ng-template #accountData>
+  <div @fadeIn>
+    <h1 class="text-3xl font-medium mb-9 text-slate-800">
+      Moje Konto
+    </h1>
+    <!-- Edit Account Info -->
+    <h1 class="text-xl leading-6  text-slate-800">
+      <i class="fa-solid fa-address-card mr-2"></i> Dane osobowe
+    </h1>
+    <div class="h-4"></div>
+    <div class="w-full bg-white rounded-lg shadow pt-2 pb-5 px-6">
+      <form [formGroup]="accountInfoForm" class="max-w-xs" (ngSubmit)="saveAccountInfo()">
+        <bb-text-input [formControl]="accountInfoForm.controls['displayName']" [label]="'Imię'" [type]="'text'"
+          [name]="'displayName'"></bb-text-input>
+        <bb-text-input [formControl]="accountInfoForm.controls['email']" [label]="'E-mail'" [type]="'email'"
+          [name]="'email'"></bb-text-input>
+        <ng-container *ngIf="isEmailVerified; else emailIsNotVerified">
+          <div class="text-xs font-light text-slate-600">
+            <i class="fa-solid fa-circle-check text-green-400 mr-1"></i> E-mail został potwierdzony
+          </div>
+        </ng-container>
+        <ng-template #emailIsNotVerified>
+          <div class="text-xs text-slate-600 -mt-1">
+            <div *ngIf="!confirmationLinkSent">
+              <i class="fa-solid fa-circle-xmark text-rose-700 mr-1"></i> Twój adres e-mail nie jest potwierdzony. Bez
+              potwierdzonego adresu e-mail nie będziesz mógł korzystać ze wszystkich funkcji serwisu.
+              <a href="#" class="text-rose-700" (click)="sendVerificationEmail(); $event.preventDefault()">
+                Wyślij link weryfikacyjny.
+              </a>
+              <span *ngIf="isSendingConfirmationLink" class="ml-1">
+                <bb-loading-spinner [width]="'1rem'" [height]="'1rem'"></bb-loading-spinner>
+              </span>
+            </div>
+            <div *ngIf="confirmationLinkSent">
+              <i class="fa-solid fa-circle-info text-yellow-400 mr-1"></i> Link weryfikacyjny został wysłany, proszę
+              sprawdź swoją skrzynkę odbiorczą.
+            </div>
+          </div>
+        </ng-template>
+        <div *ngIf="errors" class="text-xs text-rose-600 mt-4 px-1">
+          <li *ngFor="let error of errors">
+            {{error}}
+          </li>
+        </div>
+        <button type="submit" [disabled]="isSavingInfo || !accountInfoForm.dirty"
+          class="w-32 mt-5 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-3 py-2 text-center"
+          [ngClass]="isAccountInfoChanged ? isSavingInfo ? 'bg-rose-400 hover:bg-rose-400 text-white' : 'bg-rose-500 hover:bg-rose-600 text-white' 
+              : 'bg-slate-200 hover:bg-slate-200 text-slate-400'">
+          <span class="transition-[padding] duration-200" [ngClass]="{'pr-3': isSavingInfo}">
+            Zapisz
+          </span>
+          <span *ngIf="isSavingInfo">
+            <bb-loading-spinner [width]="'1rem'" [height]="'1rem'"></bb-loading-spinner>
+            <span class="sr-only">Loading...</span>
+          </span>
+        </button>
+      </form>
+    </div>
+    <!-- Change Password -->
+    <div class="h-8"></div>
+    <h1 class="text-xl leading-6  text-slate-800">
+      <i class="fa-solid fa-key mr-2"></i> Zmiana hasła
+    </h1>
+    <div class="h-4"></div>
+    <div class="w-full bg-white rounded-lg shadow pt-2 pb-5 px-6">
+      <form class="max-w-xs" (ngSubmit)="sendChangePasswordLink()">
+        <bb-text-input [formControl]="passwordControl" [label]="'Hasło'" [type]="'text'"
+          [name]="'password'"></bb-text-input>
+        <div class="text-sm font-light text-slate-600">
+          Kliknij przycisk poniżej, a wyślemy Ci e-mail z linkiem do zmiany hasła.
+        </div>
+        <button type="submit" [disabled]="changePasswordLinkSent || isSendingChangePasswordLink"
+          class="w-44 mt-5 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-3 py-2 text-center"
+          [ngClass]="changePasswordLinkSent ? 'bg-slate-200 hover:bg-slate-200 text-slate-400' :
+                    isSendingChangePasswordLink ? 'bg-rose-400 hover:bg-rose-400 text-white' :
+                    'bg-rose-500 hover:bg-rose-600 text-white'">
+          <ng-container *ngIf="isSendingChangePasswordLink; else changePasswordButtonTitle">
+            <span class="transition-[padding] duration-200 pr-3">
+              Wysyłam
+            </span>
+            <span *ngIf="isSendingChangePasswordLink">
+              <bb-loading-spinner [width]="'1rem'" [height]="'1rem'"></bb-loading-spinner>
+              <span class="sr-only">Loading...</span>
+            </span>
+          </ng-container>
+          <ng-template #changePasswordButtonTitle>
+            {{ changePasswordLinkSent ? 'Link Został Wysłany' : 'Wyślij Link' }}
+          </ng-template>
+        </button>
+      </form>
+    </div>
+    <!-- Delete Account -->
+    <div class="h-8"></div>
+      <h1 class="text-xl leading-6  text-slate-800">
+        <i class="fa-solid fa-eraser mr-2"></i> Usuń konto
+      </h1>
+    </div>
+    <div class="h-4"></div>
+    <div class="w-full bg-white rounded-lg shadow pt-5 pb-5 px-6">
+      <div class="text-sm font-light text-slate-600">
+        Usuwanie konta jest nieodwracalne. Po usunięciu konta stracisz dostęp do wszystkich swoich danych i usług związanych z tym kontem. Prosimy o przemyślane podjęcie decyzji. Jeśli jesteś pewny/pewna, że chcesz usunąć swoje konto, kliknij przycisk poniżej, aby otrzymać e-mail z potwierdzeniem usunięcia.
+      </div>
+      <button type="submit" [disabled]="isDeletingAccount || accountIsDeleted"
+          (click)="confirmDeletingAccount()"
+          class="w-44 mt-5 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center"
+          [ngClass]="accountIsDeleted ? 'bg-slate-200 hover:bg-slate-200 text-slate-400' :
+                    isDeletingAccount ? 'bg-red-500 hover:bg-red-500 text-white' :
+                    'bg-red-600 hover:bg-red-700 text-white'">
+        <ng-container *ngIf="isDeletingAccount; else deleteAccountTitle">
+          <span class="transition-[padding] duration-200 pr-3">
+            Usuwam
+          </span>
+          <span *ngIf="isDeletingAccount">
+            <bb-loading-spinner [width]="'1rem'" [height]="'1rem'"></bb-loading-spinner>
+            <span class="sr-only">Loading...</span>
+          </span>
+        </ng-container>
+        <ng-template #deleteAccountTitle>
+          {{ accountIsDeleted ? 'Konto Zostało Usunięte' : 'Usuń Moje Konto' }}
+        </ng-template>
+      </button>
+      <div *ngIf="deleteAccountErrorMessage" class="text-xs text-rose-600 mt-4 px-1">
+        {{deleteAccountErrorMessage}}
+      </div>
+    </div>
+  </ng-template>
+<p-confirmDialog></p-confirmDialog>

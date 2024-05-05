@@ -17,6 +17,7 @@ namespace Infrastructure.Data
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<Store> Stores { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<UserSettings> UserSettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

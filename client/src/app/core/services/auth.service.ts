@@ -20,7 +20,7 @@ export class AuthService {
 
   constructor(
     private apiService: ApiService, private router: Router
-  ) { }
+  ) {}
 
   setToken(token: string): void {
     this.accessToken = token;
@@ -57,6 +57,16 @@ export class AuthService {
         }
         return throwError(() => error);
       }),
+    );
+  }
+
+  logout(): Observable<void> {
+    const endpoint = 'account/logout';
+
+    return this.apiService.delete<void>(endpoint).pipe(
+      finalize(() => {
+        this.resetToken();
+      })
     );
   }
 

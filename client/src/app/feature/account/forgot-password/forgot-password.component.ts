@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { UserService } from '../account.service';
+import { AccountService } from '../account.service';
 import { ForgotPasswordModel } from 'src/app/core/models/api/requests/forgotPasswordModel';
 
 @Component({
@@ -18,14 +18,14 @@ export class ForgotPasswordComponent {
   isSending = false;
   isSent = false;
 
-  constructor(private userService: UserService) {}
+  constructor(private accountService: AccountService) {}
 
   onSubmit() {
     if (this.forgotPasswordForm.valid) {
       this.isSending = true;
 
       this.email = this.forgotPasswordForm.get('email')!.value!;
-      this.userService.sendPasswordResetLink(this.forgotPasswordForm.value as ForgotPasswordModel).subscribe({
+      this.accountService.sendPasswordResetLink(this.forgotPasswordForm.value as ForgotPasswordModel).subscribe({
         next: () => {
           this.isSending = false;
           this.isSent = true;

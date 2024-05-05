@@ -3,6 +3,7 @@ export enum ApiErrorCode {
   LoginFailed = 1001,
   EmailAlreadyInUse = 1002,
   AlreadyAuthenticated = 1005,
+  FailedDeleteUser = 1006,
   InvalidRefreshToken = 1010,
   AccessTokenExpired = 1012,
   InvalidEmailConfirmationToken = 1013,

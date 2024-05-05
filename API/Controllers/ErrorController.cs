@@ -1,6 +1,5 @@
-﻿using API.Models.ApiResponses;
+﻿using API.Responses;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace API.Controllers
 {

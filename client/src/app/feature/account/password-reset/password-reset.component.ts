@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UserService } from '../account.service';
+import { AccountService } from '../account.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { Observable, Subject, of, takeUntil } from 'rxjs';
+import { EMPTY, Observable, Subject, catchError, finalize, of, switchMap, takeUntil } from 'rxjs';
 import { PasswordResetModel } from 'src/app/core/models/api/requests/passwordResetModel';
 import { ApiErrorCode } from 'src/app/core/models/api/apiErrorCode';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-password-reset',
@@ -27,7 +28,7 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
     confirmPassword: new FormControl('', [Validators.required], [this.validatePasswordMatch()]),
   });
 
-  constructor(private userService: UserService, private router: Router, 
+  constructor(private accountService: AccountService, private authService: AuthService, private router: Router, 
     private route: ActivatedRoute) {
       this.userId = this.route.snapshot.queryParams['userId'];
       this.token = this.route.snapshot.queryParams['token'];
@@ -42,10 +43,10 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
 
     if (passwordControl) {
       passwordControl.valueChanges
-        .pipe(takeUntil(this.destroy$))  
-        .subscribe(() => {
-          this.passwordResetForm.get('confirmPassword')?.updateValueAndValidity();
-        });
+      .pipe(takeUntil(this.destroy$))  
+      .subscribe(() => {
+        this.passwordResetForm.get('confirmPassword')?.updateValueAndValidity();
+      });
     }
   }
 
@@ -64,34 +65,44 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
         password: this.passwordResetForm.get('password')!.value!
       };
 
-      this.userService.resetPassword(passwordResetData).subscribe({
-        next: () => {
+      this.accountService.resetPassword(passwordResetData).pipe(
+        finalize(() => {
           this.isLoading = false;
+        }),
+        switchMap(() => {
           this.isChanged = true;
           this.passwordResetForm.disable();
-          this.userService.logout();
-        },
-        error: (error) => {
-          this.isLoading = false;
-
-          if (error.displayMessage && error.errors) {
-            this.errors = error.errors;
+          
+          if (this.authService.isLoggedIn()) {
+            return this.authService.logout();
+          } else {
+            return of(null);
           }
-          else if (error.displayMessage) {
-            this.errorMessage = error.message;
-          }
-          else {
-            console.error(error);
-          }
-
-          if (error.type === ApiErrorCode.PasswordResetFailed) {
-            this.passwordResetForm.disable();
-          }
-        }
-      });
+        }),
+        catchError((error) => {
+          this.handleError(error);
+          return EMPTY;
+        }),
+      ).subscribe();
     }
     else {
       this.passwordResetForm.markAllAsTouched();
+    }
+  }
+
+  handleError(error: any) {
+    if (error.displayMessage && error.errors) {
+      this.errors = error.errors;
+    }
+    else if (error.displayMessage) {
+      this.errorMessage = error.message;
+    }
+    else {
+      console.error(error);
+    }
+
+    if (error.type === ApiErrorCode.PasswordResetFailed) {
+      this.passwordResetForm.disable();
     }
   }
 

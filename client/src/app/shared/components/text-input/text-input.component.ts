@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, Self } from '@angular/core';
-import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 
 @Component({
   selector: 'bb-text-input',
@@ -12,6 +12,14 @@ export class TextInputComponent implements OnInit, ControlValueAccessor {
   @Input() placeholder = '';
   isPasswordType: boolean = false;
   isVisiblePassword: boolean = false;
+
+  errorMessages = [
+    { key: 'required', message: 'To pole nie może być puste' },
+    { key: 'email', message: 'Nieprawidłowy adres e-mail' },
+    { key: 'pattern', message: 'Hasło musi mieć od 8 do 16 znaków, zawierać przynajmniej jedną dużą literę, jedną małą literę, jedną cyfrę i jeden znak specjalny' },
+    { key: 'emailExists', message: 'Adres e-mail jest już używany' },
+    { key: 'passwordMismatch', message: 'Wprowadzone hasła nie są identyczne' }
+  ];
 
   constructor(@Self() public controlDir: NgControl) {
     this.controlDir.valueAccessor = this;
@@ -32,6 +40,10 @@ export class TextInputComponent implements OnInit, ControlValueAccessor {
 
   get control(): FormControl {
     return this.controlDir.control as FormControl
+  }
+
+  isErrorVisible(control: AbstractControl, errorKey: string): boolean {
+    return (control.touched || control.dirty) && control.errors?.[errorKey];
   }
 
   togglePasswordVisibility() {

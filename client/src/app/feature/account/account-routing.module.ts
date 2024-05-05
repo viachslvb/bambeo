@@ -6,9 +6,13 @@ import { NoAuthGuard } from '../../core/guards/no-auth-guard';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
+import { AuthGuard } from 'src/app/core/guards/auth-guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./my-account/my-account.module').then(m => m.MyAccountModule)
+  },
   { path: 'login', canActivate: [NoAuthGuard], component: LoginComponent, data: { breadcrumb: 'Logowanie' }},
   { path: 'signup', canActivate: [NoAuthGuard], component: SignupComponent, data: { breadcrumb: 'Rejestracja' }},
   { path: 'confirm-email', component: ConfirmEmailComponent, data: { breadcrumb: 'Potwierdzenie adresu e-mail' }},

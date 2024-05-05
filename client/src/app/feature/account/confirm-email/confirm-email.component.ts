@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { UserService } from '../account.service';
+import { AccountService } from '../account.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ApiErrorCode } from 'src/app/core/models/api/apiErrorCode';
@@ -18,7 +18,7 @@ export class ConfirmEmailComponent {
   errorMessage?: string;
   countdown = 30;
 
-  constructor(private userService: UserService, private router: Router, 
+  constructor(private accountService: AccountService, private router: Router, 
     private route: ActivatedRoute, private toastService: MessageService) {
       const userId = this.route.snapshot.queryParams['userId'];
       const token = this.route.snapshot.queryParams['token'];
@@ -38,7 +38,7 @@ export class ConfirmEmailComponent {
       token: token
     };
 
-    this.userService.confirmEmail(ConfirmEmailData).subscribe({
+    this.accountService.confirmEmail(ConfirmEmailData).subscribe({
       next: () => {
         this.isLoading = false;
 
@@ -56,7 +56,7 @@ export class ConfirmEmailComponent {
 
         this.title = error.type === ApiErrorCode.EmailAlreadyConfirmed 
             ? "Twój e-mail jest już potwierdzony" 
-            : 'Nie Udało Się :(';
+            : 'Niestety, coś poszło nie tak :(';
 
         this.isError = error.type !== ApiErrorCode.EmailAlreadyConfirmed;
 

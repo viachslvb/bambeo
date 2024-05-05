@@ -7,6 +7,8 @@ import { SharedModule } from '../../shared/shared.module';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { AccountService } from './account.service';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,11 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
   imports: [
     CommonModule,
     AccountRoutingModule,
+    ReactiveFormsModule,
     SharedModule
+  ],
+  providers: [
+    AccountService
   ]
 })
 export class AccountModule { }

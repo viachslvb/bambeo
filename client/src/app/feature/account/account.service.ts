@@ -1,6 +1,6 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { User } from '../../core/models/user';
-import { Observable, ReplaySubject, Subject, catchError, finalize, map, merge, of, switchMap, takeUntil, tap } from 'rxjs';
+import { Observable, catchError, finalize, map, of } from 'rxjs';
 import { ApiService } from '../../core/services/api.service';
 import { EmailExistsResponse } from '../../core/models/api/responses/emailExistsResponse';
 import { AuthService } from '../../core/services/auth.service';
@@ -14,59 +14,11 @@ import { SignupModel } from '../../core/models/api/requests/signupModel';
 import { LoginModel } from '../../core/models/api/requests/loginModel';
 import { ConfirmEmailModel } from '../../core/models/api/requests/confirmEmailModel';
 import { EmailExistsModel } from '../../core/models/api/requests/checkEmailModel';
+import { UserService } from '../../core/services/user.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class UserService implements OnDestroy {
-  private currentUserSubject = new ReplaySubject<User | null>(1);
-  public currentUser$ = this.currentUserSubject.asObservable();
-  private destroy$ = new Subject<void>();
-
-  constructor(private apiService: ApiService, private authService: AuthService) {
-      this.initialize();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  private initialize() {
-    const handleAuthenticationChanges$ = this.authService.isAuthenticated$
-      .pipe(
-        tap(isAuthenticated => {
-          if (!isAuthenticated) {
-            this.currentUserSubject.next(null);
-          }
-        })
-    );
-
-    const handleTokenRefreshEvents$ = this.authService.tokenRefreshed$
-      .pipe(
-        switchMap(() => this.loadCurrentUser())
-    );
-
-    merge(handleAuthenticationChanges$, handleTokenRefreshEvents$)
-      .pipe(
-        takeUntil(this.destroy$),
-        catchError(error => {
-          console.error(error);
-          return of(null);
-        })
-      )
-      .subscribe();
-  }
-
-  loadCurrentUser(): Observable<User> {
-    const endpoint = 'account';
-
-    return this.apiService.get<User>(endpoint).pipe(
-      tap(user => {
-        this.currentUserSubject.next(user);
-      })
-    );
-  }
+@Injectable()
+export class AccountService {
+  constructor(private apiService: ApiService, private authService: AuthService, private userService: UserService) { }
 
   login(values: LoginModel): Observable<User> {
     const endpoint = 'account/login';
@@ -74,7 +26,7 @@ export class UserService implements OnDestroy {
     return this.apiService.post<AuthResponse>(endpoint, values).pipe(
       map(response => {
         this.authService.setToken(response.token);
-        this.currentUserSubject.next(response.user);
+        this.userService.setUser(response.user);
         return response.user;
       })
     );
@@ -86,20 +38,10 @@ export class UserService implements OnDestroy {
     return this.apiService.post<AuthResponse>(endpoint, values).pipe(
       map(response => {
         this.authService.setToken(response.token);
-        this.currentUserSubject.next(response.user);
+        this.userService.setUser(response.user);
         return response.user;
       })
     )
-  }
-
-  logout(): Observable<void> {
-    const endpoint = 'account/logout';
-
-    return this.apiService.get<any>(endpoint).pipe(
-      finalize(() => {
-        this.authService.resetToken();
-      })
-    );
   }
 
   checkEmailExists(values: EmailExistsModel): Observable<boolean> {

@@ -2,8 +2,8 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { first, skipWhile } from 'rxjs';
-import { UserService } from 'src/app/feature/account/account.service';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-navbar',
@@ -27,7 +27,7 @@ export class NavbarComponent implements AfterViewInit {
   isOpenUserMenu: boolean = false;
   mobileMenuHeight: string = "0px";
 
-  constructor(public userService: UserService, private authService: AuthService,  private router: Router) {
+  constructor(private authService: AuthService, public userService: UserService, private router: Router) {
     this.authService.authCheckCompleted$.pipe(
       skipWhile(value => value === false),
       first()
@@ -68,7 +68,13 @@ export class NavbarComponent implements AfterViewInit {
   }
 
   logout() {
-    this.userService.logout().subscribe();
-    this.router.navigateByUrl('/');
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigateByUrl('/');
+      },
+      error: (err) => {
+        console.error('Logout failed:', err);
+      }
+    });
   }
 }

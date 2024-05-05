@@ -1,5 +1,5 @@
-﻿using API.Models.ApiResponses;
-using API.Models.Enums;
+﻿using API.Responses;
+using Application.Enums;
 using System.Net;
 using System.Text.Json;
 
@@ -34,7 +34,7 @@ namespace API.Middleware
                 //    ? new ApiExceptionResponse<string>((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace.ToString())
                 //    : new ApiExceptionResponse<string>((int)HttpStatusCode.InternalServerError);
 
-                var response = new ApiErrorResponse(ApiErrorCode.InternalServerError);
+                var response = new ApiErrorResponse(ErrorCode.InternalServerError);
                 var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
                 var json = JsonSerializer.Serialize(response, options);
 

@@ -1,8 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "primeng/resources/themes/tailwind-light/theme.css";
-@import "primeng/resources/primeng.css";
+@import "/node_modules/primeng/resources/themes/tailwind-light/theme.css";
+@import "/node_modules/primeng/resources/primeng.css";
+@import "/node_modules/primeicons/primeicons.css";
 
 @font-face {
     font-family: 'Inter var';
@@ -11,6 +12,110 @@
     font-style: normal;
     font-named-instance: 'Regular';
     src: url("./assets/fonts/Inter-roman.var.woff2?v=3.19") format("woff2");
+}
+
+@font-face {
+    font-family: 'GT Eesti';
+    font-weight: 700;
+    font-display: swap;
+    font-style: normal;
+    src: url("./assets/fonts/GTEestiProDisplay-Bold.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: 'GT Eesti';
+    font-weight: 300;
+    font-display: swap;
+    font-style: normal;
+    src: url("./assets/fonts/GTEestiProDisplay-Light.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: 'GT Eesti';
+    font-weight: 300;
+    font-display: swap;
+    font-style: italic;
+    src: url("./assets/fonts/GTEestiProDisplay-LightItalic.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: 'GT Eesti';
+    font-weight: 500;
+    font-display: swap;
+    font-style: normal;
+    src: url("./assets/fonts/GTEestiProDisplay-Medium.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: 'GT Eesti';
+    font-weight: 500;
+    font-display: swap;
+    font-style: italic;
+    src: url("./assets/fonts/GTEestiProDisplay-MediumItalic.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: 'GT Eesti';
+    font-weight: 400;
+    font-display: swap;
+    font-style: normal;
+    src: url("./assets/fonts/GTEestiProDisplay-Regular.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: 'GT Eesti';
+    font-weight: 400;
+    font-display: swap;
+    font-style: italic;
+    src: url("./assets/fonts/GTEestiProDisplay-RegularItalic.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: 'GT Eesti';
+    font-weight: 200;
+    font-display: swap;
+    font-style: normal;
+    src: url("./assets/fonts/GTEestiProDisplay-Thin.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: 'GT Eesti';
+    font-weight: 200;
+    font-display: swap;
+    font-style: italic;
+    src: url("./assets/fonts/GTEestiProDisplay-ThinItalic.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: 'GT Eesti';
+    font-weight: 800;
+    font-display: swap;
+    font-style: normal;
+    src: url("./assets/fonts/GTEestiProDisplay-UltraBold.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: 'GT Eesti';
+    font-weight: 800;
+    font-display: swap;
+    font-style: italic;
+    src: url("./assets/fonts/GTEestiProDisplay-UltraBoldItalic.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: 'GT Eesti';
+    font-weight: 100;
+    font-display: swap;
+    font-style: normal;
+    src: url("./assets/fonts/GTEestiProDisplay-UltraLight.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: 'GT Eesti';
+    font-weight: 100;
+    font-display: swap;
+    font-style: italic;
+    src: url("./assets/fonts/GTEestiProDisplay-UltraLightItalic.woff2") format("woff2");
 }
 
 .no-scroll {
@@ -116,4 +221,86 @@
 /* Navbar menu */
 .navbar-router-is-active {
     border-color: 1px solid #f43f5e;
+}
+
+.p-dialog, .p-button {
+    font-family: 'GT Eesti', 'Inter var', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.p-dialog .p-dialog-header {
+    background: #f1f5f9;
+    color: #334155;
+    padding: 1rem 1.25rem;
+}
+
+.p-dialog .p-dialog-header .p-dialog-header-icon {
+    width: 2rem;
+    height: 2rem;
+    color: #94a3b8;
+    border: 0 none;
+    background: transparent;
+    border-radius: 50%;
+    transition: background-color 0.3s, color 0.3s;
+    margin-right: 0.5rem;
+}
+
+.p-dialog .p-dialog-header .p-dialog-header-icon:enabled:hover {
+    color: #334155;
+    border-color: transparent;
+    background: #e2e8f0;
+}
+
+.p-dialog .p-dialog-header .p-dialog-header-icon:focus {
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: 0 0 0 1px #94a3b8;
+}
+
+.p-dialog .p-dialog-content {
+    background: #ffffff;
+    color: #3f3f46;
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+}
+
+.p-button.p-confirm-dialog-accept {
+    background-color: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.p-button.p-confirm-dialog-accept:hover {
+    background-color: #b91c1c;
+    cursor: pointer;
+}
+
+.p-button.p-confirm-dialog-accept:focus {
+    outline: 2px solid #fca5a5;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px #fca5a5;
+    background-color: #b91c1c;
+    color: white;
+}
+
+.p-button.p-confirm-dialog-reject {
+    background-color: #e2e8f0;
+    color: #475569;
+    border: none;
+    border-radius: 10px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.p-button.p-confirm-dialog-reject:hover {
+    background-color: #cbd5e1;
+    color: #475569;
+    cursor: pointer;
+}
+
+.p-button.p-confirm-dialog-reject:focus {
+    outline: 2px solid #f1f5f9;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px #f1f5f9;
+    background-color: #cbd5e1;
+    color: #475569;
 }

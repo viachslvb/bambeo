@@ -57,9 +57,11 @@ export class ErrorInformationService {
       displayMessage: true,
       message: "Link do resetowania hasła jest nieprawidłowy lub wygasł. Prosimy o ponowne złożenie wniosku o resetowanie hasła."
     },
-    [ApiErrorCode.Unknown]: { },
-
-    // Add entries for other error codes
+    [ApiErrorCode.Unknown]: {},
+    [ApiErrorCode.FailedDeleteUser]: {
+      displayMessage: true,
+      message: "Nie udało się usunąć konta. Prosimy skontaktować się z pomocą techniczną w celu uzyskania pomocy lub spróbować ponownie później."
+    }
   };
 
   static GetErrorInfo(error: ApiErrorResponse): ApiErrorInfo {

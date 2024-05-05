@@ -1,87 +1,44 @@
-﻿using API.Models.ApiResponses;
-using API.Models.Dtos;
-using API.Models.Enums;
-using AutoMapper;
-using Core.Entities;
-using Core.Interfaces;
-using Core.Specifications;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
+﻿using Microsoft.AspNetCore.Mvc;
+using API.Responses;
+using Application.Models;
+using Application.Helpers;
+using Application.Models.Dtos;
+using Application.Interfaces;
+using API.Helpers;
 
 namespace API.Controllers
 {
     public class ProductsController : BaseApiController
     {
-        private readonly IGenericRepository<Product> _productsRepo;
-        private readonly IGenericRepository<ProductCategory> _categoriesRepo;
-        private readonly IMapper _mapper;
+        private readonly IProductService _productService;
 
-        public ProductsController(IGenericRepository<Product> productsRepo,
-            IGenericRepository<ProductCategory> categoriesRepo, IMapper mapper)
+        public ProductsController(IProductService productService)
         {
-            _productsRepo = productsRepo;
-            _categoriesRepo = categoriesRepo;
-            _mapper = mapper;
+            _productService = productService;
         }
 
-        // GET api/products
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiExceptionResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<Product>>> GetProducts([FromQuery] ProductSpecParams productSpecParams)
+        public async Task<ActionResult<PageableCollection<ProductDto>>> GetProducts([FromQuery] ProductSpecParamsDto productSpecParamsDto)
         {
-            var spec = new ProductsWithFiltersSpecification(productSpecParams);
-            var countSpec = new ProductsWithFiltersForCountSpecification(productSpecParams);
+            ServiceResult<PageableCollection<ProductDto>> result = await _productService.GetProductsWithSpec(productSpecParamsDto);
 
-            var totalItems = await _productsRepo.CountAsync(countSpec);
-            var products = await _productsRepo.ListAsync(spec);
-
-            var data = _mapper.Map<IReadOnlyList<ProductDto>>(products);
-
-            return Ok(new ApiResponse<PaginationResponse<ProductDto>>
-            (
-                new PaginationResponse<ProductDto>(
-                    productSpecParams.PageIndex, 
-                    productSpecParams.PageSize, 
-                    totalItems,
-                    data)
-            ));
+            return Ok(new ApiResponse<PageableCollection<ProductDto>>(result.Data));
         }
-
-        // GET api/products/5
+        
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiExceptionResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProductDto>> GetProduct(int id)
         {
-            var spec = new ProductsWithFiltersSpecification(id);
-            var product = await _productsRepo.GetEntityWithSpec(spec);
+            ServiceResult<ProductDto> result = await _productService.GetProductById(id);
 
-            if (product == null) return NotFound(new ApiErrorResponse(ApiErrorCode.NotFound));
-
-            // 
-            return Ok(new ApiResponse<ProductDto>(
-                _mapper.Map<Product, ProductDto>(product)
-            ));
-        }
-
-        // GET api/products/categories
-        [HttpGet("categories")]
-        public async Task<ActionResult<List<ProductCategory>>> GetProductCategories()
-        {
-            var categories = await _categoriesRepo.ListAllAsync();
-
-            // fix this
-            var list = new List<ProductCategory>();
-            foreach (var category in categories)
+            if (!result.Success)
             {
-                if (category.Categories != null && category.Categories.Any())
-                {
-                    list.Add(category);
-                }
+                return StatusCode(ApiHelper.GetHttpStatusCode(result.ErrorCode), new ApiErrorResponse(result.ErrorCode));
             }
 
-            return Ok(new ApiResponse<List<ProductCategory>>(list));
+            return Ok(new ApiResponse<ProductDto>(result.Data));
         }
     }
 }

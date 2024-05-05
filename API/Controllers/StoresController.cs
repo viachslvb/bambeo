@@ -1,25 +1,26 @@
-﻿using API.Models.ApiResponses;
-using Core.Entities;
-using Core.Interfaces;
+﻿using API.Responses;
+using Application.Helpers;
+using Application.Interfaces;
+using Application.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     public class StoresController : BaseApiController
     {
-        private readonly IGenericRepository<Store> _storesRepo;
+        private readonly IStoreService _storeService;
 
-        public StoresController(IGenericRepository<Store> storesRepo)
+        public StoresController(IStoreService storeService)
         {
-            _storesRepo = storesRepo;
+            _storeService = storeService;
         }
 
         // GET api/stores
         [HttpGet]
-        public async Task<ActionResult<List<Store>>> GetStores()
+        public async Task<ActionResult<IReadOnlyList<StoreDto>>> GetStores()
         {
-            var stores = await _storesRepo.ListAllAsync();
-            return Ok(new ApiResponse<IReadOnlyList<Store>>(stores));
+            ServiceResult<IReadOnlyList<StoreDto>> result = await _storeService.GetStores();
+            return Ok(new ApiResponse<IReadOnlyList<StoreDto>>(result.Data));
         }
     }
 }

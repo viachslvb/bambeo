@@ -27,7 +27,6 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     PaginatorModule,
     PaginatorComponent,
     PagingHeaderComponent,
-    ReactiveFormsModule,
     TextInputComponent,
     LoadingSpinnerComponent,
     NgxSpinnerModule,

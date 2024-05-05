@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
-import { UserService } from '../account.service';
+import { AccountService } from '../account.service';
 import { Router } from '@angular/router';
 import { Observable, Subject, debounceTime, finalize, map, of, switchMap, take, takeUntil } from 'rxjs';
 import { SignupModel } from 'src/app/core/models/api/requests/signupModel';
@@ -25,14 +25,14 @@ export class SignupComponent implements OnInit, OnDestroy {
     confirmPassword: ['', [Validators.required], [this.validatePasswordMatch()]]
   })
 
-  constructor (private fb: FormBuilder, private userService: UserService, private router: Router) {}
+  constructor (private fb: FormBuilder, private accountService: AccountService, private router: Router) {}
 
   ngOnInit(): void {
     const passwordControl = this.signupForm.get('password');
 
     if (passwordControl) {
       passwordControl.valueChanges
-        .pipe(takeUntil(this.destroy$))  
+        .pipe(takeUntil(this.destroy$))
         .subscribe(() => {
           this.signupForm.get('confirmPassword')?.updateValueAndValidity();
         });
@@ -54,7 +54,7 @@ export class SignupComponent implements OnInit, OnDestroy {
         password: this.signupForm.get('password')!.value!
       };
 
-      this.userService.signup(signupData).subscribe({
+      this.accountService.signup(signupData).subscribe({
         next: () => {
           this.isLoading = false;
           this.router.navigateByUrl('/promotions');
@@ -62,7 +62,6 @@ export class SignupComponent implements OnInit, OnDestroy {
         error: (error) => {
           if (error.displayMessage && error.errors) {
             this.errors = error.errors;
-            console.log(error.errors);
           }
           else {
             console.log(error);
@@ -84,7 +83,7 @@ export class SignupComponent implements OnInit, OnDestroy {
           const emailExistsData: EmailExistsModel = {
             email: control.value
           };
-          return this.userService.checkEmailExists(emailExistsData).pipe(
+          return this.accountService.checkEmailExists(emailExistsData).pipe(
             map(result => result ? {emailExists: true} : null),
             finalize(() => control.markAsTouched())
           )

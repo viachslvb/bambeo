@@ -4,9 +4,8 @@ import { Pagination } from '../../core/models/pagination';
 import { Promotion } from '../../core/models/promotion';
 import { Store } from '../../core/models/store';
 import { ProductCategory } from '../../core/models/productCategory';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { ApiService } from '../../core/services/api.service';
-import { MessageService } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +42,7 @@ export class PromotionsService {
   }
 
   getCategories(): Observable<ProductCategory[]> {
-    const endpoint = 'products/categories';
+    const endpoint = 'categories';
     return this.apiService.get<ProductCategory[]>(endpoint);
   }
 }

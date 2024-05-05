@@ -1,5 +1,5 @@
-﻿using API.Models.ApiResponses;
-using API.Models.Enums;
+﻿using API.Responses;
+using Application.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
@@ -39,7 +39,7 @@ namespace API.Extensions
                         }, out SecurityToken validatedToken);
 
                         // If token is valid, set a response indicating the user is already logged in
-                        context.Result = new BadRequestObjectResult(new ApiErrorResponse(ApiErrorCode.AlreadyAuthenticated));
+                        context.Result = new BadRequestObjectResult(new ApiErrorResponse(ErrorCode.AlreadyAuthenticated));
                     }
                     catch
                     {

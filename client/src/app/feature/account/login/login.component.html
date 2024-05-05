@@ -1,4 +1,4 @@
-<section class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
+<section class="flex flex-col items-center justify-center my-20 px-6 mx-auto lg:py-0">
     <div class="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
         <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 class="text-xl font-bold leading-tight tracking-tight text-slate-800 md:text-2xl mb-3">
@@ -13,12 +13,12 @@
                             <input id="remember" formControlName="rememberMe" aria-describedby="remember" type="checkbox" class="w-4 h-4 border border-slate-200 rounded bg-slate-50 focus:ring-4 focus:ring-rose-300 text-rose-600 cursor-pointer">
                         </div>
                         <div class="ml-3 cursor-pointer">
-                            <label for="remember" class="text-slate-500 cursor-pointer">Zapamiętaj mnie</label>
+                            <label for="remember" class="text-slate-600 cursor-pointer">Zapamiętaj mnie</label>
                         </div>
                     </div>
                     <a routerLink="/account/forgot-password" class="font-medium text-slate-600 hover:underline">Nie pamiętam hasła</a>
                 </div>
-                <div *ngIf="errorMessage" class="text-xs text-rose-600 px-1">{{errorMessage}}</div>
+                <div *ngIf="errorMessage" class="text-sm text-rose-600 px-1">{{errorMessage}}</div>
                 <button type="submit"
                     [disabled]="isLoading"
                     class="w-full bg-rose-500 text-white hover:bg-rose-600 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"

@@ -1,7 +1,4 @@
-﻿using System.Net;
-using System.Text.Json;
-using Core.Entities;
-using Core.Entities.Identity;
+﻿using Core.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Data
