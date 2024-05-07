@@ -1,0 +1,47 @@
+<div class="relative">
+  <button (click)="toggle()" #profileMenuButton aria-expanded="false" class="flex items-center p-2">
+    <div
+      class="w-8 h-8 bg-rose-500 rounded-full text-white font-bold text-center text-lg flex items-center justify-center"
+      [ngClass]="{ 'ring-4 ring-rose-200': isDropdownMenuVisible}">
+      {{ user.displayName[0] | uppercase }}
+    </div>
+    <span class="hidden sm:block ml-3">{{ user.displayName }}</span>
+    <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd"
+        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+        clip-rule="evenodd"></path>
+    </svg>
+  </button>
+  <!-- Dropdown menu -->
+  <div #profileMenuDropdown [ngClass]="{
+      'hidden': !isDropdownMenuVisible,
+      'absolute': isDropdownMenuVisible }" class="z-10 w-44 bg-white rounded divide-y divide-slate-100 shadow"
+    [ngStyle]="{'top': isDropdownMenuVisible ? 'calc(100% + 10px)' : 'auto', 'right': isDropdownMenuVisible ? '0' : 'auto'}">
+    <div class="py-3 px-4">
+      <span class="block text-slate-700 font-medium truncate">{{ user.displayName }}</span>
+      <span class="block text-sm font-medium text-slate-500 truncate">{{ user.email }}</span>
+    </div>
+    <ul class="py-1" aria-labelledby="profileMenuButton">
+      <li>
+        <a routerLink="/account" (click)="toggle()" class="block py-2 px-4 text-sm text-slate-700 hover:bg-slate-100">
+          <i class="fa fa-user w-4 mr-2"></i> Moje Konto
+        </a>
+      </li>
+      <li>
+        <a routerLink="/" (click)="toggle()" class="block py-2 px-4 text-sm text-slate-700 hover:bg-slate-100">
+          <i class="fa fa-heart w-4 mr-2"></i> Ulubione
+        </a>
+      </li>
+      <li>
+        <a routerLink="/account/settings" (click)="toggle()" class="block py-2 px-4 text-sm text-slate-700 hover:bg-slate-100">
+          <i class="fa fa-cog w-4 mr-2"></i> Ustawienia
+        </a>
+      </li>
+      <li>
+        <a (click)="toggle(); onLogout()" class="block py-2 px-4 text-sm text-slate-700 hover:bg-slate-100 cursor-pointer">
+          <i class="fa fa-sign-out-alt w-4 mr-2"></i> Wyloguj Się
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

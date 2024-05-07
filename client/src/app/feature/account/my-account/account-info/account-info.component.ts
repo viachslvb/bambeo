@@ -9,6 +9,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { ApiErrorCode } from 'src/app/core/models/api/apiErrorCode';
 import { Router } from '@angular/router';
+import { NoWhitespaceValidator } from 'src/app/core/validators/whitespaces.validator';
 
 @Component({
   selector: 'app-account-info',
@@ -27,7 +28,7 @@ export class AccountInfoComponent implements OnInit, OnDestroy {
   
   accountInfoForm = new FormGroup({
     email: new FormControl({ value: '', disabled: true }, [Validators.required, Validators.email]),
-    displayName: new FormControl('', Validators.required)
+    displayName: new FormControl('', [Validators.required, NoWhitespaceValidator()])
   })
 
   passwordControl = new FormControl({ value: '••••••••', disabled: true });
@@ -102,10 +103,11 @@ export class AccountInfoComponent implements OnInit, OnDestroy {
   }
 
   saveAccountInfo() {
-    if (this.accountInfoForm.valid) { 
+    if (this.accountInfoForm.valid) {
       this.isSavingInfo = true;
       this.myAccountService.updateUserInfo(this.accountInfoForm.value as UserUpdateModel).subscribe({
         next: (user) => {
+          this.accountInfoForm.patchValue(user);
           this.accountInfoState = this.accountInfoForm.value;
           this.userService.setUser(user);
           this.isSavingInfo = false;

@@ -15,12 +15,6 @@
                         'border-rose-500 text-slate-800': home.isActive, 
                         'border-transparent text-slate-700 hover:border-slate-700': !home.isActive
                     }">Strona Główna</a>
-                    <a routerLink="/account"
-                        class="px-1 py-2 xl:px-3 lg:py-4 mx-3 mt-2 text-slate-700 hover:text-slate-800 border-b-2 border-transparent transform lg:mt-0 transition-[padding] duration-300"
-                        routerLinkActive #promotions="routerLinkActive" [ngClass]="{
-                        'border-rose-500 text-slate-800': promotions.isActive, 
-                        'border-transparent text-slate-700 hover:border-slate-700': !promotions.isActive
-                    }">Moje Konto</a>
                     <a href="#"
                         class="px-1 py-2 xl:px-3 lg:py-4 mx-3 mt-2 text-slate-700 hover:text-slate-800 border-b-2 border-transparent hover:border-slate-700 transform lg:mt-0 transition-[padding] duration-300">Jak
                         Korzystać</a>
@@ -52,18 +46,8 @@
                     </div>
                     <!-- profile menu -->
                     <div class="hidden sm:block" *ngIf="userService.currentUser$ | async as user" @fadeIn>
-                        <div class="flex items-center">
-                            <div class="flex flex-col">
-                                Witaj, {{ user.displayName }}
-                            </div>
-                            <div class="ml-8">
-                                <button (click)="logout()" type="button"
-                                    class="text-white bg-rose-500 hover:bg-rose-600 focus:ring-4 focus:ring-rose-300 font-medium rounded-lg py-2 px-3 md:px-5 md:py-2.5 transition-[padding] duration-300 focus:outline-none text-center inline-flex items-center">
-                                    Wyloguj Się
-                                    <i class="fa-solid fa-right-from-bracket pl-2"></i>
-                                </button>
-                            </div>
-                        </div>
+                        <!-- Profile dropdown -->
+                        <app-profile-menu-dropdown [user]="user" (logout)="logout()"></app-profile-menu-dropdown>
                     </div>
                 </ng-template>
                 <!-- mobile menu toggle -->

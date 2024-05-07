@@ -52,7 +52,9 @@ namespace Application.Services
                 return ServiceResult<UserDto>.FailureResult(ErrorCode.UserNotFound);
             }
 
-            user.DisplayName = userUpdateDto.DisplayName ?? user.DisplayName;
+            user.DisplayName = userUpdateDto.DisplayName != null
+                ? userUpdateDto.DisplayName.RemoveExtraSpaces().ToTitleCase()
+                : user.DisplayName;
 
             var result = await _userManager.UpdateAsync(user);
 

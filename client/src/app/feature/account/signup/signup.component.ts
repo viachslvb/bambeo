@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Observable, Subject, debounceTime, finalize, map, of, switchMap, take, takeUntil } from 'rxjs';
 import { SignupModel } from 'src/app/core/models/api/requests/signupModel';
 import { EmailExistsModel } from 'src/app/core/models/api/requests/checkEmailModel';
+import { NoWhitespaceValidator } from 'src/app/core/validators/whitespaces.validator';
 
 @Component({
   selector: 'bb-signup',
@@ -19,10 +20,10 @@ export class SignupComponent implements OnInit, OnDestroy {
   isLoading = false;
 
   signupForm = this.fb.group({
-    displayName: ['', Validators.required],
+    displayName: ['', [Validators.required, NoWhitespaceValidator()]],
     email: ['', [Validators.required, Validators.email], [this.validateEmailNotTaken()]],
     password: ['', [Validators.required, Validators.pattern(this.strongPasswordRegx)]],
-    confirmPassword: ['', [Validators.required], [this.validatePasswordMatch()]]
+    confirmPassword: ['', Validators.required, [this.validatePasswordMatch()]]
   })
 
   constructor (private fb: FormBuilder, private accountService: AccountService, private router: Router) {}
@@ -47,14 +48,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   onSubmit() {
     if (this.signupForm.valid) {
       this.isLoading = true;
-
-      const signupData: SignupModel = {
-        displayName: this.signupForm.get('displayName')!.value!,
-        email: this.signupForm.get('email')!.value!,
-        password: this.signupForm.get('password')!.value!
-      };
-
-      this.accountService.signup(signupData).subscribe({
+      this.accountService.signup(this.signupForm.value as SignupModel).subscribe({
         next: () => {
           this.isLoading = false;
           this.router.navigateByUrl('/promotions');

@@ -18,7 +18,8 @@ export class TextInputComponent implements OnInit, ControlValueAccessor {
     { key: 'email', message: 'Nieprawidłowy adres e-mail' },
     { key: 'pattern', message: 'Hasło musi mieć od 8 do 16 znaków, zawierać przynajmniej jedną dużą literę, jedną małą literę, jedną cyfrę i jeden znak specjalny' },
     { key: 'emailExists', message: 'Adres e-mail jest już używany' },
-    { key: 'passwordMismatch', message: 'Wprowadzone hasła nie są identyczne' }
+    { key: 'passwordMismatch', message: 'Wprowadzone hasła nie są identyczne' },
+    { key: 'whitespaces', message: 'To pole nie może być puste lub zawierać tylko białe znaki' }
   ];
 
   constructor(@Self() public controlDir: NgControl) {

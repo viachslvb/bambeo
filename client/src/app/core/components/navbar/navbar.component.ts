@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { first, skipWhile } from 'rxjs';
+import { Subject, first, skipWhile, takeUntil, tap } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { UserService } from '../../services/user.service';
 
@@ -22,14 +22,13 @@ export class NavbarComponent implements AfterViewInit {
   @ViewChild("mobileMenu") mobileMenu!: ElementRef;
 
   isAuthStateLoading = true;
-  isAuth: boolean = false;
   isOpenMobileMenu: boolean = false;
   isOpenUserMenu: boolean = false;
   mobileMenuHeight: string = "0px";
 
   constructor(private authService: AuthService, public userService: UserService, private router: Router) {
     this.authService.authCheckCompleted$.pipe(
-      skipWhile(value => value === false),
+      skipWhile(value => !value),
       first()
     ).subscribe((isCompleted) => {
       if (isCompleted) {

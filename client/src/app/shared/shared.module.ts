@@ -8,20 +8,24 @@ import { TextInputComponent } from './components/text-input/text-input.component
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { ProfileMenuDropdownComponent } from './components/profile-menu-dropdown/profile-menu-dropdown.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
     PaginatorComponent,
     PagingHeaderComponent,
     TextInputComponent,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    ProfileMenuDropdownComponent
   ],
   imports: [
     CommonModule,
     PaginatorModule,
     ReactiveFormsModule,
     BreadcrumbModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    RouterModule
   ],
   exports: [
     PaginatorModule,
@@ -30,7 +34,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     TextInputComponent,
     LoadingSpinnerComponent,
     NgxSpinnerModule,
-    BreadcrumbModule
+    BreadcrumbModule,
+    ProfileMenuDropdownComponent
   ]
 })
 export class SharedModule { }

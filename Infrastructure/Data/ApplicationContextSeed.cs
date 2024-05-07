@@ -35,20 +35,20 @@ namespace Infrastructure.Data
             //    context.Promotions.AddRange(promotions);
             //}
 
-            if (!userManager.Users.Any())
-            {
-                var user = new AppUser
-                {
-                    DisplayName = "Viacheslav",
-                    Email = "viacheslav.borys@gmail.com",
-                    UserName = "viachslvb",
-                };
+            //if (!userManager.Users.Any())
+            //{
+            //    var user = new AppUser
+            //    {
+            //        DisplayName = "Viacheslav",
+            //        Email = "viacheslav.borys@gmail.com",
+            //        UserName = "viachslvb",
+            //    };
 
-                await userManager.CreateAsync(user, "uUA1Q1(4$@Zc");
-            }
+            //    await userManager.CreateAsync(user, "uUA1Q1(4$@Zc");
+            //}
 
 
-            if (context.ChangeTracker.HasChanges()) await context.SaveChangesAsync();
+            //if (context.ChangeTracker.HasChanges()) await context.SaveChangesAsync();
         }
     }
 }

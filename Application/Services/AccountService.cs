@@ -9,6 +9,7 @@ using Core.Interfaces.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 using System.Text;
 
 namespace Application.Services
@@ -93,7 +94,7 @@ namespace Application.Services
             var user = new AppUser
             {
                 CreatedAt = DateTime.UtcNow,
-                DisplayName = registerDto.DisplayName,
+                DisplayName = registerDto.DisplayName.RemoveExtraSpaces().ToTitleCase(),
                 Email = registerDto.Email,
                 UserName = registerDto.Email
             };

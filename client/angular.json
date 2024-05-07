@@ -34,7 +34,9 @@
               "node_modules/ngx-spinner/animations/ball-spin-rotate.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/flowbite/dist/flowbite.min.js"
+            ]
           },
           "configurations": {
             "production": {
