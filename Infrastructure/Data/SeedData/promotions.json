@@ -1,52 +1,52 @@
 [
   {
-    "ProductId": 3,
+    "ProductId": 10,
     "Price": 1.99,
     "PreviousPrice": 2.49,
     "DiscountPercent": 20,
     "DiscountCondition": "Drugi 56% taniej prazy zakupie 3",
-    "CreatedAt": "2023-11-01T00:00:00",
-    "StartDate": "2023-11-01T00:00:00",
-    "EndDate": "2023-11-30T23:59:59"
+    "CreatedAt": "2024-05-08T00:00:00",
+    "StartDate": "2024-05-08T00:00:00",
+    "EndDate": "2024-05-31T23:59:59"
   },
   {
-    "ProductId": 4,
+    "ProductId": 11,
     "Price": 2.99,
     "PreviousPrice": 3.49,
     "DiscountPercent": 20,
     "DiscountCondition": "Drugi 56% taniej prazy zakupie 3",
-    "CreatedAt": "2023-11-01T00:00:00",
-    "StartDate": "2023-11-01T00:00:00",
-    "EndDate": "2023-11-30T23:59:59"
+    "CreatedAt": "2024-05-08T00:00:00",
+    "StartDate": "2024-05-08T00:00:00",
+    "EndDate": "2024-05-31T23:59:59"
   },
   {
-    "ProductId": 5,
+    "ProductId": 12,
     "Price": 3.99,
     "PreviousPrice": 4.49,
     "DiscountPercent": 20,
     "DiscountCondition": "Drugi 56% taniej prazy zakupie 3",
-    "CreatedAt": "2023-11-01T00:00:00",
-    "StartDate": "2023-11-01T00:00:00",
-    "EndDate": "2023-11-30T23:59:59"
+    "CreatedAt": "2024-05-08T00:00:00",
+    "StartDate": "2024-05-08T00:00:00",
+    "EndDate": "2024-05-31T23:59:59"
   },
   {
-    "ProductId": 6,
+    "ProductId": 13,
     "Price": 4.99,
     "PreviousPrice": 5.49,
     "DiscountPercent": 20,
     "DiscountCondition": "Drugi 56% taniej prazy zakupie 3",
-    "CreatedAt": "2023-11-01T00:00:00",
-    "StartDate": "2023-11-01T00:00:00",
-    "EndDate": "2023-11-30T23:59:59"
+    "CreatedAt": "2024-05-08T00:00:00",
+    "StartDate": "2024-05-08T00:00:00",
+    "EndDate": "2024-05-31T23:59:59"
   },
   {
-    "ProductId": 7,
+    "ProductId": 14,
     "Price": 4.99,
     "PreviousPrice": 5.49,
     "DiscountPercent": 20,
     "DiscountCondition": "Drugi 56% taniej prazy zakupie 3",
-    "CreatedAt": "2023-11-01T00:00:00",
-    "StartDate": "2023-11-01T00:00:00",
-    "EndDate": "2023-11-30T23:59:59"
+    "CreatedAt": "2024-05-08T00:00:00",
+    "StartDate": "2024-05-08T00:00:00",
+    "EndDate": "2024-05-31T23:59:59"
   }
 ]

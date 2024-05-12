@@ -6,7 +6,7 @@ import { ServerErrorComponent } from './core/components/server-error/server-erro
 const routes: Routes = [
   { path: '', 
     title: 'Bambeo • Strona Główna',
-    loadChildren: () => import('./feature/promotions/promotions.module').then(m => m.PromotionsModule), 
+    loadChildren: () => import('./feature/products/products.module').then(m => m.ProductsModule), 
     data: { breadcrumb: { info: 'Bambeo' } }
   },
   { path: 'account',

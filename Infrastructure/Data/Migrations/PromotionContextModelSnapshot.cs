@@ -118,9 +118,11 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductCategoryId");
+                    b.HasIndex("ProductCategoryId")
+                        .HasDatabaseName("IDX_Product_CategoryId");
 
-                    b.HasIndex("StoreId");
+                    b.HasIndex("StoreId")
+                        .HasDatabaseName("IDX_Product_StoreId");
 
                     b.ToTable("Products");
                 });
@@ -136,12 +138,12 @@ namespace Infrastructure.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProductCategoryId")
+                    b.Property<int?>("ParentCategoryId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductCategoryId");
+                    b.HasIndex("ParentCategoryId");
 
                     b.ToTable("ProductCategories");
                 });
@@ -180,7 +182,16 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EndDate")
+                        .HasDatabaseName("IDX_Promotion_EndDate");
+
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("StartDate")
+                        .HasDatabaseName("IDX_Promotion_StartDate");
+
+                    b.HasIndex("StartDate", "EndDate")
+                        .HasDatabaseName("IDX_Promotion_StartEndDate");
 
                     b.ToTable("Promotions");
                 });
@@ -392,13 +403,13 @@ namespace Infrastructure.Data.Migrations
             modelBuilder.Entity("Core.Entities.Product", b =>
                 {
                     b.HasOne("Core.Entities.ProductCategory", "ProductCategory")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("ProductCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Core.Entities.Store", "Store")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -410,15 +421,18 @@ namespace Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Core.Entities.ProductCategory", b =>
                 {
-                    b.HasOne("Core.Entities.ProductCategory", null)
-                        .WithMany("Categories")
-                        .HasForeignKey("ProductCategoryId");
+                    b.HasOne("Core.Entities.ProductCategory", "ParentCategory")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("ParentCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("ParentCategory");
                 });
 
             modelBuilder.Entity("Core.Entities.Promotion", b =>
                 {
                     b.HasOne("Core.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("Promotions")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -505,9 +519,21 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("Settings");
                 });
 
+            modelBuilder.Entity("Core.Entities.Product", b =>
+                {
+                    b.Navigation("Promotions");
+                });
+
             modelBuilder.Entity("Core.Entities.ProductCategory", b =>
                 {
-                    b.Navigation("Categories");
+                    b.Navigation("Products");
+
+                    b.Navigation("SubCategories");
+                });
+
+            modelBuilder.Entity("Core.Entities.Store", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

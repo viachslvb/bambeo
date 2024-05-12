@@ -15,30 +15,30 @@
   <!-- Dropdown menu -->
   <div #profileMenuDropdown [ngClass]="{
       'hidden': !isDropdownMenuVisible,
-      'absolute': isDropdownMenuVisible }" class="z-10 w-44 bg-white rounded divide-y divide-slate-100 shadow"
+      'absolute': isDropdownMenuVisible }" class="z-10 w-56 bg-white rounded divide-y divide-slate-100 shadow"
     [ngStyle]="{'top': isDropdownMenuVisible ? 'calc(100% + 10px)' : 'auto', 'right': isDropdownMenuVisible ? '0' : 'auto'}">
-    <div class="py-3 px-4">
+    <div class="py-3 px-6">
       <span class="block text-slate-700 font-medium truncate">{{ user.displayName }}</span>
       <span class="block text-sm font-medium text-slate-500 truncate">{{ user.email }}</span>
     </div>
     <ul class="py-1" aria-labelledby="profileMenuButton">
       <li>
-        <a routerLink="/account" (click)="toggle()" class="block py-2 px-4 text-sm text-slate-700 hover:bg-slate-100">
+        <a routerLink="/account" (click)="toggle()" class="block py-2 px-6 text-slate-700 hover:bg-slate-100">
           <i class="fa fa-user w-4 mr-2"></i> Moje Konto
         </a>
       </li>
       <li>
-        <a routerLink="/" (click)="toggle()" class="block py-2 px-4 text-sm text-slate-700 hover:bg-slate-100">
+        <a routerLink="/" (click)="toggle()" class="block py-2 px-6 text-slate-700 hover:bg-slate-100">
           <i class="fa fa-heart w-4 mr-2"></i> Ulubione
         </a>
       </li>
       <li>
-        <a routerLink="/account/settings" (click)="toggle()" class="block py-2 px-4 text-sm text-slate-700 hover:bg-slate-100">
+        <a routerLink="/account/settings" (click)="toggle()" class="block py-2 px-6 text-slate-700 hover:bg-slate-100">
           <i class="fa fa-cog w-4 mr-2"></i> Ustawienia
         </a>
       </li>
       <li>
-        <a (click)="toggle(); onLogout()" class="block py-2 px-4 text-sm text-slate-700 hover:bg-slate-100 cursor-pointer">
+        <a (click)="toggle(); onLogout()" class="block py-2 px-6 text-slate-700 hover:bg-slate-100 cursor-pointer">
           <i class="fa fa-sign-out-alt w-4 mr-2"></i> Wyloguj Się
         </a>
       </li>

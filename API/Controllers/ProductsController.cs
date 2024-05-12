@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using API.Responses;
-using Application.Models;
 using Application.Helpers;
 using Application.Models.Dtos;
 using Application.Interfaces;
@@ -15,15 +14,6 @@ namespace API.Controllers
         public ProductsController(IProductService productService)
         {
             _productService = productService;
-        }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PageableCollection<ProductDto>>> GetProducts([FromQuery] ProductSpecParamsDto productSpecParamsDto)
-        {
-            ServiceResult<PageableCollection<ProductDto>> result = await _productService.GetProductsWithSpec(productSpecParamsDto);
-
-            return Ok(new ApiResponse<PageableCollection<ProductDto>>(result.Data));
         }
         
         [HttpGet("{id}")]

@@ -36,8 +36,9 @@ export class ErrorHandlingService {
 
     this.toastService.add({ 
       severity: 'error',
+      sticky: true,
       summary: "Błąd podczas pobierania danych",
-      detail: "Nie udało się połączyć z serwerem w celu pobrania danych. Prosimy spróbować ponownie później." 
+      detail: "Nie udało się połączyć z serwerem w celu pobrania danych. Prosimy odświeżyć stronę lub spróbować później." 
     });
     
     return throwError(() => errorMessage);

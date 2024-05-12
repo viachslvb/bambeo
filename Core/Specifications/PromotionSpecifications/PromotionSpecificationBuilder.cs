@@ -34,11 +34,6 @@ namespace Core.Specifications
                 criteria = criteria.And(x => promotionParams.StoreIds.Contains(x.Product.StoreId));
             }
 
-            if (!promotionParams.CategoryIds.Any() || !promotionParams.StoreIds.Any())
-            {
-                criteria = criteria.And(x => false);
-            }
-
             return criteria;
         }
     }

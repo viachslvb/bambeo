@@ -6,7 +6,7 @@ import { BusyService } from './busy.service';
   providedIn: 'root'
 })
 export class RouterEventsService {
-
+  private previousPath: string = '';
   private loadingTimeout: any;
 
   constructor(private router: Router, private busyService: BusyService) {
@@ -16,9 +16,14 @@ export class RouterEventsService {
   private subscribeToRouterEvents(): void {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
-        this.loadingTimeout = setTimeout(() => {
-          this.busyService.busy();
-        }, 50);
+        const currentPath = this.router.url.split('?')[0];
+
+        if (currentPath !== this.previousPath) {
+          this.previousPath = currentPath;
+          this.loadingTimeout = setTimeout(() => {
+            this.busyService.busy();
+          }, 50);
+        }
       } else if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
         clearTimeout(this.loadingTimeout);
         this.busyService.idle();

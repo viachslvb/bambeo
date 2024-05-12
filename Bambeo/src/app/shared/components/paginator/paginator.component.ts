@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { Paginator } from 'primeng/paginator';
 
 @Component({
@@ -17,6 +17,7 @@ export class PaginatorComponent implements AfterViewInit, OnChanges {
   @ViewChild('nextPageLinkIconTemplate') nextPageLinkIconTemplate!: TemplateRef<any>;
 
   showFirstLastIcon: boolean = false;
+  isProgrammaticChange: boolean = false;
 
   ngAfterViewInit(): void {
     this.paginator.previousPageLinkIconTemplate = this.prevPageLinkIconTemplate;
@@ -30,17 +31,16 @@ export class PaginatorComponent implements AfterViewInit, OnChanges {
 
     if (changes['pageIndex']) {
       setTimeout(() => {
+        this.isProgrammaticChange = true;
         this.paginator?.changePage(this.pageIndex - 1);
+        this.isProgrammaticChange = false;
       });
-      /* if (changes['pageIndex'].currentValue === 1) {
-        setTimeout(() => {
-          this.paginator?.changePage(0);
-        });
-      } */
     }
   }
 
   onPageChange(event: any) {
-    this.pageChange.emit(event);
+    if (!this.isProgrammaticChange) {
+      this.pageChange.emit(event);
+    }
   }
 }

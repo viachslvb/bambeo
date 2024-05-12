@@ -13,11 +13,13 @@ namespace Application.Services
     public class PromotionService : IPromotionService
     {
         private readonly ISpecificationRepository<Promotion> _promotionsRepo;
+        private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
 
-        public PromotionService(ISpecificationRepository<Promotion> promotionsRepo, IMapper mapper)
+        public PromotionService(ISpecificationRepository<Promotion> promotionsRepo, ICategoryService categoryService, IMapper mapper)
         {
             _promotionsRepo = promotionsRepo;
+            _categoryService = categoryService;
             _mapper = mapper;
         }
 
@@ -39,19 +41,34 @@ namespace Application.Services
         {
             var promotionSpecParams = _mapper.Map<PromotionSpecParams>(promotionSpecParamsDto);
 
-            var spec = new PromotionsWithFiltersSpecification(promotionSpecParams);
+            var categories = _categoryService.GetCategories();
+            var expandedCategoryIds = _categoryService.GetAllCategoryIdsIncludingSubCategories(promotionSpecParams.CategoryIds.ToList(), categories.Result.Data);
+            promotionSpecParams.CategoryIds = expandedCategoryIds;
+
             var countSpec = new PromotionsWithFiltersForCountSpecification(promotionSpecParams);
 
             var totalItems = await _promotionsRepo.CountAsync(countSpec);
-            var promotions = await _promotionsRepo.ListAsync(spec);
+            var totalPages = (int)Math.Ceiling((double)totalItems / promotionSpecParams.PageSize);
 
+            if (promotionSpecParams.PageIndex > totalPages && totalPages > 0)
+            {
+                promotionSpecParams.PageIndex = totalPages;
+            }
+
+            var hasNextPage = promotionSpecParams.PageIndex < totalPages;
+            var hasPreviousPage = promotionSpecParams.PageIndex > 1;
+
+            var spec = new PromotionsWithFiltersSpecification(promotionSpecParams);
+            var promotions = await _promotionsRepo.ListAsync(spec);
             var promotionsDto = _mapper.Map<IReadOnlyList<PromotionDto>>(promotions);
 
             PageableCollection<PromotionDto> promotionsPageableCollection = new(
                 promotionSpecParams.PageIndex,
                 promotionSpecParams.PageSize,
                 totalItems,
-                promotionsDto
+                promotionsDto,
+                hasNextPage,
+                hasPreviousPage
             );
 
             return ServiceResult<PageableCollection<PromotionDto>>.SuccessResult(promotionsPageableCollection);

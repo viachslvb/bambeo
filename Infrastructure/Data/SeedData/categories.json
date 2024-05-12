@@ -1,68 +1,68 @@
 ﻿[
-    {
-        "Name": "Produkty spożywcze",
-        "Categories": [
-            {
-                "Name": "Produkty mleczne"
-            },
-            {
-                "Name": "Mięso i wyroby mięsne"
-            },
-            {
-                "Name": "Ryby i owoce morza"
-            },
-            {
-                "Name": "Warzywa i owoce"
-            },
-            {
-                "Name": "Produkty zbożowe"
-            },
-            {
-                "Name": "Chleb i bułki"
-            },
-            {
-                "Name": "Makarony, zupy i konserwy"
-            },
-            {
-                "Name": "Desery i słodycze"
-            }
-        ]
-    },
-    {
-        "Name": "Napoje bezalkoholowe",
-        "Categories": [
-            {
-                "Name": "Woda"
-            },
-            {
-                "Name": "Napoje gazowane"
-            },
-            {
-                "Name": "Soki owocowe"
-            },
-            {
-                "Name": "Kawa"
-            },
-            {
-                "Name": "Herbata"
-            }
-        ]
-    },
-    {
-        "Name": "Napoje alkoholowe",
-        "Categories": [
-            {
-                "Name": "Wino"
-            },
-            {
-                "Name": "Piwo"
-            },
-            {
-                "Name": "Napoje alkoholowe"
-            },
-            {
-                "Name": "Koktajle"
-            }
-        ]
-    }
+  {
+    "Name": "Produkty spożywcze",
+    "SubCategories": [
+      {
+        "Name": "Produkty mleczne"
+      },
+      {
+        "Name": "Mięso i wyroby mięsne"
+      },
+      {
+        "Name": "Ryby i owoce morza"
+      },
+      {
+        "Name": "Warzywa i owoce"
+      },
+      {
+        "Name": "Produkty zbożowe"
+      },
+      {
+        "Name": "Chleb i bułki"
+      },
+      {
+        "Name": "Makarony, zupy i konserwy"
+      },
+      {
+        "Name": "Desery i słodycze"
+      }
+    ]
+  },
+  {
+    "Name": "Napoje bezalkoholowe",
+    "SubCategories": [
+      {
+        "Name": "Woda"
+      },
+      {
+        "Name": "Napoje gazowane"
+      },
+      {
+        "Name": "Soki owocowe"
+      },
+      {
+        "Name": "Kawa"
+      },
+      {
+        "Name": "Herbata"
+      }
+    ]
+  },
+  {
+    "Name": "Napoje alkoholowe",
+    "SubCategories": [
+      {
+        "Name": "Wino"
+      },
+      {
+        "Name": "Piwo"
+      },
+      {
+        "Name": "Napoje alkoholowe"
+      },
+      {
+        "Name": "Koktajle"
+      }
+    ]
+  }
 ]

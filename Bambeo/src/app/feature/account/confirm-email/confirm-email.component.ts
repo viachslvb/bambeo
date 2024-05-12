@@ -20,14 +20,14 @@ export class ConfirmEmailComponent {
 
   constructor(private accountService: AccountService, private router: Router, 
     private route: ActivatedRoute, private toastService: MessageService) {
-      const userId = this.route.snapshot.queryParams['userId'];
-      const token = this.route.snapshot.queryParams['token'];
+    const userId = this.route.snapshot.queryParams['userId'];
+    const token = this.route.snapshot.queryParams['token'];
 
-      if (userId && token) {
-        this.confirmEmail(userId, token);
-      } else {
-        this.router.navigateByUrl('/');
-      }
+    if (userId && token) {
+      this.confirmEmail(userId, token);
+    } else {
+      this.router.navigateByUrl('/');
+    }
   }
 
   confirmEmail(userId: string, token: string) {

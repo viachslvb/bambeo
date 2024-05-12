@@ -1,5 +1,7 @@
-﻿using Core.Entities.Identity;
+﻿using Core.Entities;
+using Core.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using System.Text.Json;
 
 namespace Infrastructure.Data
 {
@@ -11,7 +13,11 @@ namespace Infrastructure.Data
             //{
             //    var categoriesData = File.ReadAllText("../Infrastructure/Data/SeedData/categories.json");
             //    var categories = JsonSerializer.Deserialize<List<ProductCategory>>(categoriesData);
-            //    context.ProductCategories.AddRange(categories);
+
+            //    foreach (var parentCategory in categories)
+            //    {
+            //        await AddCategoryRecursiveAsync(context, parentCategory, null);
+            //    }
             //}
 
             //if (!context.Stores.Any())
@@ -48,7 +54,27 @@ namespace Infrastructure.Data
             //}
 
 
-            //if (context.ChangeTracker.HasChanges()) await context.SaveChangesAsync();
+            if (context.ChangeTracker.HasChanges()) await context.SaveChangesAsync();
+        }
+
+        private static async Task AddCategoryRecursiveAsync(ApplicationDbContext context, ProductCategory categoryDto, int? parentId)
+        {
+            var category = new ProductCategory
+            {
+                Name = categoryDto.Name,
+                ParentCategoryId = parentId
+            };
+
+            context.ProductCategories.Add(category);
+            await context.SaveChangesAsync();
+
+            if (categoryDto.SubCategories != null && categoryDto.SubCategories.Any())
+            {
+                foreach (var subCategory in categoryDto.SubCategories)
+                {
+                    await AddCategoryRecursiveAsync(context, subCategory, category.Id);
+                }
+            }
         }
     }
 }

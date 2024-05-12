@@ -9,10 +9,10 @@ namespace Application.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly IGenericRepository<ProductCategory> _categoriesRepository;
+        private readonly ICategoryRepository _categoriesRepository;
         private readonly IMapper _mapper;
 
-        public CategoryService(IGenericRepository<ProductCategory> categoriesRepository, IMapper mapper)
+        public CategoryService(ICategoryRepository categoriesRepository, IMapper mapper)
         {
             _categoriesRepository = categoriesRepository;
             _mapper = mapper;
@@ -20,19 +20,39 @@ namespace Application.Services
 
         public async Task<ServiceResult<List<ProductCategoryDto>>> GetCategories()
         {
-            var categories = await _categoriesRepository.ListAllAsync();
+            var categories = await _categoriesRepository.GetCategoriesWithSubCategoriesAsync();
+            List<ProductCategoryDto> categoriesDto = _mapper.Map<List<ProductCategoryDto>>(categories);
 
-            var categoriesList = new List<ProductCategoryDto>();
-            foreach (var category in categories)
+            return ServiceResult<List<ProductCategoryDto>>.SuccessResult(categoriesDto);
+        }
+
+        public List<int> GetAllCategoryIdsIncludingSubCategories(List<int> categoryIds, List<ProductCategoryDto> allCategories)
+        {
+            var allIds = new List<int>(categoryIds);
+
+            foreach (var categoryId in categoryIds)
             {
-                var categoryDto = _mapper.Map<ProductCategoryDto>(category);
-                if (categoryDto.Categories != null && categoryDto.Categories.Any())
+                allIds.AddRange(GetSubCategoryIds(allCategories, categoryId));
+            }
+
+            return allIds.Distinct().ToList();
+        }
+
+        private List<int> GetSubCategoryIds(List<ProductCategoryDto> categories, int parentId)
+        {
+            var subCategoryIds = new List<int>();
+
+            var parentCategory = categories.FirstOrDefault(c => c.Id == parentId);
+            if (parentCategory != null && parentCategory.SubCategories != null)
+            {
+                foreach (var subCategory in parentCategory.SubCategories)
                 {
-                    categoriesList.Add(categoryDto);
+                    subCategoryIds.Add(subCategory.Id);
+                    subCategoryIds.AddRange(GetSubCategoryIds(categories, subCategory.Id));
                 }
             }
 
-            return ServiceResult<List<ProductCategoryDto>>.SuccessResult(categoriesList);
+            return subCategoryIds;
         }
     }
 }

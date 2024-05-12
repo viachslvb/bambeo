@@ -1,0 +1,13 @@
+<div class="flex flex-wrap items-center p-2 bg-slate-50 m-2 rounded-lg border border-slate-200">
+    <span class="flex p-1 px-2 rounded-lg text-slate-500 bg-white border border-slate-200 text-xs font-normal mx-2 my-1"
+        *ngFor="let filter of userFilters">
+        {{ filter.name }}
+    </span>
+    <div class="flex-col items-center">
+        <button
+            class="flex items-center justify-center p-1 px-2 mx-2 my-1 rounded-lg bg-white text-slate-500 border-slate-200 border text-xs font-normal hover:bg-slate-50 hover:text-slate-600 lg:focus:border-rose-500 lg:focus:bg-rose-500 lg:focus:ring-4 lg:focus:ring-rose-200 lg:focus:outline-none lg:focus:text-white"
+            (click)="resetFilters()">
+            <i class="fa-solid fa-trash-can pr-1.5"></i> Wyczyść filtry
+        </button>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -15,18 +16,30 @@ import { NavigationEnd, Router } from '@angular/router';
     ])
   ]
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnDestroy {
+  private routerSubscription: Subscription;
+  
   isHomePage: boolean = true;
   isChecked: boolean = false;
 
-  constructor(private router: Router) { }
-
-  ngOnInit() {
-    this.router.events.subscribe((event) => {
+  constructor(private router: Router) {
+    this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.isHomePage = this.router.url === '/';
+        
+        const url = new URL(this.router.url, window.location.origin);
+        this.isHomePage = url.pathname === '/' || url.pathname === '/' && this.hasAnyQueryParams(url.searchParams);
         this.isChecked = true;
       }
     });
+  }
+
+  private hasAnyQueryParams(params: URLSearchParams): boolean {
+    return [...params.keys()].length > 0;
+  }
+
+  ngOnDestroy() {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 }

@@ -1,8 +1,12 @@
-<div class="container max-w-7xl min-w-[320px] mx-auto lg:px-6 lg:mt-14">
+<div class="container max-w-7xl min-w-[320px] mx-auto lg:px-6 lg:mb-32 relative">
+    <ngx-spinner bdColor="rgba(255,255,255,0.0)" size="medium" color="#e11d48" type="ball-spin-rotate"
+        [fullScreen]="true" [name]="dataLoadingSpinner"></ngx-spinner>
+    <ngx-spinner bdColor="rgba(255,255,255,0.0)" size="medium" color="#e11d48" type="ball-spin-rotate"
+        [fullScreen]="true" [name]="promotionsLoadingSpinner"></ngx-spinner>
     <div class="flex justify-between">
-        <div class="lg:w-3/12 lg:min-w-[250px]"
-            [ngClass]="{
-                'fixed inset-y-0 left-0 z-50 w-full h-full bg-white shadow-black shadow-lg transform overflow-y-scroll': isMobileVersion, 
+        <!-- Store & Category Filters -->
+        <div class="lg:w-3/12 lg:min-w-[250px]" [ngClass]="{
+                'fixed inset-y-0 left-0 z-[199] w-full h-full bg-white shadow-black shadow-lg transform overflow-y-scroll': isMobileVersion, 
                 '-translate-y-0': isFilterPageOpen && isMobileVersion, 
                 'translate-y-full': !isFilterPageOpen && isMobileVersion
             }" #filterPage>
@@ -13,202 +17,80 @@
                 <div class="text-2xl font-semibold text-slate-700">
                     Filtry
                 </div>
-                <button type="button" 
-                class="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-slate-400 hover:text-slate-500"
-                (click)="toggleFilterPage()">
+                <button type="button"
+                    class="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-slate-400 hover:text-slate-500"
+                    (click)="toggleFilterPage()">
                     <span class="sr-only">Close menu</span>
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                        aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
-            <!-- store search and select -->
-            <div class="bg-rose-600 p-7 lg:rounded-lg">
-                <div class="relative w-5/6 lg:w-full">
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-slate-700 font-bold" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                        </svg>
-                    </div>
-                    <input type="text" #storeSearch placeholder="Wpisz nazwę sklepu..."
-                    class="border border-b-0 border-rose-500 text-slate-700 placeholder-slate-700 text-sm rounded-lg focus:ring-rose-400 focus:ring-1 focus:border-rose-200 block w-full pl-10 p-2.5"
-                    (keyup)="onStoreSearchType(storeSearch.value)">
+            <!-- Select Store -->
+            <app-select-store [stores]="stores" *ngIf="stores.length > 0" @fadeIn>
+            </app-select-store>
+            <!-- Select Category -->
+            <div class="lg:border lg:border-slate-200 lg:rounded-xl mt-5" *ngIf="categories.length > 0">
+                <app-select-category [categories]="categories" @fadeIn>
+                </app-select-category>
+                <!-- Other Promotion Options -->
+                <div class="p-4 my-5" @fadeIn>
+                    <app-promotion-options></app-promotion-options>
                 </div>
-                <ul class="mt-5 bg-rose-600">
-                    <li class="flex items-center p-3 cursor-pointer border-b border-rose-500 hover:bg-rose-500"
-                        *ngFor="let store of filteredStores"
-                        (click)="onStoreSelect(store)">
-                        <input type="checkbox"
-                        class="w-4 h-4 text-rose-400 bg-white border-0 rounded focus:ring-rose-400 focus:text-rose-600 focus:ring-3 mr-3 cursor-pointer"
-                        [(ngModel)]="store.selected" 
-                        [id]="'storeSelectId-' + store.id">
-                        <span class="text-white text-sm">{{ store.name }}</span>
-                    </li>
-                    <li class="text-center text-sm text-rose-50 py-3"
-                        *ngIf="filteredStores && filteredStores.length < 1">
-                        Ups, nic nie znaleźliśmy :(
-                    </li>
-                </ul>
-            </div>
-            <!-- category select -->
-            <div class="lg:border lg:border-slate-200 lg:rounded-xl mt-5">
-                <ul>
-                    <li class="flex flex-col border-b border-slate-200"
-                        *ngFor="let category of categories">
-                        <div class="flex flex-row items-center justify-between cursor-pointer p-4"
-                            (click)="OnCategoryOpen(category)">
-                            <div class="items-center">
-                                <input type="checkbox"
-                                class="w-4 h-4 text-yellow-300 bg-white border-slate-300 border rounded focus:ring-yellow-200 focus:text-yellow-400 focus:ring-2 mr-3 p-3"
-                                (click)="OnCategorySelect(category); $event.stopPropagation()"
-                                [(ngModel)]="category.selected">
-                                <span class="text-slate-700 font-semibold text-sm">{{ category.name }}</span>
-                            </div>
-                            <!-- open subcategories button -->
-                            <button class="items-center bg-slate-50 p-3 rounded-full focus:ring-4 focus:ring-slate-100 focus:outline-none focus:b-0" 
-                                [id]="'categoryOpenId-' + category.id">
-                                <svg class="w-3 h-3 text-slate-800 transition-transform duration-300" 
-                                [ngClass]="{'transform rotate-180': category.opened}" 
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"/>
-                                </svg>
-                            </button>
-                        </div>
-                        <ul class="flex flex-col transition-all duration-300 overflow-hidden"
-                            *ngIf="category.categories && category.categories.length > 0" 
-                            [ngClass]="{'max-h-0': !category.opened, 'max-h-screen': category.opened}">
-                            <div class="pl-10 pb-3">
-                                <li class="cursor-pointer"
-                                    *ngFor="let subcategory of category.categories" 
-                                    (click)="OnSubCategorySelect(category, subcategory)">
-                                    <div class="items-center py-0.5">
-                                        <input type="checkbox"
-                                        class="w-4 h-4 text-yellow-300 bg-white border-slate-300 border rounded focus:ring-yellow-200 focus:text-yellow-400 focus:ring-2 mr-3 focus:outline-none cursor-pointer"
-                                        [(ngModel)]="subcategory.selected" 
-                                        [id]="'subCategorySelectId-' + subcategory.id">
-                                        <span class="text-slate-700 hover:text-slate-900 text-sm">{{ subcategory.name }}</span>
-                                    </div>
-                                </li>
-                            </div>
-                        </ul>
-                    </li>
-                  </ul>
-                  <!-- show upcoming promotions -->
-                  <div class="p-4 my-5">
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" value=""
-                        class="sr-only peer"
-                        (click)="onShowUpcomingPromotions()" 
-                        [(ngModel)]="promotionParams.includeUpcomingPromotions">
-                        <div class="w-11 h-6 bg-slate-100 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-fuchsia-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-fuchsia-600"></div>
-                        <span class="ml-3 text-sm font-medium text-slate-900">Nadchodzące promocji</span>
-                      </label>
-                  </div>
             </div>
         </div>
-        <!-- products -->
-        <div class="w-full lg:w-9/12 lg:ml-10" #scrollTriggerElement>
+        <!-- Products Section -->
+        <div class="w-full lg:w-9/12 lg:ml-10" *ngIf="isPromotionsLoaded">
+            <!-- Space for Fixed Filter Bar -->
             <div class="h-0" #spaceForFilterBarWhenFixed></div>
-            <div class="flex w-full justify-between lg:justify-end items-center bg-white lg:bg-transparent py-2 px-2 shadow lg:shadow-none" #filterBar>
-                <div class="flex w-full justify-between lg:justify-end items-center">
-                    <button #toggleFilterPageButton
-                    class="lg:hidden flex sm:flex-1 items-center p-1.5 text-slate-500 hover:text-slate-500"
-                    (click)="toggleFilterPage(); $event.stopPropagation()"
-                    type="button">
-                        <svg class="w-4 h-4 md:h-5 md:w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M1 5h1.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 1 0 0-2H8.576a3.228 3.228 0 0 0-6.152 0H1a1 1 0 1 0 0 2Zm18 4h-1.424a3.228 3.228 0 0 0-6.152 0H1a1 1 0 1 0 0 2h10.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 0 0 0-2Zm0 6H8.576a3.228 3.228 0 0 0-6.152 0H1a1 1 0 0 0 0 2h1.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 0 0 0-2Z"/>
-                        </svg>
-                        <!-- <svg class="h-4 w-4 md:h-5 md:w-5" aria-hidden="true" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 01.628.74v2.288a2.25 2.25 0 01-.659 1.59l-4.682 4.683a2.25 2.25 0 00-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 018 18.25v-5.757a2.25 2.25 0 00-.659-1.591L2.659 6.22A2.25 2.25 0 012 4.629V2.34a.75.75 0 01.628-.74z" clip-rule="evenodd" />
-                        </svg> -->
-                    </button>
-                    <!-- TODO: Advanced search with suggestions / Search by Tag -->
-                    <div class="sm:w-3/5 sm:flex-2 lg:w-fit lg:order-2 lg:block lg:ml-5">
-                        <label for="promotion-search" class="mb-2 text-sm font-medium text-slate-700 sr-only">Search</label>
-                        <div class="relative group">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-2 lg:pl-3 pointer-events-none">
-                                <svg class="w-4 h-4 md:w-5 md:h-5 lg:w-4 lg:h-4 text-slate-400 lg:text-slate-700 transition-colors duration-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20" #searchSvgIcon>
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                                </svg>
-                            </div>
-                            <input id="promotion-search" #promotionSearch
-                            class="sm:w-full lg:min-w-[350px] p-1 md:p-2 lg:p-3 pl-8 md:pl-10 lg:pl-10 text-sm text-slate-600 focus:text-slate-500 lg:text-slate-700 placeholder-slate-600 lg:placeholder-slate-700 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:border-slate-300 focus:ring-0 transition-colors duration-300 focus:outline-none"
-                            (focus)="onSearchInputFocus()" (blur)="onSearchInputBlur()"
-                            (keyup)="onSearchInputType(promotionSearch.value)"
-                            placeholder="Wpisz czego szukasz...">
-                        </div>
-                    </div>
-                    <!-- sorting settings -->
-                    <div class="flex flex-2 sm:items-center lg:order-1 lg:border-r lg:border-slate-200 lg:pr-5 group">
-                        <div class="hidden lg:block mr-4 text-slate-700 font-light text-sm">{{ sortTypeLabels[selectedSortType] }}</div>
-                        <button id="changeSortButton"
-                        class="group flex items-center justify-center p-1.5 px-2 lg:bg-slate-100 lg:rounded-lg lg:border lg:border-slate-200 lg:focus:border-rose-500 lg:focus:bg-rose-500 lg:focus:ring-4 lg:focus:ring-rose-200 lg:focus:outline-none"
-                        (click)="onSortDropdownToggle()"
-                        type="button">
-                            <svg class="w-4 h-4 md:w-5 md:h-5 lg:w-4 lg:h-4 flex-shrink-0 text-slate-500 group-hover:text-slate-500 lg:text-slate-500 lg:group-focus:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6v13m0 0 3-3m-3 3-3-3m11-2V1m0 0L9 4m3-3 3 3"/>
+            <!-- Filter Bar -->
+            <div class="flex w-full justify-between lg:justify-end items-center bg-white 
+                        lg:bg-transparent py-2 px-2 lg:px-0 shadow lg:shadow-none" 
+                        #filterBar>
+                <!-- Filter Bar Content -->
+                <div class="flex w-full justify-between lg:justify-end items-center mx-2" @fadeIn>
+                    <!-- Toggle Filter Button for Small Screens -->
+                    <div class="lg:hidden flex sm:flex-1">
+                        <button 
+                            class="items-center p-2.5 text-slate-500 hover:text-slate-500 bg-slate-50 rounded-lg" 
+                            (click)="toggleFilterPage(); $event.stopPropagation()" 
+                            type="button" #toggleFilterPageButton>
+                            <svg class="w-4 h-4 md:h-5 md:w-5" 
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M1 5h1.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 1 0 0-2H8.576a3.228 3.228 0 0 0-6.152 0H1a1 1 0 1 0 0 2Zm18 4h-1.424a3.228 3.228 0 0 0-6.152 0H1a1 1 0 1 0 0 2h10.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 0 0 0-2Zm0 6H8.576a3.228 3.228 0 0 0-6.152 0H1a1 1 0 0 0 0 2h1.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 0 0 0-2Z" />
                             </svg>
                         </button>
                     </div>
-                    <!-- Sort dropdown menu -->
-                    <div id="changeSortDropdown" 
-                    class="z-10 hidden divide-y divide-slate-100 rounded-lg shadow-xl bg-white border border-slate-200 w-50">
-                        <ul class="text-sm text-slate-700" aria-labelledby="changeSortButton">
-                            <li *ngFor="let sortType of sortTypes; let first = first; let last = last"
-                                class="flex px-5 py-1.5 cursor-pointer rounded-t-lg border-b border-slate-200 hover:bg-slate-100"
-                                [ngClass]="{
-                                    'bg-slate-100': sortType.selected, 
-                                    'rounded-b-lg': last,
-                                    'rounded-t-lg': first}"
-                                (click)="onSortTypeChange(sortType)">
-                                <input type="radio" [value]="sortType.name" class="hidden" [(ngModel)]="selectedSortType">
-                                <div class="text-sm">
-                                    <div class="text-slate-700 cursor-pointer">
-                                        {{ sortType.label }}
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
+                    <!-- Paging Header for Large Screens -->
+                    <div class="hidden w-full lg:flex">
+                        <app-paging-header [totalCount]="promotions.count" [pageSize]="promotions.pageSize" [pageIndex]="promotions.pageIndex"></app-paging-header>
                     </div>
+                    <!-- Search Component -->
+                    <div class="sm:w-3/5 sm:flex-2 lg:w-fit lg:order-2 lg:block lg:ml-5 mr-0 sm:mr-4 lg:mr-0">
+                        <app-search></app-search>
+                    </div>
+                    <!-- Sort Component -->
+                    <app-sort></app-sort>
                 </div>
             </div>
-            <!-- products list -->
-            <div class="flex flex-wrap justify-between items-center mt-3 lg:mt-0">
-                <div class="flex w-full xs:w-1/2" *ngFor="let promotion of promotions">
-                    <a href="#" class="flex w-full flex-row xs:flex-col md:flex-row md:max-w-xl items-center m-2 bg-white border border-gray-200 rounded-lg shadow  group">
-                        <div class="flex w-2/6 xs:w-full md:w-2/6 flex-col xs:flex-row md:flex-col justify-center items-center">
-                            <img class="h-auto xs:h-36 md:h-auto w-36 object-cover md:rounded-none rounded-t-lg md:rounded-l-lg m-3" src="{{ promotion.product.imageUrl }}" alt="">
-                        </div>
-                        <div class="flex w-4/6 xs:w-full md:w-4/6 flex-col justify-between h-full px-4 py-5 md:px-5 md:py-3 leading-normal border-l border-slate-100 group-hover:bg-gray-50">
-                            <div class="mb-3 md:mb-2">
-                                <h5 class="font-semibold tracking-tight leading-tight text-gray-900 py-0 my-0">{{ promotion.product.name }}</h5>
-                                <div class="text-sm">w <span class="underline text-rose-500">{{ promotion.product.store.name }}</span></div>
-                            </div>
-                            <div class="mb-4 md:mb-2">
-                                <div class="text-xs mb-0.5">{{ promotion.discountCondition }}</div>
-                                <div class="flex items-center">
-                                    <div class="text-lg font-semibold text-white bg-rose-500 w-fit px-2 rounded">{{ promotion.price }}</div>
-                                    <span class="text-xs px-1">zł / opak</span>
-                                    <div class="bg-yellow-300 text-white p-1 rounded font-semibold text-xs">-{{ promotion.discountPercentage }} %</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center text-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 19.525" style="enable-background:new 0 0 122.88 119.97" xml:space="preserve" class="text-slate-700 w-4 h-4"><path d="M11.355.66c0-.365.36-.66.805-.66s.805.295.805.66v2.885c0 .365-.36.66-.805.66s-.805-.295-.805-.66V.66zM2.34 12.705h1.845c.115 0 .215.095.215.215v1.365a.215.215 0 0 1-.215.215H2.34a.215.215 0 0 1-.215-.215V12.92c0-.12.095-.215.215-.215zM9.405 8.82h1.845c.055 0 .105.025.145.06a6.575 6.575 0 0 0-1.85 1.735h-.14a.215.215 0 0 1-.215-.215V9.03c0-.12.095-.215.215-.215zm-3.535 0h1.845c.115 0 .215.095.215.215V10.4a.215.215 0 0 1-.215.215H5.87a.215.215 0 0 1-.215-.215V9.03c0-.115.095-.215.215-.215zm-3.535 0H4.18c.115 0 .215.095.215.215V10.4a.215.215 0 0 1-.215.215H2.34a.215.215 0 0 1-.215-.215V9.03c0-.115.095-.215.215-.215zm3.535 3.885h1.845c.115 0 .215.095.215.215v1.365a.215.215 0 0 1-.215.215H5.87a.215.215 0 0 1-.215-.215V12.92c0-.12.095-.215.215-.215zM16.845 9.69A5.11 5.11 0 0 1 20 14.415a5.12 5.12 0 0 1-5.11 5.11 5.105 5.105 0 0 1-3.615-1.495 5.105 5.105 0 0 1-1.495-3.615c0-2.055 1.28-3.975 3.18-4.755 1.18-.48 2.715-.45 3.885.035zm-2.74 4.585a.865.865 0 0 1 .225-.175v-2.225a.41.41 0 0 1 .41-.41.41.41 0 0 1 .41.41V14.1c.15.08.275.205.355.355h1.59a.41.41 0 1 1 0 .82h-1.59a.865.865 0 0 1-.765.46.875.875 0 0 1-.655-.295.87.87 0 0 1 .015-1.16zm3.82-2.815c-2.12-2.12-5.69-1.52-6.925 1.145a4.29 4.29 0 0 0-.395 1.805 4.29 4.29 0 0 0 1.255 3.035 4.275 4.275 0 0 0 3.035 1.255 4.285 4.285 0 0 0 3.035-1.255 4.275 4.275 0 0 0 1.255-3.035 4.285 4.285 0 0 0-.43-1.875 3.93 3.93 0 0 0-.825-1.075zM4.125.66c0-.365.36-.66.805-.66.445 0 .805.295.805.66v2.885c0 .365-.36.66-.805.66s-.805-.295-.805-.66V.66zM.885 6.315H16.22V2.99a.41.41 0 0 0-.405-.405h-1.47a.445.445 0 0 1 0-.89h1.47a1.3 1.3 0 0 1 .92.38 1.295 1.295 0 0 1 .38.92v5.28a6.77 6.77 0 0 0-.905-.245v-.825h.01H.885v8.61a.41.41 0 0 0 .405.405h7.285c.085.31.185.61.315.9H1.3a1.3 1.3 0 0 1-.92-.38 1.295 1.295 0 0 1-.38-.92V2.995a1.3 1.3 0 0 1 .38-.92 1.295 1.295 0 0 1 .92-.38h1.57a.445.445 0 0 1 0 .89H1.3a.41.41 0 0 0-.405.405v3.325h-.01zm6.135-3.73a.445.445 0 0 1 0-.89h2.995a.445.445 0 0 1 0 .89H7.02z"/></svg>
-                                <span class="text-xs ml-1 text-slate-700">Od {{ promotion.startDate | date:'d.MM' }} do {{ promotion.endDate | date:'d.MM' }}</span>
-                            </div>
-                        </div>
-                    </a>
+            <!-- User Search Filters -->
+            <app-user-filters [stores]="stores" [categories]="categories" @fadeIn></app-user-filters>
+            <!-- Promotions List -->
+            <div *ngIf="promotions.count > 0" class="flex flex-wrap justify-between items-center mt-3 lg:mt-0" @fadeIn>
+                <div class="flex w-full xs:w-1/2" *ngFor="let promotion of promotions.data">
+                    <app-promotion-item class="m-2 w-full" [promotion]="promotion" ></app-promotion-item>
+                </div>
+                <div *ngIf="promotions.hasNextPage || promotions.hasPreviousPage" class="flex-row w-full mt-4 justify-center">
+                    <app-paginator [totalCount]="promotions.count" [pageSize]="promotions.pageSize" [pageIndex]="promotions.pageIndex" (pageChange)="onPageChanged($event)"></app-paginator>
                 </div>
             </div>
-            <!-- user search filters -->
-            <!-- <div class="flex flex-wrap w-full items-center p-2 border border-slate-200 rounded bg-slate-50 mt-5"
-                *ngIf="userFilters && userFilters.length > 0">
-                <span class="flex p-1 rounded text-white text-xs mx-2 my-1"
-                    *ngFor="let filter of userFilters"
-                    [ngClass]="{'bg-rose-500': filter.type === 0, 'bg-yellow-300': filter.type === 1, 'bg-fuchsia-500': filter.type === 2}">{{ filter.name }}</span>
-            </div> -->
-            
+            <!-- No Found -->
+            <div *ngIf="promotions.count <= 0" 
+                class="flex items-center w-fit m-2 mt-4 p-4 space-x-4 text-slate-600 bg-white border border-slate-200 rounded-lg shadow space-x" @fadeIn>
+                <i class="fa-solid fa-circle-info fa-2xl text-slate-500"></i>
+                <div class="pl-3 text-sm font-normal">Szukaliśmy, szukaliśmy, ale nie znaleźliśmy nic, co by spełniło twoje oczekiwania :(</div>
+            </div>
         </div>
     </div>
 </div>
-<div class="h-[2000px]"></div>

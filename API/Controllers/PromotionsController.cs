@@ -16,25 +16,18 @@ namespace API.Controllers
         {
             _promotionService = promotionService;
         }
-        
-        //[HttpGet]
-        //public async Task<ActionResult<List<Promotion>>> GetPromotions([FromQuery] PromotionSpecParams promotionParams)
-        //{
-        //    var spec = new PromotionsWithFiltersSpecification(promotionParams);
-        //    var countSpec = new PromotionsWithFiltersForCountSpecification(promotionParams);
 
-        //    var totalItems = await _promotionsRepo.CountAsync(countSpec);
-        //    var promotions = await _promotionsRepo.ListAsync(spec);
+        [HttpGet]
+        public async Task<ActionResult<List<PromotionDto>>> GetPromotions([FromQuery] PromotionSpecParamsDto promotionSpecParamsDto)
+        {
+            ServiceResult<PageableCollection<PromotionDto>> result = await _promotionService.GetPromotionsWithSpec(promotionSpecParamsDto);
 
-        //    var data = _mapper.Map<IReadOnlyList<PromotionToReturnDto>>(promotions);
-
-        //    return Ok(new Pagination<PromotionToReturnDto>(promotionParams.PageIndex,
-        //        promotionParams.PageSize, totalItems, data));
-        //}
+            return Ok(new ApiResponse<PageableCollection<PromotionDto>>(result.Data));
+        }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<PromotionDto>>> GetPromotions([FromBody] PromotionSpecParamsDto promotionSpecParamsDto)
+        public async Task<ActionResult<List<PromotionDto>>> GetPromotionsPost([FromBody] PromotionSpecParamsDto promotionSpecParamsDto)
         {
             ServiceResult<PageableCollection<PromotionDto>> result = await _promotionService.GetPromotionsWithSpec(promotionSpecParamsDto);
 

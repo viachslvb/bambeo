@@ -3,5 +3,5 @@ export interface ProductCategory {
     name: string,
     selected?: boolean,
     opened?: boolean,
-    categories?: ProductCategory[]
+    subCategories?: ProductCategory[]
   }

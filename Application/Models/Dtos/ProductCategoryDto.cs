@@ -4,6 +4,6 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<ProductCategoryDto> Categories { get; set; }
+        public List<ProductCategoryDto> SubCategories { get; set; } = new List<ProductCategoryDto>();
     }
 }

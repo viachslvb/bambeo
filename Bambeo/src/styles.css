@@ -147,8 +147,7 @@
     margin: 0 8px 0 -1px;
     transition: none;
     border-radius: 0.50rem;
-    font-family: 'Inter var', sans-serif;
-    font-weight: 300;
+    font-weight: 400;
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page:not(.p-highlight):hover {
@@ -166,7 +165,13 @@
   color: #334155;
 }
 
-.p-paginator .p-paginator-pages .p-paginator-page:focus {
+.p-paginator .p-paginator-pages .p-paginator-page:not(.p-highlight):focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #f1f5f9;
+}
+
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight:focus {
     outline: none;
     box-shadow: 0 0 0 2px #fda4af;
 }
@@ -223,7 +228,7 @@
     border-color: 1px solid #f43f5e;
 }
 
-.p-dialog, .p-button {
+.p-dialog, .p-button, .p-component, .p-link {
     font-family: 'GT Eesti', 'Inter var', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 

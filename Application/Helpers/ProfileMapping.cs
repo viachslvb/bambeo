@@ -29,10 +29,13 @@ namespace Application.Helpers
 
             CreateMap<Store, StoreDto>();
 
-            CreateMap<ProductSpecParamsDto, ProductSpecParams>();
-
-            CreateMap<PromotionSpecParamsDto, PromotionSpecParams>();
-
+            CreateMap<PromotionSpecParamsDto, PromotionSpecParams>()
+                .ForMember(dest => dest.CategoryIds, opt => opt.MapFrom(
+                    src => new StringToIntEnumerableResolver()
+                    .Resolve(src.CategoryIds, null, null, null)))
+                .ForMember(dest => dest.StoreIds, opt => opt.MapFrom(
+                    src => new StringToIntEnumerableResolver()
+                    .Resolve(src.StoreIds, null, null, null)));
         }
     }
 }
