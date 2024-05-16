@@ -18,15 +18,15 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<ServiceResult<List<ProductCategoryDto>>> GetCategories()
+        public async Task<ServiceResult<List<CategoryDto>>> GetCategories()
         {
             var categories = await _categoriesRepository.GetCategoriesWithSubCategoriesAsync();
-            List<ProductCategoryDto> categoriesDto = _mapper.Map<List<ProductCategoryDto>>(categories);
+            List<CategoryDto> categoriesDto = _mapper.Map<List<CategoryDto>>(categories);
 
-            return ServiceResult<List<ProductCategoryDto>>.SuccessResult(categoriesDto);
+            return ServiceResult<List<CategoryDto>>.SuccessResult(categoriesDto);
         }
 
-        public List<int> GetAllCategoryIdsIncludingSubCategories(List<int> categoryIds, List<ProductCategoryDto> allCategories)
+        public List<int> GetAllCategoryIdsIncludingSubCategories(List<int> categoryIds, List<CategoryDto> allCategories)
         {
             var allIds = new List<int>(categoryIds);
 
@@ -38,7 +38,7 @@ namespace Application.Services
             return allIds.Distinct().ToList();
         }
 
-        private List<int> GetSubCategoryIds(List<ProductCategoryDto> categories, int parentId)
+        private List<int> GetSubCategoryIds(List<CategoryDto> categories, int parentId)
         {
             var subCategoryIds = new List<int>();
 

@@ -1,4 +1,4 @@
-<div class="container max-w-7xl min-w-[320px] mx-auto lg:px-6 lg:mb-32 relative">
+<div class="container max-w-7xl min-w-[320px] mx-auto lg:px-6 lg:mb-32">
     <ngx-spinner bdColor="rgba(255,255,255,0.0)" size="medium" color="#e11d48" type="ball-spin-rotate"
         [fullScreen]="true" [name]="dataLoadingSpinner"></ngx-spinner>
     <ngx-spinner bdColor="rgba(255,255,255,0.0)" size="medium" color="#e11d48" type="ball-spin-rotate"
@@ -6,8 +6,8 @@
     <div class="flex justify-between">
         <!-- Store & Category Filters -->
         <div class="lg:w-3/12 lg:min-w-[250px]" [ngClass]="{
-                'fixed inset-y-0 left-0 z-[199] w-full h-full bg-white shadow-black shadow-lg transform overflow-y-scroll': isMobileVersion, 
-                '-translate-y-0': isFilterPageOpen && isMobileVersion, 
+                'fixed inset-y-0 left-0 z-[199] w-full h-full bg-white shadow-black shadow-lg transform overflow-y-scroll': isMobileVersion,
+                '-translate-y-0': isFilterPageOpen && isMobileVersion,
                 'translate-y-full': !isFilterPageOpen && isMobileVersion
             }" #filterPage>
             <div class="lg:hidden flex justify-center">
@@ -45,18 +45,18 @@
             <!-- Space for Fixed Filter Bar -->
             <div class="h-0" #spaceForFilterBarWhenFixed></div>
             <!-- Filter Bar -->
-            <div class="flex w-full justify-between lg:justify-end items-center bg-white 
-                        lg:bg-transparent py-2 px-2 lg:px-0 shadow lg:shadow-none" 
+            <div class="flex w-full justify-between lg:justify-end items-center bg-white
+                        lg:bg-transparent py-2 px-2 lg:px-0 shadow lg:shadow-none"
                         #filterBar>
                 <!-- Filter Bar Content -->
                 <div class="flex w-full justify-between lg:justify-end items-center mx-2" @fadeIn>
                     <!-- Toggle Filter Button for Small Screens -->
                     <div class="lg:hidden flex sm:flex-1">
-                        <button 
-                            class="items-center p-2.5 text-slate-500 hover:text-slate-500 bg-slate-50 rounded-lg" 
-                            (click)="toggleFilterPage(); $event.stopPropagation()" 
+                        <button
+                            class="items-center p-2.5 text-slate-500 hover:text-slate-500 bg-slate-50 rounded-lg"
+                            (click)="toggleFilterPage(); $event.stopPropagation()"
                             type="button" #toggleFilterPageButton>
-                            <svg class="w-4 h-4 md:h-5 md:w-5" 
+                            <svg class="w-4 h-4 md:h-5 md:w-5"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M1 5h1.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 1 0 0-2H8.576a3.228 3.228 0 0 0-6.152 0H1a1 1 0 1 0 0 2Zm18 4h-1.424a3.228 3.228 0 0 0-6.152 0H1a1 1 0 1 0 0 2h10.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 0 0 0-2Zm0 6H8.576a3.228 3.228 0 0 0-6.152 0H1a1 1 0 0 0 0 2h1.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 0 0 0-2Z" />
                             </svg>
@@ -75,7 +75,7 @@
                 </div>
             </div>
             <!-- User Search Filters -->
-            <app-user-filters [stores]="stores" [categories]="categories" @fadeIn></app-user-filters>
+            <app-user-filters *ngIf="categories.length > 0 && stores.length > 0" [stores]="stores" [categories]="categories"></app-user-filters>
             <!-- Promotions List -->
             <div *ngIf="promotions.count > 0" class="flex flex-wrap justify-between items-center mt-3 lg:mt-0" @fadeIn>
                 <div class="flex w-full xs:w-1/2" *ngFor="let promotion of promotions.data">
@@ -86,11 +86,15 @@
                 </div>
             </div>
             <!-- No Found -->
-            <div *ngIf="promotions.count <= 0" 
+            <div *ngIf="promotions.count <= 0"
                 class="flex items-center w-fit m-2 mt-4 p-4 space-x-4 text-slate-600 bg-white border border-slate-200 rounded-lg shadow space-x" @fadeIn>
                 <i class="fa-solid fa-circle-info fa-2xl text-slate-500"></i>
                 <div class="pl-3 text-sm font-normal">Szukaliśmy, szukaliśmy, ale nie znaleźliśmy nic, co by spełniło twoje oczekiwania :(</div>
             </div>
         </div>
+    </div>
+    <!-- Loading Error -->
+    <div *ngIf="isLoadingError && !isPromotionsLoaded" class="flex justify-center items-center">
+        <bb-loading-error></bb-loading-error>
     </div>
 </div>

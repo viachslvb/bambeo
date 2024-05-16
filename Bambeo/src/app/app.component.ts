@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './core/services/auth.service';
+import { ScrollService } from './core/services/scroll.service';
 
 @Component({
   selector: 'app-root',
@@ -7,10 +8,13 @@ import { AuthService } from './core/services/auth.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'client';
+  title = 'Bambeo';
 
-  constructor(private authService: AuthService) { }
-  
+  constructor(
+    private authService: AuthService,
+    private scrollService: ScrollService
+  ) { }
+
   ngOnInit(): void {
     this.authService.initializeAuthState().subscribe();
   }

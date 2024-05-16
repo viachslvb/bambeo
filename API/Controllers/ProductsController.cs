@@ -19,16 +19,16 @@ namespace API.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiExceptionResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProductDto>> GetProduct(int id)
+        public async Task<ActionResult<ProductInfoDto>> GetProduct(int id)
         {
-            ServiceResult<ProductDto> result = await _productService.GetProductById(id);
+            ServiceResult<ProductInfoDto> result = await _productService.GetProductById(id);
 
             if (!result.Success)
             {
                 return StatusCode(ApiHelper.GetHttpStatusCode(result.ErrorCode), new ApiErrorResponse(result.ErrorCode));
             }
 
-            return Ok(new ApiResponse<ProductDto>(result.Data));
+            return Ok(new ApiResponse<ProductInfoDto>(result.Data));
         }
     }
 }

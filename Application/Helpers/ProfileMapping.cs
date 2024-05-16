@@ -15,8 +15,14 @@ namespace Application.Helpers
             CreateMap<Product, ProductDto>()
                 .ForMember(d => d.ImageUrl, o => o.MapFrom<ProductUrlResolver>());
 
+            CreateMap<Product, ProductInfoDto>()
+                .ForMember(d => d.ImageUrl, o => o.MapFrom<ProductUrlResolver>())
+                .ForMember(d => d.Category, o => o.MapFrom(s => s.ProductCategory));
+
             CreateMap<Promotion, PromotionDto>()
                 .ForMember(d => d.Product, o => o.MapFrom(s => s.Product));
+
+            CreateMap<Promotion, ProductPromotionDto>();
 
             CreateMap<UserSettings, UserSettingsToReturnDto>()
                 .ForMember(dest => dest.EmailSettings, opt => opt.MapFrom(src => new EmailSettingsDto
@@ -25,7 +31,10 @@ namespace Application.Helpers
                     NotificationsForFollowedProducts = src.NotificationsForFollowedProducts
                 }));
 
+            CreateMap<ProductCategory, CategoryDto>();
+
             CreateMap<ProductCategory, ProductCategoryDto>();
+                
 
             CreateMap<Store, StoreDto>();
 

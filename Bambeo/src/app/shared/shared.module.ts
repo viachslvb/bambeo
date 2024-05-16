@@ -10,6 +10,7 @@ import { BreadcrumbModule } from 'xng-breadcrumb';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { ProfileMenuDropdownComponent } from './components/profile-menu-dropdown/profile-menu-dropdown.component';
 import { RouterModule } from '@angular/router';
+import { LoadingErrorComponent } from './components/loading-error/loading-error.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { RouterModule } from '@angular/router';
     PagingHeaderComponent,
     TextInputComponent,
     LoadingSpinnerComponent,
-    ProfileMenuDropdownComponent
+    ProfileMenuDropdownComponent,
+    LoadingErrorComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +37,8 @@ import { RouterModule } from '@angular/router';
     LoadingSpinnerComponent,
     NgxSpinnerModule,
     BreadcrumbModule,
-    ProfileMenuDropdownComponent
+    ProfileMenuDropdownComponent,
+    LoadingErrorComponent
   ]
 })
 export class SharedModule { }

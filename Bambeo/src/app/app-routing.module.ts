@@ -4,9 +4,9 @@ import { NotFoundComponent } from './core/components/not-found/not-found.compone
 import { ServerErrorComponent } from './core/components/server-error/server-error.component';
 
 const routes: Routes = [
-  { path: '', 
+  { path: '',
     title: 'Bambeo • Strona Główna',
-    loadChildren: () => import('./feature/products/products.module').then(m => m.ProductsModule), 
+    loadChildren: () => import('./feature/products/products.module').then(m => m.ProductsModule),
     data: { breadcrumb: { info: 'Bambeo' } }
   },
   { path: 'account',

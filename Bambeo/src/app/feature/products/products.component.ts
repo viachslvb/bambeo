@@ -3,9 +3,8 @@ import { PromotionService } from 'src/app/feature/products/promotion.service';
 import { Promotion } from 'src/app/core/models/promotion';
 import { ProductCategory } from 'src/app/core/models/productCategory';
 import { Store } from 'src/app/core/models/store';
-import { catchError, forkJoin, of } from 'rxjs';
+import { catchError, forkJoin, of, tap } from 'rxjs';
 import { BusyService } from '../../core/services/busy.service';
-import { UserFilterItem } from '../../core/models/userFilterItem';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IPromotionFilter } from './models/IPromotionFilter';
@@ -19,15 +18,9 @@ import { Pagination } from 'src/app/core/models/pagination';
     trigger('fadeIn', [
       state('void', style({ opacity: 0 })),
       transition('void => *', [
-        animate('0.20s ease-in')
-      ]),
-    ]),
-    trigger('fadeInFast', [
-      state('void', style({ opacity: 0 })),
-      transition('void => *', [
         animate('0.15s ease-in')
       ]),
-    ]),
+    ])
   ]
 })
 
@@ -41,8 +34,8 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   promotions!: Pagination<Promotion[]>;
   categories: ProductCategory[] = [];
   stores: Store[] = [];
-  userFilters: UserFilterItem[] = [];
   isPromotionsLoaded = false;
+  isLoadingError = false;
 
   // Variables for managing filter page touch interactions
   private filterPagePositionY = 0;
@@ -85,7 +78,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     this.addTouchListenersForFilterPage();
     this.setThresholdToCloseFilterPage();
     this.checkIsMobile();
-    
+
     this.cdr.detectChanges();
   }
 
@@ -95,20 +88,18 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     forkJoin({
         stores: this.promotionService.getStores().pipe(catchError(error => {
             console.error('Error loading stores:', error);
+            this.isLoadingError = true;
             return of([]);
         })),
         categories: this.promotionService.getCategories().pipe(catchError(error => {
             console.error('Error loading categories:', error);
+            this.isLoadingError = true;
             return of([]);
         }))
     }).subscribe({
         next: results => {
             this.stores = results.stores;
             this.categories = results.categories;
-            this.hideLoadingSpinner();
-        },
-        error: error => {
-            console.error('Error in forkJoin:', error);
             this.hideLoadingSpinner();
         }
     });
@@ -126,10 +117,17 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   }
 
   private subscribeToPromotions() {
-    this.promotionService.getPromotions().subscribe({
+    this.promotionService.getPromotions().pipe(
+      tap(() => {
+        this.isPromotionsLoaded = true;
+      }),
+      catchError(() => {
+        // Return an empty Pagination object to keep the stream alive
+        return of({ pageIndex: 1, pageSize: this.promotionService.defaultPageSize, hasPreviousPage: false, hasNextPage: false, count: 0, data: [] });
+      })
+    ).subscribe({
       next: response => {
         this.promotions = response;
-        this.isPromotionsLoaded = true;
       }
     });
   }
@@ -246,23 +244,23 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   addTouchListenersForFilterPage() {
     const filterPage = this.filterPage.nativeElement;
     const transitionStyle = 'transform ease-in-out 0.3s';
-  
+
     const onTouchStart = (e: TouchEvent) => {
       this.renderer.removeStyle(filterPage, 'transition');
       this.filterPagePositionY = e.touches[0].clientY;
       this.filterPageStartY = 0;
-  
+
       this.filterPagePreventClosing = filterPage.scrollTop !== 0;
     };
-  
+
     const onTouchEnd = (e: TouchEvent) => {
       if (this.filterPagePreventClosing) return;
-  
+
       const currentY = e.changedTouches[0].clientY;
       const deltaY = currentY - this.filterPagePositionY;
-  
+
       this.renderer.setStyle(filterPage, 'transition', transitionStyle);
-  
+
       if (deltaY > this.thresholdToCloseFilterPage) {
         this.renderer.removeStyle(filterPage, 'transform');
         this.toggleFilterPage();
@@ -270,19 +268,19 @@ export class ProductsComponent implements OnInit, AfterViewInit {
         filterPage.style.transform = 'translateY(0)';
       }
     };
-  
+
     const onTouchMove = (e: TouchEvent) => {
       if (this.filterPagePreventClosing) return;
-  
+
       const currentY = e.touches[0].clientY;
       const deltaY = currentY - this.filterPagePositionY;
-  
+
       let menuOffsetY = this.filterPageStartY + deltaY;
       if (menuOffsetY < 0) menuOffsetY = 0;
-  
+
       filterPage.style.transform = `translateY(${menuOffsetY}px)`;
     };
-  
+
     filterPage.addEventListener('touchstart', onTouchStart);
     filterPage.addEventListener('touchend', onTouchEnd);
     filterPage.addEventListener('touchmove', onTouchMove);

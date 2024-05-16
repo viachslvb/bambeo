@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { UserFilterItem, UserFilterType } from 'src/app/core/models/userFilterItem';
 import { PromotionService } from '../promotion.service';
 import { Subject, map, takeUntil } from 'rxjs';
@@ -15,7 +15,7 @@ import { Store } from 'src/app/core/models/store';
 export class UserFiltersComponent implements AfterViewInit, OnDestroy {
   @Input() categories!: ProductCategory[];
   @Input() stores!: Store[];
-  
+
   private destroy$ = new Subject<void>();
   userFilters!: UserFilterItem[];
 
@@ -47,7 +47,7 @@ export class UserFiltersComponent implements AfterViewInit, OnDestroy {
 
   private updateUserFilters(filters: IPromotionFilter) {
     let currentFilters: UserFilterItem[] = [];
-    
+
     this.updateSeacrhQuery(filters, currentFilters);
     this.updateStoreFilters(filters, currentFilters);
     this.updateCategoryFiltersWithSubcategories(filters, currentFilters);
@@ -94,10 +94,10 @@ export class UserFiltersComponent implements AfterViewInit, OnDestroy {
       });
     } else {
       const parentCategories = this.categories.filter(category => category.subCategories);
-      
+
       parentCategories.forEach(parentCategory => {
         const allSubcategoriesSelected = filters.categoryIds.includes(parentCategory.id);
-        
+
         if (allSubcategoriesSelected) {
           currentFilters.push({
             name: parentCategory.name,
@@ -122,7 +122,7 @@ export class UserFiltersComponent implements AfterViewInit, OnDestroy {
 
   private updatePromotionOptions(filters: IPromotionFilter, currentFilters: UserFilterItem[]): UserFilterItem[] {
     if (filters.includeUpcomingPromotions) {
-      currentFilters.push({ 
+      currentFilters.push({
         name: 'Nadchodzące promocje',
         type: UserFilterType.Options
       });
@@ -133,12 +133,12 @@ export class UserFiltersComponent implements AfterViewInit, OnDestroy {
 
   private updateSeacrhQuery(filters: IPromotionFilter, currentFilters: UserFilterItem[]): UserFilterItem[] {
     if (filters.search.length > 0) {
-      currentFilters.push({ 
+      currentFilters.push({
         name: filters.search,
         type: UserFilterType.Query
       });
     }
-    
+
     return currentFilters;
   }
 

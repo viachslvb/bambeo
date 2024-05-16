@@ -197,8 +197,7 @@ export class PromotionService {
           this.router.navigateByUrl('/');
         }
         
-        // Return an empty Pagination object to keep the stream alive
-        return of({ pageIndex: 1, pageSize: this.defaultPageSize, hasPreviousPage: false, hasNextPage: false, count: 0, data: [] });
+        throw error;
       })
     );
   }

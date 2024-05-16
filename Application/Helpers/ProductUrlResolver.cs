@@ -1,19 +1,19 @@
-﻿using Application.Models.Dtos;
-using AutoMapper;
+﻿using AutoMapper;
 using Core.Entities;
 using Microsoft.Extensions.Configuration;
 
 namespace Application.Helpers
 {
-    public class ProductUrlResolver : IValueResolver<Product, ProductDto, string>
+    public class ProductUrlResolver : IValueResolver<Product, object, string>
     {
         private readonly IConfiguration _config;
+
         public ProductUrlResolver(IConfiguration config)
         {
             _config = config;
         }
 
-        public string Resolve(Product source, ProductDto destination, string destMember, ResolutionContext context)
+        public string Resolve(Product source, object destination, string destMember, ResolutionContext context)
         {
             if (!string.IsNullOrEmpty(source.ImageUrl))
             {

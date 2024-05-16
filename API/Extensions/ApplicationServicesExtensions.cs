@@ -27,6 +27,7 @@ namespace API.Extensions
             services.AddScoped<IUserSettingsRepository, UserSettingsRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<ICategoryRepository,  CategoryRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();

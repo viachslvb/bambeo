@@ -18,10 +18,10 @@ namespace API.Controllers
         // GET api/categories
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<ProductCategoryDto>>> GetCategories()
+        public async Task<ActionResult<List<CategoryDto>>> GetCategories()
         {
-            ServiceResult<List<ProductCategoryDto>> result = await _categoryService.GetCategories();
-            return Ok(new ApiResponse<List<ProductCategoryDto>>(result.Data));
+            ServiceResult<List<CategoryDto>> result = await _categoryService.GetCategories();
+            return Ok(new ApiResponse<List<CategoryDto>>(result.Data));
         }
     }
 }

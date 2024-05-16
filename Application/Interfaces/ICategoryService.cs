@@ -5,7 +5,7 @@ namespace Application.Interfaces
 {
     public interface ICategoryService
     {
-        Task<ServiceResult<List<ProductCategoryDto>>> GetCategories();
-        List<int> GetAllCategoryIdsIncludingSubCategories(List<int> categoryIds, List<ProductCategoryDto> allCategories);
+        Task<ServiceResult<List<CategoryDto>>> GetCategories();
+        List<int> GetAllCategoryIdsIncludingSubCategories(List<int> categoryIds, List<CategoryDto> allCategories);
     }
 }
