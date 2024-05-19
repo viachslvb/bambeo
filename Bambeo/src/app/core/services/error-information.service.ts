@@ -61,7 +61,9 @@ export class ErrorInformationService {
     [ApiErrorCode.FailedDeleteUser]: {
       displayMessage: true,
       message: "Nie udało się usunąć konta. Prosimy skontaktować się z pomocą techniczną w celu uzyskania pomocy lub spróbować ponownie później."
-    }
+    },
+    [ApiErrorCode.ProductAlreadyFavorited]: {},
+    [ApiErrorCode.ProductNotFavorited]: {},
   };
 
   static GetErrorInfo(error: ApiErrorResponse): ApiErrorInfo {

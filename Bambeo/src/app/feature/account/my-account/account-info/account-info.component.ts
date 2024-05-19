@@ -2,11 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject, switchMap, takeUntil } from 'rxjs';
 import { UserUpdateModel } from 'src/app/core/models/api/requests/userUpdateModel';
-import { UserService } from 'src/app/core/services/user.service';
+import { UserService } from 'src/app/core/state/user.service';
 import { MyAccountService } from '../my-account.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { AuthService } from 'src/app/core/services/auth.service';
+import { AuthService } from 'src/app/core/state/auth.service';
 import { ApiErrorCode } from 'src/app/core/models/api/apiErrorCode';
 import { Router } from '@angular/router';
 import { NoWhitespaceValidator } from 'src/app/core/validators/whitespaces.validator';
@@ -25,7 +25,7 @@ import { NoWhitespaceValidator } from 'src/app/core/validators/whitespaces.valid
 })
 export class AccountInfoComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  
+
   accountInfoForm = new FormGroup({
     email: new FormControl({ value: '', disabled: true }, [Validators.required, Validators.email]),
     displayName: new FormControl('', [Validators.required, NoWhitespaceValidator()])
@@ -168,9 +168,6 @@ export class AccountInfoComponent implements OnInit, OnDestroy {
       defaultFocus: 'reject',
       accept: () => {
         this.deleteAccount();
-      },
-      reject: () => {
-        console.log('Declined');
       }
     });
   }
@@ -187,8 +184,8 @@ export class AccountInfoComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: () => {
         this.isDeletingAccount = false;
-        this.toastService.add({ 
-          severity: 'success', 
+        this.toastService.add({
+          severity: 'success',
           life: 10000,
           summary: 'Informacja',
           detail: 'Twoje konto zostało pomyślnie usunięte.'
@@ -197,9 +194,11 @@ export class AccountInfoComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error during account deletion or logout:', error);
+
         if (error.type === ApiErrorCode.FailedDeleteUser) {
           this.deleteAccountErrorMessage = error.message;
         }
+
         this.isDeletingAccount = false;
       }
     });

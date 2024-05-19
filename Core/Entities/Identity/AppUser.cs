@@ -8,5 +8,6 @@ namespace Core.Entities.Identity
         public string DisplayName { get; set; }
         public virtual UserSettings Settings { get; set; }
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new HashSet<RefreshToken>();
+        public virtual ICollection<FavoriteProduct> FavoriteProducts { get; set; }
     }
 }

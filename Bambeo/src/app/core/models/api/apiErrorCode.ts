@@ -10,8 +10,8 @@ export enum ApiErrorCode {
   EmailConfirmationFailed = 1014,
   EmailAlreadyConfirmed = 1015,
   PasswordResetFailed = 1016,
-  // Validation errors
   ValidationFailed = 2001,
-  // ...
+  ProductAlreadyFavorited = 3001,
+  ProductNotFavorited = 3002,
   Unknown = 9999
 }

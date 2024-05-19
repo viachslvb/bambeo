@@ -26,6 +26,8 @@ namespace API.Helpers
                 ErrorCode.AccessTokenExpired => StatusCodes.Status401Unauthorized,
                 ErrorCode.PasswordResetFailed => StatusCodes.Status400BadRequest,
                 ErrorCode.ValidationFailed => StatusCodes.Status400BadRequest,
+                ErrorCode.ProductAlreadyFavorited => StatusCodes.Status400BadRequest,
+                ErrorCode.ProductNotFavorited => StatusCodes.Status400BadRequest,
                 _ => StatusCodes.Status500InternalServerError,
             };
         }

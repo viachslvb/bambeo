@@ -1,6 +1,6 @@
 ﻿using Application.Helpers;
-using Application.Models.Dtos;
 using Application.Models;
+using Application.Models.Dtos.Promotion;
 
 namespace Application.Interfaces
 {

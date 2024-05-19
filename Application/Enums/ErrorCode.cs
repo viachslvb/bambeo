@@ -22,8 +22,12 @@
         EmailConfirmationFailed = 1014,
         EmailAlreadyConfirmed = 1015,
         PasswordResetFailed = 1016,
-        
 
+        // Validation Error Codes
         ValidationFailed = 2001,
+
+        // Favorite Products Error Codes
+        ProductAlreadyFavorited = 3001,
+        ProductNotFavorited = 3002
     }
 }

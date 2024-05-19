@@ -1,4 +1,4 @@
-﻿using Application.Models.Dtos;
+﻿using Application.Models.Dtos.User;
 
 namespace API.Responses.Account
 {

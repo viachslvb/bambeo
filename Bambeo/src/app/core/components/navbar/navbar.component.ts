@@ -2,8 +2,8 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, first, skipWhile, takeUntil, tap } from 'rxjs';
-import { AuthService } from 'src/app/core/services/auth.service';
-import { UserService } from '../../services/user.service';
+import { AuthService } from 'src/app/core/state/auth.service';
+import { UserService } from '../../state/user.service';
 
 @Component({
   selector: 'app-navbar',
@@ -45,7 +45,7 @@ export class NavbarComponent implements AfterViewInit {
     });
   }
 
-  defineMenuHeight() { 
+  defineMenuHeight() {
     this.mobileMenu.nativeElement.style.height = "auto";
     this.mobileMenuHeight = this.mobileMenu.nativeElement.offsetHeight;
     this.mobileMenu.nativeElement.style.height = "0";

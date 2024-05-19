@@ -1,5 +1,6 @@
 ﻿using Application.Helpers;
-using Application.Models.Dtos;
+using Application.Models.Dtos.Account;
+using Application.Models.Dtos.User;
 
 namespace Application.Interfaces
 {

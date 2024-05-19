@@ -1,9 +1,9 @@
-import { Component, OnInit, ElementRef, ViewChild, Renderer2, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Renderer2, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { PromotionService } from 'src/app/feature/products/promotion.service';
 import { Promotion } from 'src/app/core/models/promotion';
 import { ProductCategory } from 'src/app/core/models/productCategory';
 import { Store } from 'src/app/core/models/store';
-import { catchError, forkJoin, of, tap } from 'rxjs';
+import { Subject, catchError, forkJoin, of, takeUntil, tap } from 'rxjs';
 import { BusyService } from '../../core/services/busy.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,7 +24,9 @@ import { Pagination } from 'src/app/core/models/pagination';
   ]
 })
 
-export class ProductsComponent implements OnInit, AfterViewInit {
+export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   @ViewChild('filterBar', { static: false }) filterBar!: ElementRef;
   @ViewChild('filterPage', { static: false }) filterPage!: ElementRef;
   @ViewChild('toggleFilterPageButton', { static: false }) toggleFilterButton!: ElementRef;
@@ -74,12 +76,18 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.renderer.setStyle(this.filterPage.nativeElement, 'transition', 'transform ease-in-out 0.3s');
     }, 200);
+
     this.addListeners();
     this.addTouchListenersForFilterPage();
     this.setThresholdToCloseFilterPage();
     this.checkIsMobile();
 
     this.cdr.detectChanges();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private loadData(): void {
@@ -121,6 +129,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
       tap(() => {
         this.isPromotionsLoaded = true;
       }),
+      takeUntil(this.destroy$),
       catchError(() => {
         // Return an empty Pagination object to keep the stream alive
         return of({ pageIndex: 1, pageSize: this.promotionService.defaultPageSize, hasPreviousPage: false, hasNextPage: false, count: 0, data: [] });
@@ -133,7 +142,9 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   }
 
   private initFiltersFromQueryParams() {
-    this.activatedRoute.queryParams.subscribe(params => {
+    this.activatedRoute.queryParams.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(params => {
       // Filter and clean the query parameters
       const filteredParams: { [key: string]: any } = {};
       this.promotionService.recognizedParams.forEach(param => {
@@ -231,13 +242,14 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   // Scroll event handler
   private onScroll = (event: Event): void => {
     if (!this.isMobileVersion) return;
+    if (this.spaceForFilterBarWhenFixed) {
+      const elementRect = this.spaceForFilterBarWhenFixed.nativeElement.getBoundingClientRect();
 
-    const elementRect = this.spaceForFilterBarWhenFixed.nativeElement.getBoundingClientRect();
-
-    if (elementRect.top <= 0) {
-      this.makeFilterBarFixed();
-    } else {
-      this.makeFilterBarUnfixed();
+      if (elementRect.top <= 0) {
+        this.makeFilterBarFixed();
+      } else {
+        this.makeFilterBarUnfixed();
+      }
     }
   };
 

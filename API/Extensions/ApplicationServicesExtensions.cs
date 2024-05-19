@@ -28,6 +28,7 @@ namespace API.Extensions
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<ICategoryRepository,  CategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IFavoriteProductRepository, FavoriteProductRepository>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
@@ -35,6 +36,7 @@ namespace API.Extensions
             services.AddScoped<IStoreService, StoreService>();
             services.AddScoped<IPromotionService, PromotionService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IFavoriteProductService, FavoriteProductService>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

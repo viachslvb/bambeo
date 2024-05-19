@@ -5,7 +5,7 @@ import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationEr
 import { EMPTY, Observable, Subject, catchError, finalize, of, switchMap, takeUntil } from 'rxjs';
 import { PasswordResetModel } from 'src/app/core/models/api/requests/passwordResetModel';
 import { ApiErrorCode } from 'src/app/core/models/api/apiErrorCode';
-import { AuthService } from 'src/app/core/services/auth.service';
+import { AuthService } from 'src/app/core/state/auth.service';
 
 @Component({
   selector: 'app-password-reset',
@@ -28,7 +28,7 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
     confirmPassword: new FormControl('', [Validators.required], [this.validatePasswordMatch()]),
   });
 
-  constructor(private accountService: AccountService, private authService: AuthService, private router: Router, 
+  constructor(private accountService: AccountService, private authService: AuthService, private router: Router,
     private route: ActivatedRoute) {
       this.userId = this.route.snapshot.queryParams['userId'];
       this.token = this.route.snapshot.queryParams['token'];
@@ -43,7 +43,7 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
 
     if (passwordControl) {
       passwordControl.valueChanges
-      .pipe(takeUntil(this.destroy$))  
+      .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.passwordResetForm.get('confirmPassword')?.updateValueAndValidity();
       });
@@ -72,7 +72,7 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
         switchMap(() => {
           this.isChanged = true;
           this.passwordResetForm.disable();
-          
+
           if (this.authService.isLoggedIn()) {
             return this.authService.logout();
           } else {
@@ -110,14 +110,14 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       const passwordControl = this.passwordResetForm.get('password')?.value;
       const confirmPasswordControl = control.value;
-  
+
       if (passwordControl && confirmPasswordControl) {
         const password = passwordControl;
         const confirmPassword = confirmPasswordControl;
 
         return password === confirmPassword ? of(null) : of({ passwordMismatch: true });
       }
-  
+
       return of(null);
     };
   }

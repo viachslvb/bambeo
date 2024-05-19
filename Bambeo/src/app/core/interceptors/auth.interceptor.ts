@@ -7,7 +7,7 @@ import {
   HttpErrorResponse
 } from '@angular/common/http';
 import { BehaviorSubject, EMPTY, Observable, catchError, filter, switchMap, take, throwError } from 'rxjs';
-import { AuthService } from 'src/app/core/services/auth.service';
+import { AuthService } from 'src/app/core/state/auth.service';
 import { Router } from '@angular/router';
 import { ApiErrorCode } from 'src/app/core/models/api/apiErrorCode';
 

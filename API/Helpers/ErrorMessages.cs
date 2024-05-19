@@ -24,6 +24,8 @@ namespace API.Helpers
             { ErrorCode.PasswordResetFailed, "Link do resetowania hasła jest nieprawidłowy lub wygasł. Prosimy o ponowne złożenie wniosku o resetowanie hasła." },
             { ErrorCode.UserNotFound, "Użytkownik nie został znaleziony." },
             { ErrorCode.InsufficientPermissions, "Brak wystarczających uprawnień." },
+            { ErrorCode.ProductAlreadyFavorited, "Produkt jest już dodany do ulubionych." },
+            { ErrorCode.ProductNotFavorited, "Produkt nie znajduje się na liście ulubionych lub został już usunięty." },
         };
 
         public static string GetErrorMessage(ErrorCode errorCode)

@@ -1,7 +1,7 @@
 ﻿using Application.Enums;
 using Application.Helpers;
 using Application.Interfaces;
-using Application.Models.Dtos;
+using Application.Models.Dtos.User;
 using AutoMapper;
 using Core.Entities.Identity;
 using Core.Interfaces.Repositories;

@@ -41,7 +41,7 @@
             </div>
         </div>
         <!-- Products Section -->
-        <div class="w-full lg:w-9/12 lg:ml-10" *ngIf="isPromotionsLoaded">
+        <div class="w-full lg:w-9/12 lg:ml-10" *ngIf="isPromotionsLoaded && !isLoadingError">
             <!-- Space for Fixed Filter Bar -->
             <div class="h-0" #spaceForFilterBarWhenFixed></div>
             <!-- Filter Bar -->
@@ -94,7 +94,7 @@
         </div>
     </div>
     <!-- Loading Error -->
-    <div *ngIf="isLoadingError && !isPromotionsLoaded" class="flex justify-center items-center">
+    <div *ngIf="isLoadingError" class="flex justify-center items-center">
         <bb-loading-error></bb-loading-error>
     </div>
 </div>

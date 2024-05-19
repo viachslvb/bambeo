@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { Product } from 'src/app/core/models/product';
 import { ProductService } from '../product.service';
 import { Location } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { BusyService } from 'src/app/core/services/busy.service';
 import { ProductInfo } from 'src/app/core/models/productInfo';
+import { FavoriteProductsService } from 'src/app/core/state/favorite-products.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-product-detail',
@@ -21,16 +22,17 @@ import { ProductInfo } from 'src/app/core/models/productInfo';
     ])
   ]
 })
-export class ProductDetailComponent implements OnInit {
+export class ProductDetailComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   product?: ProductInfo;
-  isFavorite: boolean = false;
+  isFavorite = false;
   isLoadingError = false;
-
   private productLoadingSpinnerTimeout: any;
   productLoadingSpinner = 'productLoadingSpinner';
 
   constructor(
     private productService: ProductService,
+    private favoritesService: FavoriteProductsService,
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
@@ -39,54 +41,82 @@ export class ProductDetailComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.subscribeToQueryParam();
+    this.subscribeToRouteParams();
+    this.subscribeToFavorites();
   }
 
-  private subscribeToQueryParam() {
-    this.route.params.subscribe(params => {
-      const productId = params['id'];
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    clearTimeout(this.productLoadingSpinnerTimeout);
+  }
 
-      if (productId && /^\d+$/.test(productId)) {
-        const id = Number(productId);
-        this.fetchProduct(id);
-      } else {
-        console.error('Invalid product ID:', productId);
-        this.router.navigate(['/not-found']);
+  private subscribeToFavorites(): void {
+    this.favoritesService.favorites$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(favorites => {
+        if (this.product) {
+          this.isFavorite = favorites.includes(this.product.id);
+        }
+      });
+  }
+
+  private subscribeToRouteParams(): void {
+    this.route.params
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        const productId = params['id'];
+        if (productId && /^\d+$/.test(productId)) {
+          this.loadProduct(Number(productId));
+        } else {
+          console.error('Invalid product ID:', productId);
+          this.router.navigate(['/not-found']);
+        }
+      });
+  }
+
+  private loadProduct(id: number): void {
+    this.productLoadingSpinnerTimeout = setTimeout(() => {
+      this.busyService.busy(this.productLoadingSpinner);
+    }, 70);
+
+    this.productService.getProduct(id).subscribe({
+      next: product => {
+        this.product = product;
+        this.isFavorite = this.favoritesService.isFavorite(product.id);
+        this.ts.setTitle(`Bambeo • Promocja na ${product.name}`);
+        this.clearLoadingSpinner();
+      },
+      error: err => {
+        console.error(err);
+        this.isLoadingError = true;
+        this.product = undefined;
+        this.clearLoadingSpinner();
       }
     });
   }
 
-  fetchProduct(id: number) {
-    if (id) {
-      this.productLoadingSpinnerTimeout = setTimeout(() => {
-        this.busyService.busy(this.productLoadingSpinner);
-      }, 70);
+  private clearLoadingSpinner(): void {
+    clearTimeout(this.productLoadingSpinnerTimeout);
+    this.busyService.idle(this.productLoadingSpinner);
+  }
 
-      this.productService.getProduct(id).subscribe({
-        next: product => {
-          this.product = product;
-          this.ts.setTitle(`Bambeo • Promocja na ${product.name}`);
-
-          clearTimeout(this.productLoadingSpinnerTimeout);
-          this.busyService.idle(this.productLoadingSpinner);
-        },
-        error: err => {
-          console.log(err);
-
-          this.isLoadingError = true;
-          this.product = undefined;
-          clearTimeout(this.productLoadingSpinnerTimeout);
-          this.busyService.idle(this.productLoadingSpinner);
-        }
-      });
+  toggleFavorite(): void {
+    if (this.product) {
+      if (this.isFavorite) {
+        this.favoritesService.removeFromFavorites(this.product.id).subscribe({
+          error: err => console.error(err)
+        });
+      } else {
+        this.favoritesService.addToFavorites(this.product.id).subscribe({
+          error: err => console.error(err)
+        });
+      }
+      this.isFavorite = !this.isFavorite;
     }
   }
 
-  goBack() {
+  goBack(): void {
     this.location.back();
-  }
-
-  addToFavorites() {
-    this.isFavorite = !this.isFavorite;
   }
 }

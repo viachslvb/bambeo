@@ -4,10 +4,11 @@ using API.Helpers;
 using Application.Interfaces;
 using API.Responses;
 using API.Responses.Account;
-using Application.Models.Dtos;
 using API.Extensions;
 using Application.Helpers;
 using Application.Enums;
+using Application.Models.Dtos.Account;
+using Application.Models.Dtos.User;
 
 namespace API.Controllers
 {

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using API.Responses;
 using Application.Helpers;
-using Application.Models.Dtos;
 using Application.Interfaces;
 using API.Helpers;
+using Application.Models.Dtos.Product;
 
 namespace API.Controllers
 {

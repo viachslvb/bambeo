@@ -12,6 +12,6 @@
         public ProductCategory ProductCategory { get; set; }
         public Store Store { get; set; }
         public virtual ICollection<Promotion> Promotions { get; set; }
-
+        public virtual ICollection<FavoriteProduct> Favorites { get; set; }
     }
 }

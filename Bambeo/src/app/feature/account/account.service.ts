@@ -3,7 +3,7 @@ import { User } from '../../core/models/user';
 import { Observable, catchError, finalize, map, of } from 'rxjs';
 import { ApiService } from '../../core/services/api.service';
 import { EmailExistsResponse } from '../../core/models/api/responses/emailExistsResponse';
-import { AuthService } from '../../core/services/auth.service';
+import { AuthService } from '../../core/state/auth.service';
 import { AuthResponse } from '../../core/models/api/responses/authResponse';
 import { EmailConfirmationResponse } from '../../core/models/api/responses/emailConfirmationResponse';
 import { ForgotPasswordResponse } from '../../core/models/api/responses/forgotPasswordResponse';
@@ -14,7 +14,7 @@ import { SignupModel } from '../../core/models/api/requests/signupModel';
 import { LoginModel } from '../../core/models/api/requests/loginModel';
 import { ConfirmEmailModel } from '../../core/models/api/requests/confirmEmailModel';
 import { EmailExistsModel } from '../../core/models/api/requests/checkEmailModel';
-import { UserService } from '../../core/services/user.service';
+import { UserService } from '../../core/state/user.service';
 
 @Injectable()
 export class AccountService {
@@ -46,7 +46,7 @@ export class AccountService {
 
   checkEmailExists(values: EmailExistsModel): Observable<boolean> {
     const endpoint = `account/email-exists?email=${values.email}`;
-    
+
     return this.apiService.get<EmailExistsResponse>(endpoint).pipe(
       map(response => response.exists),
       catchError((error: any) => {

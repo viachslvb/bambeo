@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Application.Models.Dtos;
 using API.Helpers;
 using API.Responses;
 using API.Extensions;
 using Application.Helpers;
 using Application.Interfaces;
+using Application.Models.Dtos.User;
 
 namespace API.Controllers
 {

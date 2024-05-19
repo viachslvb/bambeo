@@ -3,7 +3,7 @@ using API.Responses;
 using Application.Helpers;
 using Application.Interfaces;
 using Application.Models;
-using Application.Models.Dtos;
+using Application.Models.Dtos.Promotion;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -18,16 +18,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<PromotionDto>>> GetPromotions([FromQuery] PromotionSpecParamsDto promotionSpecParamsDto)
-        {
-            ServiceResult<PageableCollection<PromotionDto>> result = await _promotionService.GetPromotionsWithSpec(promotionSpecParamsDto);
-
-            return Ok(new ApiResponse<PageableCollection<PromotionDto>>(result.Data));
-        }
-
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<PromotionDto>>> GetPromotionsPost([FromBody] PromotionSpecParamsDto promotionSpecParamsDto)
+        public async Task<ActionResult<PageableCollection<PromotionDto>>> GetPromotions([FromQuery] PromotionSpecParamsDto promotionSpecParamsDto)
         {
             ServiceResult<PageableCollection<PromotionDto>> result = await _promotionService.GetPromotionsWithSpec(promotionSpecParamsDto);
 

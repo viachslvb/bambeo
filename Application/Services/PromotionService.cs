@@ -2,7 +2,7 @@
 using Application.Helpers;
 using Application.Interfaces;
 using Application.Models;
-using Application.Models.Dtos;
+using Application.Models.Dtos.Promotion;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces.Repositories;

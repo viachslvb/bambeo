@@ -1,5 +1,5 @@
 ﻿using Application.Helpers;
-using Application.Models.Dtos;
+using Application.Models.Dtos.Product;
 
 namespace Application.Interfaces
 {
