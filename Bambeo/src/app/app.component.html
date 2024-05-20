@@ -1,9 +1,10 @@
 <app-navbar></app-navbar>
 <app-header></app-header>
 <router-outlet></router-outlet>
-<p-toast 
+<p-toast
     position="bottom-right"
     [preventOpenDuplicates]=true
+    [breakpoints]="{ '640px': { width: '100%', right: '0', left: '0', bottom: '0' } }"
     >
 </p-toast>
 <ngx-spinner bdColor="rgba(255,255,255,0)" size="medium" color="#e11d48" type="ball-spin-rotate" [fullScreen]="true" name="pageLoadingSpinner"></ngx-spinner>

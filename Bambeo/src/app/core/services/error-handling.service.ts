@@ -34,13 +34,13 @@ export class ErrorHandlingService {
       errorMessage = 'Something went wrong with the API.';
     }
 
-    this.toastService.add({ 
+    this.toastService.add({
       severity: 'error',
       sticky: true,
       summary: "Błąd podczas pobierania danych",
-      detail: "Nie udało się połączyć z serwerem w celu pobrania danych. Prosimy odświeżyć stronę lub spróbować później." 
+      detail: "Nie udało się połączyć z serwerem w celu pobrania danych. Prosimy odświeżyć stronę lub spróbować później."
     });
-    
+
     return throwError(() => errorMessage);
   }
 
@@ -48,8 +48,8 @@ export class ErrorHandlingService {
     const errorInfo = ErrorInformationService.GetErrorInfo(error);
 
     if (errorInfo.displayNotification) {
-      this.toastService.add({ 
-        severity: 'error', 
+      this.toastService.add({
+        severity: 'error',
         summary: errorInfo.title || 'Błąd',
         detail: errorInfo.message
       });
