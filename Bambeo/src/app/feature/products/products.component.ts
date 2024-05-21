@@ -9,6 +9,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ActivatedRoute, Router } from '@angular/router';
 import { IPromotionFilter } from './models/IPromotionFilter';
 import { Pagination } from 'src/app/core/models/pagination';
+import { DeviceService } from 'src/app/core/services/device.service';
 
 @Component({
   selector: 'app-products',
@@ -44,11 +45,13 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   private filterPageStartY = 0;
   private filterPagePreventClosing = false;
   private thresholdToCloseFilterPage = 150;
+  private touchListeners: (() => void)[] = [];
 
   // Flags for mobile UI state
-  isMobileVersion: boolean = false;
+  isMobile: boolean = false;
   isFilterBarFixed: boolean = false;
   isFilterPageOpen: boolean = false;
+  private scrollListener!: () => void;
 
   // Loading spinner management
   private dataLoadingSpinnerTimeout: any;
@@ -61,7 +64,8 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     private renderer: Renderer2,
     private busyService: BusyService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private deviceService: DeviceService
   ) {
     this.promotionService.setLoadingSpinner(this.promotionsLoadingSpinner);
   }
@@ -77,15 +81,22 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.renderer.setStyle(this.filterPage.nativeElement, 'transition', 'transform ease-in-out 0.3s');
     }, 200);
 
-    this.addListeners();
-    this.addTouchListenersForFilterPage();
+    this.subscribeToIsMobile();
+    this.addScrollListener();
     this.setThresholdToCloseFilterPage();
-    this.checkIsMobile();
+    this.addTouchListenersForFilterPage();
 
     this.cdr.detectChanges();
   }
 
   ngOnDestroy(): void {
+    this.touchListeners.forEach(unlisten => unlisten());
+    this.touchListeners = [];
+
+    if (this.scrollListener) {
+      this.scrollListener();
+    }
+
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -224,24 +235,28 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     return param ? parseInt(param, 10) : defaultValue;
   }
 
-  private addListeners() {
-    window.addEventListener('resize', this.onResize);
-    window.addEventListener('scroll', this.onScroll.bind(this), true);
+  private subscribeToIsMobile() {
+    this.deviceService.isMobile$
+      .pipe(
+        takeUntil(this.destroy$)
+      )
+      .subscribe(isMobile => {
+        this.isMobile = isMobile;
+        this.setThresholdToCloseFilterPage();
+
+        if (!this.isMobile && this.isFilterBarFixed) {
+          this.makeFilterBarUnfixed();
+        }
+      });
   }
 
-  // Resize event handler
-  private onResize = (): void => {
-    this.setThresholdToCloseFilterPage();
-    this.checkIsMobile();
-
-    if (!this.isMobileVersion && this.isFilterBarFixed) {
-      this.makeFilterBarUnfixed();
-    }
-  };
+  private addScrollListener() {
+    this.scrollListener = this.renderer.listen('window', 'scroll', this.onScroll.bind(this));
+  }
 
   // Scroll event handler
   private onScroll = (event: Event): void => {
-    if (!this.isMobileVersion) return;
+    if (!this.isMobile) return;
     if (this.spaceForFilterBarWhenFixed) {
       const elementRect = this.spaceForFilterBarWhenFixed.nativeElement.getBoundingClientRect();
 
@@ -261,7 +276,6 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.renderer.removeStyle(filterPage, 'transition');
       this.filterPagePositionY = e.touches[0].clientY;
       this.filterPageStartY = 0;
-
       this.filterPagePreventClosing = filterPage.scrollTop !== 0;
     };
 
@@ -293,9 +307,9 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
       filterPage.style.transform = `translateY(${menuOffsetY}px)`;
     };
 
-    filterPage.addEventListener('touchstart', onTouchStart);
-    filterPage.addEventListener('touchend', onTouchEnd);
-    filterPage.addEventListener('touchmove', onTouchMove);
+    this.touchListeners.push(this.renderer.listen(filterPage, 'touchstart', onTouchStart));
+    this.touchListeners.push(this.renderer.listen(filterPage, 'touchend', onTouchEnd));
+    this.touchListeners.push(this.renderer.listen(filterPage, 'touchmove', onTouchMove));
   }
 
   setThresholdToCloseFilterPage() {
@@ -303,7 +317,6 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   makeFilterBarFixed() {
-    // get height of filterBar
     const filterBarHeight = this.filterBar.nativeElement.offsetHeight;
     this.renderer.setStyle(this.spaceForFilterBarWhenFixed.nativeElement, 'height', filterBarHeight + 'px');
 
@@ -316,10 +329,6 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.isFilterBarFixed = false;
     this.renderer.removeClass(this.filterBar.nativeElement, 'filterbar-fixed');
-  }
-
-  checkIsMobile() {
-    this.isMobileVersion = window.innerWidth < 1024;
   }
 
   toggleFilterPage() {

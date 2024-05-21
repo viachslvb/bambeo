@@ -11,6 +11,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { ProfileMenuDropdownComponent } from './components/profile-menu-dropdown/profile-menu-dropdown.component';
 import { RouterModule } from '@angular/router';
 import { LoadingErrorComponent } from './components/loading-error/loading-error.component';
+import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { LoadingErrorComponent } from './components/loading-error/loading-error.
     TextInputComponent,
     LoadingSpinnerComponent,
     ProfileMenuDropdownComponent,
-    LoadingErrorComponent
+    LoadingErrorComponent,
+    MobileMenuComponent
   ],
   imports: [
     CommonModule,
@@ -38,7 +40,8 @@ import { LoadingErrorComponent } from './components/loading-error/loading-error.
     NgxSpinnerModule,
     BreadcrumbModule,
     ProfileMenuDropdownComponent,
-    LoadingErrorComponent
+    LoadingErrorComponent,
+    MobileMenuComponent
   ]
 })
 export class SharedModule { }

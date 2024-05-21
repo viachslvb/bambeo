@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject, first, skipWhile, takeUntil, tap } from 'rxjs';
+import { Subject, first, skipWhile } from 'rxjs';
 import { AuthService } from 'src/app/core/state/auth.service';
 import { UserService } from '../../state/user.service';
 
@@ -18,52 +18,57 @@ import { UserService } from '../../state/user.service';
     ])
   ]
 })
-export class NavbarComponent implements AfterViewInit {
-  @ViewChild("mobileMenu") mobileMenu!: ElementRef;
+export class NavbarComponent implements OnDestroy {
+  private destroy$ = new Subject<void>();
+  private resizeListener: () => void;
 
-  isAuthStateLoading = true;
-  isOpenMobileMenu: boolean = false;
-  isOpenUserMenu: boolean = false;
-  mobileMenuHeight: string = "0px";
+  isAuthStatusChecked = false;
+  isMobileMenuOpen: boolean = false;
 
-  constructor(private authService: AuthService, public userService: UserService, private router: Router) {
+  constructor(
+    public authService: AuthService,
+    public userService: UserService,
+    private renderer: Renderer2,
+    private router: Router
+  ) {
+    this.resizeListener = this.renderer.listen('window', 'resize', this.onResize.bind(this));
+    this.subscribeToAuthCheck();
+  }
+
+  ngOnDestroy(): void {
+    if (this.resizeListener) {
+      this.resizeListener();
+    }
+
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private onResize() {
+    if (this.isMobileMenuOpen) {
+      this.toggleMobileMenu();
+    }
+  }
+
+  private subscribeToAuthCheck() {
     this.authService.authCheckCompleted$.pipe(
       skipWhile(value => !value),
       first()
     ).subscribe((isCompleted) => {
       if (isCompleted) {
-        this.isAuthStateLoading = false;
+        this.isAuthStatusChecked = true;
       }
     });
   }
 
-  ngAfterViewInit(): void {
-    this.defineMenuHeight();
-
-    window.addEventListener('resize', () => {
-      this.defineMenuHeight();
-    });
-  }
-
-  defineMenuHeight() {
-    this.mobileMenu.nativeElement.style.height = "auto";
-    this.mobileMenuHeight = this.mobileMenu.nativeElement.offsetHeight;
-    this.mobileMenu.nativeElement.style.height = "0";
-  }
-
   toggleMobileMenu() {
-    this.isOpenMobileMenu = !this.isOpenMobileMenu;
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
 
-    if (this.isOpenMobileMenu) {
-      this.mobileMenu.nativeElement.style.height = this.mobileMenuHeight + 'px';
+    if (this.isMobileMenuOpen) {
+      this.renderer.addClass(document.body, 'overflow-hidden');
+    } else {
+      this.renderer.removeClass(document.body, 'overflow-hidden');
     }
-    else {
-      this.mobileMenu.nativeElement.style.height = "0px";
-    }
-  }
-
-  toggleUserMenu() {
-    this.isOpenUserMenu = !this.isOpenUserMenu;
   }
 
   logout() {
