@@ -35,7 +35,7 @@ jobs:
 
       - name: Replace environment variables in environment.prod.ts
         run: |
-          sed -i 's|ENV_VARIABLE_API_URL|'"$NG_APP_API_URL"'|g' ./Bambeo/src/environments/environment.prod.ts
+          sed -i 's|ENV_VARIABLE_API_URL|'"$NG_APP_API_URL"'|g' ./src/environments/environment.prod.ts
         working-directory: ./Bambeo
       - name: Build And Deploy
         id: builddeploy
