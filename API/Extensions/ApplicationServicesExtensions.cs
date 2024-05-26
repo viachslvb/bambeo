@@ -79,13 +79,14 @@ namespace API.Extensions
                 };
             });
 
-            //services.AddCors(opt =>
-            //{
-            //    opt.AddPolicy("CorsPolicy", policy =>
-            //    {
-            //        policy.AllowAnyHeader().AllowCredentials().AllowAnyMethod();
-            //    });
-            //});
+            var clientUrl = config["ClientUrl"];
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin",
+                    builder => builder.WithOrigins(clientUrl)
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod());
+            });
 
             return services;
         }   

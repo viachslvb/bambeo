@@ -2,13 +2,11 @@
   "routes": [
     {
       "route": "/api/*",
-      "serve": "/api",
-      "forward": "https://bambeo.pl/api"
+      "serve": "https://api.bambeo.pl/api/*"
     },
     {
       "route": "/*",
-      "serve": "/index.html",
-      "statusCode": 200
+      "serve": "/index.html"
     }
   ]
 }
