@@ -82,7 +82,7 @@ namespace API.Extensions
             var clientUrl = config["ClientUrl"];
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowSpecificOrigin",
+                options.AddPolicy("CorsPolicy",
                     builder => builder.WithOrigins(clientUrl)
                                       .AllowAnyHeader()
                                       .AllowAnyMethod());
