@@ -44,7 +44,7 @@ export class AuthService {
   }
 
   refreshToken(): Observable<void> {
-    const endpoint = 'account/refresh-token';
+    const endpoint = '/account/refresh-token';
 
     return this.apiService.get<any>(endpoint).pipe(
       tap(token => {
@@ -61,7 +61,7 @@ export class AuthService {
   }
 
   logout(): Observable<void> {
-    const endpoint = 'account/logout';
+    const endpoint = '/account/logout';
 
     return this.apiService.delete<void>(endpoint).pipe(
       finalize(() => {

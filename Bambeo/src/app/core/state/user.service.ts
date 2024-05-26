@@ -48,7 +48,7 @@ export class UserService implements OnDestroy {
   }
 
   private loadCurrentUser(): Observable<User> {
-    const endpoint = 'account';
+    const endpoint = '/account';
 
     return this.apiService.get<User>(endpoint).pipe(
       tap(user => {
@@ -58,7 +58,7 @@ export class UserService implements OnDestroy {
   }
 
   deleteCurrentUser(): Observable<boolean> {
-    const endpoint = 'account';
+    const endpoint = '/account';
 
     return this.apiService.delete<boolean>(endpoint);
   }

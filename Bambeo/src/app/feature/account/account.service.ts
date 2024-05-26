@@ -21,7 +21,7 @@ export class AccountService {
   constructor(private apiService: ApiService, private authService: AuthService, private userService: UserService) { }
 
   login(values: LoginModel): Observable<User> {
-    const endpoint = 'account/login';
+    const endpoint = '/account/login';
 
     return this.apiService.post<AuthResponse>(endpoint, values).pipe(
       map(response => {
@@ -33,7 +33,7 @@ export class AccountService {
   }
 
   signup(values: SignupModel): Observable<User> {
-    const endpoint = 'account/signup';
+    const endpoint = '/account/signup';
 
     return this.apiService.post<AuthResponse>(endpoint, values).pipe(
       map(response => {
@@ -45,7 +45,7 @@ export class AccountService {
   }
 
   checkEmailExists(values: EmailExistsModel): Observable<boolean> {
-    const endpoint = `account/email-exists?email=${values.email}`;
+    const endpoint = `/account/email-exists?email=${values.email}`;
 
     return this.apiService.get<EmailExistsResponse>(endpoint).pipe(
       map(response => response.exists),
@@ -57,7 +57,7 @@ export class AccountService {
   }
 
   confirmEmail(values: ConfirmEmailModel): Observable<boolean> {
-    const endpoint = `account/confirm-email?userId=${values.userId}&token=${values.token}`;
+    const endpoint = `/account/confirm-email?userId=${values.userId}&token=${values.token}`;
 
     return this.apiService.get<EmailConfirmationResponse>(endpoint).pipe(
       map(response => response.isConfirmed)
@@ -65,7 +65,7 @@ export class AccountService {
   }
 
   sendPasswordResetLink(values: ForgotPasswordModel): Observable<boolean> {
-    const endpoint = 'account/forgot-password';
+    const endpoint = '/account/forgot-password';
 
     return this.apiService.post<ForgotPasswordResponse>(endpoint, values).pipe(
       map(response => response.success)
@@ -73,7 +73,7 @@ export class AccountService {
   }
 
   resetPassword(values: PasswordResetModel): Observable<boolean> {
-    const endpoint = 'account/reset-password';
+    const endpoint = '/account/reset-password';
 
     return this.apiService.post<PasswordResetResponse>(endpoint, values).pipe(
       map(response => response.success)

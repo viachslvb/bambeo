@@ -14,44 +14,44 @@ export class MyAccountService {
   { }
 
   getUserInfo(): Observable<User> {
-    const endpoint = 'user/info';
+    const endpoint = '/user/info';
 
     return this.apiService.get<User>(endpoint);
   }
 
   updateUserInfo(userInfo: UserUpdateModel): Observable<User> {
-    const endpoint = 'user/info';
+    const endpoint = '/user/info';
 
     return this.apiService.put<User>(endpoint, userInfo);
   }
 
   deleteUser() {
-    const endpoint = 'account';
+    const endpoint = '/account';
 
     return this.apiService.delete<DeleteAccountResponse>(endpoint);
   }
 
   sendVerificationLink(): Observable<void> {
-    const endpoint = 'user/verify-email';
+    const endpoint = '/user/verify-email';
 
     return this.apiService.post<void>(endpoint).pipe();
   }
 
   sendChangePasswordLink(): Observable<void> {
-    const endpoint = 'user/change-password';
+    const endpoint = '/user/change-password';
 
     return this.apiService.post<void>(endpoint).pipe();
   }
 
   getUserSettings(): Observable<UserSettings> {
-    const endpoint = 'user/settings';
+    const endpoint = '/user/settings';
 
     return this.apiService.get<UserSettings>(endpoint);
   }
 
   updateUserSettings(userSettings: UserSettingsUpdateModel): Observable<UserSettings> {
-    const endpoint = 'user/settings';
-    
+    const endpoint = '/user/settings';
+
     return this.apiService.put<UserSettings>(endpoint, userSettings);
   }
 }

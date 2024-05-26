@@ -51,13 +51,13 @@ export class FavoriteProductsService implements OnDestroy {
   }
 
   getFavoriteProducts(): Observable<FavoriteProductsResponse> {
-    const endpoint = 'favorites';
+    const endpoint = '/favorites';
 
     return this.apiService.get<FavoriteProductsResponse>(endpoint);
   }
 
   addToFavorites(productId: number): Observable<void> {
-    const endpoint = `favorites/${productId}`;
+    const endpoint = `/favorites/${productId}`;
 
     return this.apiService.post<void>(endpoint, {}).pipe(
       tap(() => {
@@ -77,7 +77,7 @@ export class FavoriteProductsService implements OnDestroy {
   }
 
   removeFromFavorites(productId: number): Observable<void> {
-    const endpoint = `favorites/${productId}`;
+    const endpoint = `/favorites/${productId}`;
 
     return this.apiService.delete<void>(endpoint).pipe(
       tap(() => {

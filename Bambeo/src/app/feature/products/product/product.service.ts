@@ -10,7 +10,7 @@ export class ProductService {
   ) { }
 
   getProduct(id: number): Observable<ProductInfo> {
-    const endpoint = `products/${id}`;
+    const endpoint = `/products/${id}`;
     return this.apiService.get<ProductInfo>(endpoint);
   }
 }
