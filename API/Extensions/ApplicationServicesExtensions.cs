@@ -78,13 +78,13 @@ namespace API.Extensions
                     return new BadRequestObjectResult(errorResponse);
                 };
             });
-
-            var clientUrl = config["ClientUrl"];
+            
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
-                    builder => builder.WithOrigins(clientUrl)
+                    builder => builder.WithOrigins(config["ClientUrl"])
                                       .AllowAnyHeader()
+                                      .AllowCredentials()
                                       .AllowAnyMethod());
             });
 
