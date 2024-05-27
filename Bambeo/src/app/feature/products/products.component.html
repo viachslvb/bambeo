@@ -6,10 +6,11 @@
     <div class="flex justify-between">
         <!-- Store & Category Filters -->
         <div class="lg:w-3/12 lg:min-w-[250px]" [ngClass]="{
-                'fixed inset-y-0 left-0 z-30 w-full h-full bg-white shadow-black shadow-lg transform overflow-y-scroll': isMobile,
+                'fixed inset-y-0 left-0 z-[100] w-full h-full bg-white shadow-black shadow-lg transform overflow-y-scroll': isMobile,
                 '-translate-y-0': isFilterPageOpen && isMobile,
-                'translate-y-full': !isFilterPageOpen && isMobile
-            }" #filterPage>
+                ' translate-y-full': !isFilterPageOpen && isMobile
+            }"
+            #filterPage>
             <div class="lg:hidden flex justify-center">
                 <div class="h-1 w-10 mt-2 bg-slate-300"></div>
             </div>

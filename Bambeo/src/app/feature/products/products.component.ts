@@ -335,11 +335,16 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isFilterPageOpen = !this.isFilterPageOpen;
 
     if (this.isFilterPageOpen) {
+      this.renderer.setStyle(this.filterPage.nativeElement, 'visibility', 'visible');
       this.renderer.addClass(document.body, 'no-scroll');
     }
     else {
       this.renderer.removeClass(document.body, 'no-scroll');
       this.renderer.removeStyle(this.filterPage.nativeElement, 'transform');
+
+      setTimeout(() => {
+        this.renderer.setStyle(this.filterPage.nativeElement, 'visibility', 'hidden');
+      }, 300);
     }
   }
 
