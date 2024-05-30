@@ -8,7 +8,7 @@
         <div
             class="lg:w-3/12 lg:min-w-[250px]"
             [ngClass]="{
-                'fixed inset-y-0 left-0 z-[100] w-full h-full bg-white shadow-black shadow-lg overflow-y-auto': isMobile
+                'fixed inset-y-0 left-0 z-[100] w-full h-full bg-white overflow-y-auto': isMobile
             }"
             [@slideInOut]="isFilterPageOpen && isMobile ? 'open' : 'closed'"
             (touchstart)="onTouchStart($event)"

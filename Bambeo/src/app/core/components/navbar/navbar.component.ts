@@ -61,13 +61,18 @@ export class NavbarComponent implements OnDestroy {
     });
   }
 
+  scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
 
     if (this.isMobileMenuOpen) {
-      this.renderer.addClass(document.body, 'overflow-hidden');
+      this.renderer.addClass(document.body, 'no-scroll');
+      this.scrollToTop();
     } else {
-      this.renderer.removeClass(document.body, 'overflow-hidden');
+      this.renderer.removeClass(document.body, 'no-scroll');
     }
   }
 
