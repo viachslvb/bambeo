@@ -1,6 +1,6 @@
 [
   {
-    "ProductId": 10,
+    "ProductId": 1,
     "Price": 1.99,
     "PreviousPrice": 2.49,
     "DiscountPercent": 20,
@@ -10,7 +10,7 @@
     "EndDate": "2024-05-31T23:59:59"
   },
   {
-    "ProductId": 11,
+    "ProductId": 2,
     "Price": 2.99,
     "PreviousPrice": 3.49,
     "DiscountPercent": 20,
@@ -20,7 +20,7 @@
     "EndDate": "2024-05-31T23:59:59"
   },
   {
-    "ProductId": 12,
+    "ProductId": 3,
     "Price": 3.99,
     "PreviousPrice": 4.49,
     "DiscountPercent": 20,
@@ -30,7 +30,7 @@
     "EndDate": "2024-05-31T23:59:59"
   },
   {
-    "ProductId": 13,
+    "ProductId": 4,
     "Price": 4.99,
     "PreviousPrice": 5.49,
     "DiscountPercent": 20,
@@ -40,7 +40,7 @@
     "EndDate": "2024-05-31T23:59:59"
   },
   {
-    "ProductId": 14,
+    "ProductId": 5,
     "Price": 4.99,
     "PreviousPrice": 5.49,
     "DiscountPercent": 20,
