@@ -21,7 +21,21 @@ import { DeviceService } from 'src/app/core/services/device.service';
       transition('void => *', [
         animate('0.15s ease-in')
       ]),
-    ])
+    ]),
+    trigger('slideInOut', [
+      state('open', style({
+          transform: 'translateY(0%)'
+      })),
+      state('closed', style({
+          transform: 'translateY(100%)'
+      })),
+      transition('open => closed', [
+          animate('0.3s ease-in')
+      ]),
+      transition('closed => open', [
+          animate('0.3s ease-out')
+      ]),
+  ]),
   ]
 })
 
@@ -263,7 +277,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onTouchStart(e: TouchEvent) {
     const filterPage = this.filterPage.nativeElement;
-    this.renderer.removeStyle(filterPage, 'transition');
+    //this.renderer.removeStyle(filterPage, 'transition');
     this.filterPagePositionY = e.touches[0].clientY;
     this.filterPageStartY = 0;
     this.filterPagePreventClosing = filterPage.scrollTop !== 0;
@@ -275,7 +289,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   onTouchMove(e: TouchEvent) {
     if (this.filterPagePreventClosing) return;
 
-    const filterPage = this.filterPage.nativeElement;
+    //const filterPage = this.filterPage.nativeElement;
     const currentY = e.touches[0].clientY;
     const deltaY = currentY - this.filterPagePositionY;
 
@@ -294,33 +308,32 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.filterPageIsDragging && deltaY > 0) {
       e.preventDefault();
 
-      this.renderer.setStyle(this.filterPage.nativeElement, 'transition', 'none');
-
+      /* this.renderer.setStyle(this.filterPage.nativeElement, 'transition', 'none');
       const menuOffsetY = Math.max(Math.min(deltaY, window.innerHeight), 0);
-      filterPage.style.transform = `translateY(${menuOffsetY}px)`;
+      filterPage.style.transform = `translateY(${menuOffsetY}px)`; */
     }
   }
 
   onTouchEnd(e: TouchEvent) {
     if (this.filterPagePreventClosing) return;
 
-    const transitionStyle = 'transform ease-in-out 0.3s';
-    const filterPage = this.filterPage.nativeElement;
+    /* const transitionStyle = 'transform ease-in-out 0.3s';
+    const filterPage = this.filterPage.nativeElement; */
     const currentY = e.changedTouches[0].clientY;
     const deltaY = currentY - this.filterPagePositionY;
 
-    this.renderer.setStyle(filterPage, 'transition', transitionStyle);
+    //this.renderer.setStyle(filterPage, 'transition', transitionStyle);
 
     if (deltaY > this.thresholdToCloseFilterPage) {
-      this.renderer.removeStyle(filterPage, 'transform');
+      //this.renderer.removeStyle(filterPage, 'transform');
       this.toggleFilterPage();
-    } else {
+    }/*  else {
       filterPage.style.transform = 'translateY(0)';
-    }
+    } */
   }
 
   setThresholdToCloseFilterPage() {
-    this.thresholdToCloseFilterPage = window.screen.height / 3;
+    this.thresholdToCloseFilterPage = window.screen.height / 4;
   }
 
   makeFilterBarFixed() {
@@ -354,7 +367,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     else {
       this.renderer.removeClass(document.body, 'no-scroll');
-      this.renderer.removeStyle(this.filterPage.nativeElement, 'transform');
+      //this.renderer.removeStyle(this.filterPage.nativeElement, 'transform');
 
       setTimeout(() => {
         this.renderer.removeClass(this.filterPage.nativeElement, 'opacity-100');
