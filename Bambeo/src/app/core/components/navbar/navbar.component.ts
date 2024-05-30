@@ -45,7 +45,9 @@ export class NavbarComponent implements OnDestroy {
   }
 
   private onResize() {
-    if (this.isMobileMenuOpen) {
+    const isMobile = window.innerWidth <= 640;
+
+    if (isMobile && this.isMobileMenuOpen) {
       this.toggleMobileMenu();
     }
   }

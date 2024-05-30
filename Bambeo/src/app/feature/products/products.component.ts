@@ -21,21 +21,7 @@ import { DeviceService } from 'src/app/core/services/device.service';
       transition('void => *', [
         animate('0.15s ease-in')
       ]),
-    ]),
-    trigger('slideInOut', [
-      state('open', style({
-          transform: 'translateY(0%)'
-      })),
-      state('closed', style({
-          transform: 'translateY(100%)'
-      })),
-      transition('open => closed', [
-          animate('0.3s ease-in')
-      ]),
-      transition('closed => open', [
-          animate('0.3s ease-out')
-      ]),
-  ]),
+    ])
   ]
 })
 
@@ -67,6 +53,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   isFilterBarFixed: boolean = false;
   isFilterPageOpen: boolean = false;
   private scrollListener!: () => void;
+  private resizeListener!: () => void;
 
   // Loading spinner management
   private dataLoadingSpinnerTimeout: any;
@@ -79,8 +66,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     private renderer: Renderer2,
     private busyService: BusyService,
     private router: Router,
-    private cdr: ChangeDetectorRef,
-    private deviceService: DeviceService
+    private cdr: ChangeDetectorRef
   ) {
     this.promotionService.setLoadingSpinner(this.promotionsLoadingSpinner);
   }
@@ -92,16 +78,25 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.subscribeToIsMobile();
+    setTimeout(() => {
+      this.renderer.setStyle(this.filterPage.nativeElement, 'transition', 'transform ease-in-out 0.3s');
+    }, 200);
+
     this.addScrollListener();
+    this.addResizeListener();
+    this.onResize();
     this.setThresholdToCloseFilterPage();
-    this.setFilterPageInvisible();
+
     this.cdr.detectChanges();
   }
 
   ngOnDestroy(): void {
     if (this.scrollListener) {
       this.scrollListener();
+    }
+
+    if (this.resizeListener) {
+      this.resizeListener();
     }
 
     this.destroy$.next();
@@ -242,21 +237,6 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     return param ? parseInt(param, 10) : defaultValue;
   }
 
-  private subscribeToIsMobile() {
-    this.deviceService.isMobile$
-      .pipe(
-        takeUntil(this.destroy$)
-      )
-      .subscribe(isMobile => {
-        this.isMobile = isMobile;
-        this.setThresholdToCloseFilterPage();
-
-        if (!this.isMobile && this.isFilterBarFixed) {
-          this.makeFilterBarUnfixed();
-        }
-      });
-  }
-
   private addScrollListener() {
     this.scrollListener = this.renderer.listen('window', 'scroll', this.onScroll.bind(this));
   }
@@ -275,6 +255,26 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   };
 
+  private addResizeListener() {
+    this.resizeListener = this.renderer.listen('window', 'resize', this.onResize.bind(this));
+  }
+
+  private onResize() {
+    this.isMobile = window.innerWidth <= 1024;
+    this.setThresholdToCloseFilterPage();
+
+    if (this.isMobile) {
+      this.setFilterPageVisibility(false);
+    }
+    else {
+      this.setFilterPageVisibility(true);
+    }
+
+    if (!this.isMobile && this.isFilterBarFixed) {
+      this.makeFilterBarUnfixed();
+    }
+  }
+
   onTouchStart(e: TouchEvent) {
     const filterPage = this.filterPage.nativeElement;
     //this.renderer.removeStyle(filterPage, 'transition');
@@ -289,7 +289,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   onTouchMove(e: TouchEvent) {
     if (this.filterPagePreventClosing) return;
 
-    //const filterPage = this.filterPage.nativeElement;
+    const filterPage = this.filterPage.nativeElement;
     const currentY = e.touches[0].clientY;
     const deltaY = currentY - this.filterPagePositionY;
 
@@ -308,8 +308,9 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.filterPageIsDragging && deltaY > 0) {
       e.preventDefault();
 
-      /* this.renderer.setStyle(this.filterPage.nativeElement, 'transition', 'none');
-      const menuOffsetY = Math.max(Math.min(deltaY, window.innerHeight), 0);
+      //this.renderer.setStyle(this.filterPage.nativeElement, 'transition', 'none');
+
+      /* const menuOffsetY = Math.max(Math.min(deltaY, window.innerHeight), 0);
       filterPage.style.transform = `translateY(${menuOffsetY}px)`; */
     }
   }
@@ -317,8 +318,8 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   onTouchEnd(e: TouchEvent) {
     if (this.filterPagePreventClosing) return;
 
-    /* const transitionStyle = 'transform ease-in-out 0.3s';
-    const filterPage = this.filterPage.nativeElement; */
+    //const transitionStyle = 'transform ease-in-out 0.3s';
+    const filterPage = this.filterPage.nativeElement;
     const currentY = e.changedTouches[0].clientY;
     const deltaY = currentY - this.filterPagePositionY;
 
@@ -327,7 +328,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     if (deltaY > this.thresholdToCloseFilterPage) {
       //this.renderer.removeStyle(filterPage, 'transform');
       this.toggleFilterPage();
-    }/*  else {
+    } /* else {
       filterPage.style.transform = 'translateY(0)';
     } */
   }
@@ -351,18 +352,24 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.renderer.removeClass(this.filterBar.nativeElement, 'filterbar-fixed');
   }
 
-  setFilterPageInvisible() {
-    this.renderer.addClass(this.filterPage.nativeElement, 'invisible');
-    this.renderer.addClass(this.filterPage.nativeElement, 'opacity-0');
+  private setFilterPageVisibility(visible: boolean) {
+    if (visible) {
+      this.renderer.removeClass(this.filterPage.nativeElement, 'invisible');
+      this.renderer.removeClass(this.filterPage.nativeElement, 'opacity-0');
+      this.renderer.addClass(this.filterPage.nativeElement, 'opacity-100');
+    }
+    else {
+      this.renderer.addClass(this.filterPage.nativeElement, 'invisible');
+      this.renderer.addClass(this.filterPage.nativeElement, 'opacity-0');
+      this.renderer.removeClass(this.filterPage.nativeElement, 'opacity-100');
+    }
   }
 
   toggleFilterPage() {
     this.isFilterPageOpen = !this.isFilterPageOpen;
 
     if (this.isFilterPageOpen) {
-      this.renderer.removeClass(this.filterPage.nativeElement, 'invisible');
-      this.renderer.removeClass(this.filterPage.nativeElement, 'opacity-0');
-      this.renderer.addClass(this.filterPage.nativeElement, 'opacity-100');
+      this.setFilterPageVisibility(true);
       this.renderer.addClass(document.body, 'no-scroll');
     }
     else {
@@ -370,8 +377,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
       //this.renderer.removeStyle(this.filterPage.nativeElement, 'transform');
 
       setTimeout(() => {
-        this.renderer.removeClass(this.filterPage.nativeElement, 'opacity-100');
-        this.setFilterPageInvisible();
+        this.setFilterPageVisibility(false);
       }, 300);
     }
   }
