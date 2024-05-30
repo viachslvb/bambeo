@@ -81,7 +81,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscribeToIsMobile();
     this.addScrollListener();
     this.setThresholdToCloseFilterPage();
-
+    this.setFilterPageInvisible();
     this.cdr.detectChanges();
   }
 
@@ -296,7 +296,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
 
       this.renderer.setStyle(this.filterPage.nativeElement, 'transition', 'none');
 
-      let menuOffsetY = Math.max(this.filterPageStartY + deltaY, 0);
+      const menuOffsetY = Math.max(Math.min(deltaY, window.innerHeight), 0);
       filterPage.style.transform = `translateY(${menuOffsetY}px)`;
     }
   }
@@ -338,6 +338,11 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.renderer.removeClass(this.filterBar.nativeElement, 'filterbar-fixed');
   }
 
+  setFilterPageInvisible() {
+    this.renderer.addClass(this.filterPage.nativeElement, 'invisible');
+    this.renderer.addClass(this.filterPage.nativeElement, 'opacity-0');
+  }
+
   toggleFilterPage() {
     this.isFilterPageOpen = !this.isFilterPageOpen;
 
@@ -353,8 +358,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
 
       setTimeout(() => {
         this.renderer.removeClass(this.filterPage.nativeElement, 'opacity-100');
-          this.renderer.addClass(this.filterPage.nativeElement, 'invisible');
-          this.renderer.addClass(this.filterPage.nativeElement, 'opacity-0');
+        this.setFilterPageInvisible();
       }, 300);
     }
   }
