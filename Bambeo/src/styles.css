@@ -124,6 +124,10 @@
     border-color: transparent;
 }
 
+.app-view {
+    position: relative;
+}
+
 .no-scroll {
     overflow: hidden;
 }
