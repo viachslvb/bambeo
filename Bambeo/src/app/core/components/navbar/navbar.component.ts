@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Subject, first, skipWhile } from 'rxjs';
 import { AuthService } from 'src/app/core/state/auth.service';
 import { UserService } from '../../state/user.service';
-import { ScrollService } from '../../services/scroll.service';
+import { scrollToTop } from '../../utils';
 
 @Component({
   selector: 'app-navbar',
@@ -30,8 +30,7 @@ export class NavbarComponent implements OnDestroy {
     public authService: AuthService,
     public userService: UserService,
     private renderer: Renderer2,
-    private router: Router,
-    private scrollService: ScrollService
+    private router: Router
   ) {
     this.resizeListener = this.renderer.listen('window', 'resize', this.onResize.bind(this));
     this.subscribeToAuthCheck();
@@ -65,37 +64,24 @@ export class NavbarComponent implements OnDestroy {
     });
   }
 
-  scrollToTop() {
-    window.scroll({
-      top: 0,
-      left: 0,
-      behavior: 'smooth'
-    });
-  }
-
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
 
     if (this.isMobileMenuOpen) {
-      this.scrollToTop();
-      //this.scrollService.setDisableScroll(true);
+      scrollToTop();
       this.renderer.addClass(document.body, 'no-scroll');
+      this.renderer.addClass(document.body, 'body-fixed');
     } else {
-      //this.scrollService.setDisableScroll(false);
       this.renderer.removeClass(document.body, 'no-scroll');
+      this.renderer.removeClass(document.body, 'body-fixed');
     }
   }
 
-  // toggleMobileMenu() {
-  //   this.isMobileMenuOpen = !this.isMobileMenuOpen;
-
-  //   if (this.isMobileMenuOpen) {
-  //     this.scrollToTop();
-  //     this.renderer.addClass(document.body, 'no-scroll');
-  //   } else {
-  //     this.renderer.removeClass(document.body, 'no-scroll');
-  //   }
-  // }
+  openMainPage() {
+    if (this.isMobileMenuOpen) {
+      this.toggleMobileMenu();
+    }
+  }
 
   logout() {
     this.authService.logout().subscribe({

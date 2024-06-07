@@ -9,7 +9,6 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ActivatedRoute, Router } from '@angular/router';
 import { IPromotionFilter } from './models/IPromotionFilter';
 import { Pagination } from 'src/app/core/models/pagination';
-import { DeviceService } from 'src/app/core/services/device.service';
 
 @Component({
   selector: 'app-products',
@@ -41,12 +40,9 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   isLoadingError = false;
 
   // Variables for managing filter page touch interactions
-  private filterPagePositionY = 0;
   private filterPageStartY = 0;
-  private filterPagePreventClosing = false;
   private filterPageIsDragging = false;
   private thresholdToCloseFilterPage = 150;
-  private filterPageInitialScrollTop!: number;
 
   // Flags for mobile UI state
   isMobile: boolean = false;
@@ -78,13 +74,15 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    this.isMobile = this.useMobileVersion();
+    this.setFilterPageVisibility(!this.isMobile);
+
     setTimeout(() => {
       this.renderer.setStyle(this.filterPage.nativeElement, 'transition', 'transform ease-in-out 0.3s');
     }, 200);
 
     this.addScrollListener();
     this.addResizeListener();
-    this.onResize();
     this.setThresholdToCloseFilterPage();
 
     this.cdr.detectChanges();
@@ -260,13 +258,16 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private onResize() {
-    this.isMobile = window.innerWidth <= 1024;
+    this.isMobile = this.useMobileVersion();
     this.setThresholdToCloseFilterPage();
 
-    if (this.isMobile) {
+    if (this.isMobile && !this.isFilterPageOpen) {
       this.setFilterPageVisibility(false);
     }
-    else {
+    else if (!this.isMobile && this.isFilterPageOpen) {
+      this.toggleFilterPage();
+    }
+    else if (!this.isMobile && !this.isFilterPageOpen) {
       this.setFilterPageVisibility(true);
     }
 
@@ -275,81 +276,58 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  useMobileVersion(): boolean {
+    return window.innerWidth <= 1024;
+  }
+
   onTouchStart(e: TouchEvent) {
     const filterPage = this.filterPage.nativeElement;
-    //this.renderer.removeStyle(filterPage, 'transition');
-    this.filterPagePositionY = e.touches[0].clientY;
-    this.filterPageStartY = 0;
-    this.filterPagePreventClosing = filterPage.scrollTop !== 0;
-    this.filterPageInitialScrollTop = this.filterPage.nativeElement.scrollTop;
+    this.renderer.setStyle(filterPage, 'transition', 'transform ease-in-out 0.01s');
+    this.renderer.setStyle(filterPage, 'will-change', 'transform');
 
+    this.filterPageStartY = e.touches[0].clientY;
     this.filterPageIsDragging = false;
   }
 
   onTouchMove(e: TouchEvent) {
-    if (this.filterPagePreventClosing) return;
-
     const filterPage = this.filterPage.nativeElement;
+    const scrollTop = filterPage.scrollTop;
     const currentY = e.touches[0].clientY;
-    const deltaY = currentY - this.filterPagePositionY;
 
-    if (!this.filterPageIsDragging && Math.abs(deltaY) > 10) {
-      if (this.filterPageInitialScrollTop === 0 && deltaY > 0) {
-          this.filterPageIsDragging = true;
-      } else if (this.filterPageInitialScrollTop === this.filterPage.nativeElement.scrollHeight - this.filterPage.nativeElement.clientHeight && deltaY < 0) {
-          this.filterPageIsDragging = true;
-      } else if (this.filterPageInitialScrollTop > 0 && this.filterPageInitialScrollTop < this.filterPage.nativeElement.scrollHeight - this.filterPage.nativeElement.clientHeight) {
-          return;
-      } else {
-          this.filterPageIsDragging = true;
-      }
-    }
-
-    if (this.filterPageIsDragging && deltaY > 0) {
+    if (scrollTop === 0 && currentY > this.filterPageStartY) {
       e.preventDefault();
+      this.filterPageIsDragging = true;
 
-      //this.renderer.setStyle(this.filterPage.nativeElement, 'transition', 'none');
+      const deltaY = currentY - this.filterPageStartY;
+      const menuOffsetY = Math.max(Math.min(deltaY, window.innerHeight), 0);
 
-      /* const menuOffsetY = Math.max(Math.min(deltaY, window.innerHeight), 0);
-      filterPage.style.transform = `translateY(${menuOffsetY}px)`; */
+      filterPage.style.transform = `translateY(${menuOffsetY}px)`;
     }
   }
 
   onTouchEnd(e: TouchEvent) {
-    if (this.filterPagePreventClosing) return;
-
-    //const transitionStyle = 'transform ease-in-out 0.3s';
     const filterPage = this.filterPage.nativeElement;
-    const currentY = e.changedTouches[0].clientY;
-    const deltaY = currentY - this.filterPagePositionY;
+    const transitionStyle = 'transform ease-in-out 0.3s';
+    this.renderer.setStyle(filterPage, 'transition', transitionStyle);
 
-    //this.renderer.setStyle(filterPage, 'transition', transitionStyle);
+    if (this.filterPageIsDragging) {
+      const currentY = e.changedTouches[0].clientY;
+      const deltaY = currentY - this.filterPageStartY;
 
-    if (deltaY > this.thresholdToCloseFilterPage) {
-      //this.renderer.removeStyle(filterPage, 'transform');
-      this.toggleFilterPage();
-    } /* else {
-      filterPage.style.transform = 'translateY(0)';
-    } */
+      if (deltaY > this.thresholdToCloseFilterPage) {
+        this.renderer.removeStyle(filterPage, 'transform');
+        this.toggleFilterPage();
+      } else {
+        filterPage.style.transform = 'translateY(0)';
+      }
+    }
+
+    this.renderer.removeStyle(filterPage, 'will-change');
+    this.filterPageIsDragging = false;
   }
 
   setThresholdToCloseFilterPage() {
     this.thresholdToCloseFilterPage = window.screen.height / 4;
-  }
-
-  makeFilterBarFixed() {
-    const filterBarHeight = this.filterBar.nativeElement.offsetHeight;
-    this.renderer.setStyle(this.spaceForFilterBarWhenFixed.nativeElement, 'height', filterBarHeight + 'px');
-
-    this.isFilterBarFixed = true;
-    this.renderer.addClass(this.filterBar.nativeElement, 'filterbar-fixed');
-  }
-
-  makeFilterBarUnfixed() {
-    this.renderer.removeStyle(this.spaceForFilterBarWhenFixed.nativeElement, 'height');
-
-    this.isFilterBarFixed = false;
-    this.renderer.removeClass(this.filterBar.nativeElement, 'filterbar-fixed');
   }
 
   private setFilterPageVisibility(visible: boolean) {
@@ -371,15 +349,34 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.isFilterPageOpen) {
       this.setFilterPageVisibility(true);
       this.renderer.addClass(document.body, 'no-scroll');
+      this.renderer.setStyle(document.body, 'overscroll-behavior', 'contain');
+      this.renderer.setStyle(document.body, 'touch-action', 'pan-y');
     }
     else {
+      this.renderer.removeStyle(this.filterPage.nativeElement, 'transform');
       this.renderer.removeClass(document.body, 'no-scroll');
-      //this.renderer.removeStyle(this.filterPage.nativeElement, 'transform');
+      this.renderer.removeStyle(document.body, 'overscroll-behavior');
+      this.renderer.removeStyle(document.body, 'touch-action');
 
       setTimeout(() => {
         this.setFilterPageVisibility(false);
       }, 300);
     }
+  }
+
+  makeFilterBarFixed() {
+    const filterBarHeight = this.filterBar.nativeElement.offsetHeight;
+    this.renderer.setStyle(this.spaceForFilterBarWhenFixed.nativeElement, 'height', filterBarHeight + 'px');
+
+    this.isFilterBarFixed = true;
+    this.renderer.addClass(this.filterBar.nativeElement, 'filterbar-fixed');
+  }
+
+  makeFilterBarUnfixed() {
+    this.renderer.removeStyle(this.spaceForFilterBarWhenFixed.nativeElement, 'height');
+
+    this.isFilterBarFixed = false;
+    this.renderer.removeClass(this.filterBar.nativeElement, 'filterbar-fixed');
   }
 
   onPageChanged(event: any) {

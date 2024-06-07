@@ -1,19 +1,13 @@
 import { ViewportScroller } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router, Scroll } from '@angular/router';
-import { Subject, filter, pairwise } from 'rxjs';
+import { filter, pairwise } from 'rxjs';
 import { Event } from '@angular/router'
 
 @Injectable({
   providedIn: 'root'
 })
 export class ScrollService {
-  private scrollSubject = new Subject<void>();
-  scrollToTop$ = this.scrollSubject.asObservable();
-
-  private disableScrollSubject = new Subject<boolean>();
-  disableScroll$ = this.disableScrollSubject.asObservable();
-
   constructor (
     private router: Router,
     private viewportScroller: ViewportScroller
@@ -50,13 +44,5 @@ export class ScrollService {
   private getBaseRoute(url: string): string {
     // return url without query params
     return url.split('?')[0];
-  }
-
-  triggerScrollToTop() {
-    this.scrollSubject.next();
-  }
-
-  setDisableScroll(disable: boolean) {
-    this.disableScrollSubject.next(disable);
   }
 }
