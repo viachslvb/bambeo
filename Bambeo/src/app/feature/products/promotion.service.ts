@@ -24,6 +24,9 @@ export class PromotionService {
   private promotionsLoadingSpinnerTimeout: any;
   private loadingSpinnerName?: string;
 
+  private isMobileSubject = new BehaviorSubject<boolean>(false);
+  isMobile$ = this.isMobileSubject.asObservable();
+
   private filtersSubject = new BehaviorSubject<IPromotionFilter>(this.defaultFilter());
   private filters$ = this.filtersSubject.asObservable();
    temporaryFilter: Partial<IPromotionFilter> = {};
@@ -50,7 +53,7 @@ export class PromotionService {
     shareReplay(1)
   );
 
-  recognizedParams = ['query', 'stores', 'categories', 'up', 'sort', 'page', 'size'];
+  recognizedParams = ['query', 'categories', 'stores', 'up', 'sort', 'page', 'size'];
 
   private keyMapping: { [key: string]: string } = {
     search: 'query',
@@ -61,6 +64,14 @@ export class PromotionService {
     pageIndex: 'page',
     pageSize: 'size'
   };
+
+  updateIsMobile(isMobile: boolean) {
+    this.isMobileSubject.next(isMobile);
+  }
+
+  isMobile(): boolean {
+    return this.isMobileSubject.getValue();
+  }
 
   updateFilters(filters: IPromotionFilter) {
     this.filtersSubject.next(filters);
@@ -114,7 +125,10 @@ export class PromotionService {
 
   updateFilterPart(part: Partial<IPromotionFilter>) {
     this.temporaryFilter = { ...this.temporaryFilter, ...part };
-    this.applyFiltersToQueryParams();
+
+    if (!this.isMobile()) {
+      this.applyFiltersToQueryParams();
+    }
   }
 
   applyTemporaryFilters() {

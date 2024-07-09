@@ -42,3 +42,11 @@ export function scrollToTop() {
     window.scroll({ top: -1, left: 0, behavior: "smooth" });
   }, 10);
 }
+
+export function sortObjectKeys(obj: any) {
+  const sortedObj: any = {};
+  Object.keys(obj).sort().forEach(key => {
+    sortedObj[key] = obj[key];
+  });
+  return sortedObj;
+}

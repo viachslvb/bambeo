@@ -11,11 +11,11 @@ import { PromotionService } from '../promotion.service';
 export class SearchComponent implements AfterViewInit, OnDestroy {
   @ViewChild('promotionSearch') promotionSearch!: ElementRef;
   @ViewChild('searchSvgIcon') searchSvgIcon!: ElementRef;
-  
+
   private destroy$ = new Subject<void>();
   promotionSearchInput$ = new Subject<string>();
   private isProgrammaticChange = false;
-  
+
   constructor(
     private promotionService: PromotionService,
     private cdr: ChangeDetectorRef
@@ -38,7 +38,7 @@ export class SearchComponent implements AfterViewInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe((searchTerm) => {
-        this.UpdateSearchTerm(searchTerm);
+        this.updateSearchTerm(searchTerm);
     });
   }
 
@@ -50,12 +50,12 @@ export class SearchComponent implements AfterViewInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe((searchTerm: string) => {
       if (!this.isProgrammaticChange) {
-        this.OnSearch(searchTerm);
+        this.onSearch(searchTerm);
       }
     });
   }
 
-  private UpdateSearchTerm(searchTerm: string) {
+  private updateSearchTerm(searchTerm: string) {
     this.isProgrammaticChange = true;
     let currentValue = this.promotionSearch.nativeElement.value;
 
@@ -66,7 +66,7 @@ export class SearchComponent implements AfterViewInit, OnDestroy {
     this.isProgrammaticChange = false;
   }
 
-  OnSearch(searchTerm: string) {
+  onSearch(searchTerm: string) {
     this.promotionService.updateFilterPart({ pageIndex: 1, search: searchTerm });
   }
 

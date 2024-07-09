@@ -9,6 +9,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ActivatedRoute, Router } from '@angular/router';
 import { IPromotionFilter } from './models/IPromotionFilter';
 import { Pagination } from 'src/app/core/models/pagination';
+import { sortObjectKeys } from 'src/app/core/utils';
 
 @Component({
   selector: 'app-products',
@@ -41,7 +42,9 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Variables for managing filter page touch interactions
   private filterPageStartY = 0;
+  private filterPageScrollTop = false;
   private filterPageIsDragging = false;
+  private filterPageIsDraggingDisabled = false;
   private thresholdToCloseFilterPage = 150;
 
   // Flags for mobile UI state
@@ -74,7 +77,8 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.isMobile = this.useMobileVersion();
+    this.updateIsMobile();
+    this.subscribeToIsMobile();
     this.setFilterPageVisibility(!this.isMobile);
 
     setTimeout(() => {
@@ -160,15 +164,19 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
       const filteredParams: { [key: string]: any } = {};
       this.promotionService.recognizedParams.forEach(param => {
         const value = params[param];
-
         if (value !== undefined && value !== '') {
           if (this.isValidParam(param, value)) {
             filteredParams[param] = value;
           }
         }
       });
+
+      // Sort the parameters for comparison
+      const sortedParams = sortObjectKeys(params);
+      const sortedFilteredParams = sortObjectKeys(filteredParams);
+
       // Update the URL if there are changes
-      if (JSON.stringify(params) !== JSON.stringify(filteredParams)) {
+      if (JSON.stringify(sortedParams) !== JSON.stringify(sortedFilteredParams)) {
         this.router.navigate([], {
           queryParams: filteredParams,
           replaceUrl: true,
@@ -176,10 +184,10 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       else {
         const currentFilters: IPromotionFilter = {
+          search: params['query'] || '',
           storeIds: this.parseArrayParam(params['stores']),
           categoryIds: this.parseArrayParam(params['categories']),
           sortType: params['sort'] || '',
-          search: params['query'] || '',
           includeUpcomingPromotions: params['up'] === 'true',
           pageIndex: this.parseNumberParam(params['page'], 1),
           pageSize: this.parseNumberParam(params['size'], this.promotionService.defaultPageSize)
@@ -254,30 +262,36 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   };
 
   private addResizeListener() {
-    this.resizeListener = this.renderer.listen('window', 'resize', this.onResize.bind(this));
+    this.resizeListener = this.renderer.listen('window', 'resize', this.updateIsMobile.bind(this));
   }
 
-  private onResize() {
-    this.isMobile = this.useMobileVersion();
-    this.setThresholdToCloseFilterPage();
+  private subscribeToIsMobile() {
+    this.promotionService.isMobile$
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(isMobile => {
+      this.isMobile = isMobile;
 
-    if (this.isMobile && !this.isFilterPageOpen) {
-      this.setFilterPageVisibility(false);
-    }
-    else if (!this.isMobile && this.isFilterPageOpen) {
-      this.toggleFilterPage();
-    }
-    else if (!this.isMobile && !this.isFilterPageOpen) {
-      this.setFilterPageVisibility(true);
-    }
+      this.setThresholdToCloseFilterPage();
 
-    if (!this.isMobile && this.isFilterBarFixed) {
-      this.makeFilterBarUnfixed();
-    }
+      if (this.isMobile && !this.isFilterPageOpen) {
+        this.setFilterPageVisibility(false);
+      }
+      else if (!this.isMobile && this.isFilterPageOpen) {
+        this.toggleFilterPage();
+      }
+      else if (!this.isMobile && !this.isFilterPageOpen) {
+        this.setFilterPageVisibility(true);
+      }
+
+      if (!this.isMobile && this.isFilterBarFixed) {
+        this.makeFilterBarUnfixed();
+      }
+    })
   }
 
-  useMobileVersion(): boolean {
-    return window.innerWidth <= 1024;
+  updateIsMobile(): void {
+    this.isMobile = window.innerWidth <= 1024;
+    this.promotionService.updateIsMobile(this.isMobile);
   }
 
   onTouchStart(e: TouchEvent) {
@@ -286,15 +300,16 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.renderer.setStyle(filterPage, 'will-change', 'transform');
 
     this.filterPageStartY = e.touches[0].clientY;
+    this.filterPageScrollTop = filterPage.scrollTop === 0;
     this.filterPageIsDragging = false;
+    this.filterPageIsDraggingDisabled = false;
   }
 
   onTouchMove(e: TouchEvent) {
     const filterPage = this.filterPage.nativeElement;
-    const scrollTop = filterPage.scrollTop;
     const currentY = e.touches[0].clientY;
 
-    if (scrollTop === 0 && currentY > this.filterPageStartY) {
+    if (!this.filterPageIsDraggingDisabled && this.filterPageScrollTop && currentY > this.filterPageStartY) {
       e.preventDefault();
       this.filterPageIsDragging = true;
 
@@ -302,6 +317,11 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
       const menuOffsetY = Math.max(Math.min(deltaY, window.innerHeight), 0);
 
       filterPage.style.transform = `translateY(${menuOffsetY}px)`;
+    }
+    else {
+      if (!this.filterPageIsDraggingDisabled) {
+        this.filterPageIsDraggingDisabled = true;
+      }
     }
   }
 
@@ -323,6 +343,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this.renderer.removeStyle(filterPage, 'will-change');
+    this.filterPageIsDraggingDisabled = false;
     this.filterPageIsDragging = false;
   }
 
@@ -353,6 +374,10 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.renderer.setStyle(document.body, 'touch-action', 'pan-y');
     }
     else {
+      if (this.isMobile) {
+        this.promotionService.applyTemporaryFilters();
+      }
+
       this.renderer.removeStyle(this.filterPage.nativeElement, 'transform');
       this.renderer.removeClass(document.body, 'no-scroll');
       this.renderer.removeStyle(document.body, 'overscroll-behavior');
@@ -382,5 +407,10 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   onPageChanged(event: any) {
     const pageIndex = event.page + 1;
     this.promotionService.updateFilterPart({ pageIndex: pageIndex });
+  }
+
+  applyFilters() {
+    this.toggleFilterPage();
+    this.promotionService.applyTemporaryFilters();
   }
 }

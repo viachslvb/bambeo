@@ -16,6 +16,15 @@ import { scrollToTop } from '../../utils';
       transition('void => *', [
         animate('0.25s ease-in')
       ]),
+    ]),
+    trigger('fadeInOut', [
+      state('void', style({ opacity: 0 })),
+      transition('void => *', [
+        animate('0.20s ease-in')
+      ]),
+      transition('* => void', [
+        animate('0.20s ease-out')
+      ])
     ])
   ]
 })

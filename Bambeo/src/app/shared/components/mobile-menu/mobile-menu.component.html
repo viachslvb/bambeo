@@ -1,4 +1,4 @@
-<div class="fixed top-0 left-0 flex flex-col justify-center items-center inset-0 bg-rose-600 z-40" @fadeIn>
+<div class="fixed top-0 left-0 flex flex-col justify-center items-center inset-0 bg-rose-600 z-40">
   <!-- header user info -->
   <div *ngIf="isLoggedIn && user" class="flex flex-col justify-center items-center mb-10">
     <div
@@ -28,15 +28,16 @@
     </div>
     <!-- signup / login buttons -->
     <div *ngIf="!isLoggedIn" class="flex flex-col justify-between items-center">
-      <span class="text-rose-400 font-medium text-xl">Dołącz do nas i korzystaj w pełni!</span>
-      <div class="flex flex-col items-center mt-8">
-        <button routerLink="/account/login" (click)="onCloseMenu()" type="button"
-          class="bg-rose-500 text-rose-100 max-w-fit focus:ring-4 focus:ring-rose-300 font-medium text-xl rounded-lg py-3 px-6 focus:outline-none">
-          Logowanie
-        </button>
+      <span class="text-rose-400 font-semibold text-2xl">Dołącz do nas i korzystaj w pełni!</span>
+      <div class="flex flex-col items-center mt-5">
         <button routerLink="/account/signup" (click)="onCloseMenu()" type="button"
-          class="bg-rose-500 text-rose-100 focus:ring-4 focus:ring-rose-300 font-semibold text-2xl rounded-lg py-3 px-8 focus:outline-none mt-4">
-          Zarejestruj Się
+          class="bg-rose-500 text-white focus:ring-4 focus:ring-rose-300 font-semibold text-2xl rounded-lg py-4 px-8 focus:outline-none">
+          <i class="fa-solid fa-user mr-2"></i> Zarejestruj Się
+        </button>
+        <span class="text-rose-200 font-normal pt-8">Masz już konto?</span>
+        <button routerLink="/account/login" (click)="onCloseMenu()" type="button"
+          class="text-white underline max-w-fit font-normal text-xl pt-1 pb-3 px-6 focus:outline-none">
+          Zaloguj Się
         </button>
       </div>
     </div>

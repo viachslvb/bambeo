@@ -45,6 +45,15 @@
                     <app-promotion-options></app-promotion-options>
                 </div>
             </div>
+            <!-- Apply Filters -->
+            <div class="flex justify-end" [ngClass]="{hidden: !isMobile}">
+                <button type="button"
+                    (click)="applyFilters()"
+                    class="text-white bg-rose-500 hover:bg-rose-600 focus:ring-4 focus:ring-rose-300 font-medium rounded-lg py-2 px-3 focus:outline-none mb-10 ml-auto mr-4">
+                    <i class="fa-solid fa-magnifying-glass fa-sm mr-2"></i> Pokaż wyniki
+                </button>
+            </div>
+
         </div>
         <!-- Products Section -->
         <div class="w-full lg:w-9/12 lg:ml-10" *ngIf="isPromotionsLoaded && !isLoadingError">
