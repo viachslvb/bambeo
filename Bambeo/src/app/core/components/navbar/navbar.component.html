@@ -1,5 +1,5 @@
 <!-- navbar.component.html -->
-<nav class="relative min-w-[320px]">
+<nav class="relative min-w-[290px]">
     <div class="container max-w-7xl mx-auto px-6">
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center justify-between h-16 lg:h-20 transition-all duration-300">
@@ -28,11 +28,11 @@
                     <!-- log in / sign up -->
                     <div class="hidden sm:block" *ngIf="!authService.isLoggedIn()" @fadeIn>
                         <button routerLink="account/login" type="button"
-                            class="text-white lg:text-slate-700 bg-rose-500 lg:bg-transparent hover:bg-rose-600 lg:hover:bg-slate-50 focus:ring-4 focus:ring-rose-300 lg:focus:ring-slate-300 rounded-lg py-2 px-3 md:px-5 md:py-2.5 mr-2 ml-4 transition-[padding] duration-300 focus:outline-none">
+                            class="text-white lg:text-slate-700 bg-rose-500 lg:bg-transparent hover:bg-rose-600 lg:hover:bg-slate-50 focus:ring-4 focus:ring-rose-300 lg:focus:ring-slate-300 rounded-lg py-2 px-3 md:px-5 md:py-2.5 lg:mr-2 ml-4 transition-[padding] duration-300 focus:outline-none">
                             Zaloguj Się
                         </button>
                         <button routerLink="account/signup" type="button"
-                            class="hidden lg:inline-flex text-white bg-rose-500 hover:bg-rose-600 focus:ring-4 focus:ring-rose-300 font-medium rounded-lg py-2 px-3 md:px-5 md:py-2.5 mr-2 ml-2 transition-[padding] duration-300 focus:outline-none text-center items-center">
+                            class="hidden lg:inline-flex text-white bg-rose-500 hover:bg-rose-600 focus:ring-4 focus:ring-rose-300 font-medium rounded-lg py-2 px-3 md:px-5 md:py-2.5 ml-2 transition-[padding] duration-300 focus:outline-none text-center items-center">
                             <svg class="w-3 h-3 text-white mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor" viewBox="0 0 14 18">
                                 <path

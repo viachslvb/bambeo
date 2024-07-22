@@ -10,7 +10,7 @@ import { PromotionService } from '../promotion.service';
 })
 export class SearchComponent implements AfterViewInit, OnDestroy {
   @ViewChild('promotionSearch') promotionSearch!: ElementRef;
-  @ViewChild('searchSvgIcon') searchSvgIcon!: ElementRef;
+  @ViewChild('searchIcon') searchIcon!: ElementRef;
 
   private destroy$ = new Subject<void>();
   promotionSearchInput$ = new Subject<string>();
@@ -71,12 +71,12 @@ export class SearchComponent implements AfterViewInit, OnDestroy {
   }
 
   onSearchInputFocus() {
-    this.searchSvgIcon.nativeElement.classList.remove('text-slate-400');
-    this.searchSvgIcon.nativeElement.classList.add('text-slate-500');
+    this.searchIcon.nativeElement.classList.remove('text-slate-400');
+    this.searchIcon.nativeElement.classList.add('text-slate-500');
   }
 
   onSearchInputBlur() {
-    this.searchSvgIcon.nativeElement.classList.remove('text-slate-500');
-    this.searchSvgIcon.nativeElement.classList.add('text-slate-400');
+    this.searchIcon.nativeElement.classList.remove('text-slate-500');
+    this.searchIcon.nativeElement.classList.add('text-slate-400');
   }
 }

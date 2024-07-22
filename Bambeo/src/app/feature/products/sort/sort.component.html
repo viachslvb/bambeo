@@ -1,6 +1,6 @@
 <!-- sorting settings -->
 <div class="flex sm:items-center lg:order-1 lg:border-r lg:border-slate-200 lg:pr-5 group relative">
-    <div class="hidden min-w-max lg:flex mr-4 text-slate-700 font-light text-sm">{{ getCurrentSortLabel() }}</div>
+    <div class="hidden min-w-max lg:flex mr-4 text-slate-600 font-light text-sm">{{ getCurrentSortLabel() }}</div>
     <button #changeSortButton
     class="group flex items-center justify-center p-2.5 bg-slate-50 rounded-lg lg:bg-slate-100 lg:rounded-lg lg:border lg:border-slate-200 lg:focus:border-rose-500 lg:focus:bg-rose-500 lg:focus:ring-4 lg:focus:ring-rose-200 lg:focus:outline-none"
     (click)="sortDropdownToggle()"
@@ -20,7 +20,7 @@
             <li *ngFor="let sortType of sortTypes; let first = first; let last = last"
                 class="flex px-5 py-1.5 cursor-pointer rounded-t-lg border-b border-slate-200 hover:bg-slate-100"
                 [ngClass]="{
-                    'bg-slate-100': sortType.selected, 
+                    'bg-slate-100': sortType.selected,
                     'rounded-b-lg': last,
                     'rounded-t-lg': first}"
                 (click)="onSortTypeChange(sortType)">

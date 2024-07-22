@@ -1,4 +1,4 @@
-<div class="container max-w-7xl min-w-[320px] mx-auto lg:px-6 lg:mb-32">
+<div class="container max-w-7xl min-w-[290px] mx-auto lg:px-6 lg:mb-32">
     <ngx-spinner bdColor="rgba(255,255,255,0.0)" size="medium" color="#e11d48" type="ball-spin-rotate"
         [fullScreen]="true" [name]="dataLoadingSpinner"></ngx-spinner>
     <ngx-spinner bdColor="rgba(255,255,255,0.0)" size="medium" color="#e11d48" type="ball-spin-rotate"
@@ -61,20 +61,17 @@
             <div class="h-0" #spaceForFilterBarWhenFixed></div>
             <!-- Filter Bar -->
             <div class="flex w-full justify-between lg:justify-end items-center bg-white
-                        lg:bg-transparent py-2 px-2 lg:px-0 shadow lg:shadow-none"
+                        lg:bg-transparent shadow-[rgba(0,0,0,0.1)_0px_5px_4px_-4px] lg:shadow-none py-2 px-4 sm:px-6 lg:px-0"
                         #filterBar>
                 <!-- Filter Bar Content -->
-                <div class="flex w-full justify-between lg:justify-end items-center mx-2" @fadeIn>
+                <div class="flex w-full justify-between lg:justify-end items-center lg:mx-2 lg:mr-0" @fadeIn>
                     <!-- Toggle Filter Button for Small Screens -->
-                    <div class="lg:hidden flex sm:flex-1">
+                    <div class="lg:hidden flex sm:flex-1 lg:p-0">
                         <button
-                            class="items-center p-2.5 text-slate-500 hover:text-slate-500 bg-slate-50 rounded-lg"
+                            class="items-center text-rose-500"
                             (click)="toggleFilterPage(); $event.stopPropagation()"
                             type="button" #toggleFilterPageButton>
-                            <svg class="w-4 h-4 md:h-5 md:w-5"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M1 5h1.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 1 0 0-2H8.576a3.228 3.228 0 0 0-6.152 0H1a1 1 0 1 0 0 2Zm18 4h-1.424a3.228 3.228 0 0 0-6.152 0H1a1 1 0 1 0 0 2h10.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 0 0 0-2Zm0 6H8.576a3.228 3.228 0 0 0-6.152 0H1a1 1 0 0 0 0 2h1.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 0 0 0-2Z" />
-                            </svg>
+                            <i class="fa-solid fa-filter fa-lg"></i>
                         </button>
                     </div>
                     <!-- Paging Header for Large Screens -->
@@ -82,11 +79,13 @@
                         <app-paging-header [totalCount]="promotions.count" [pageSize]="promotions.pageSize" [pageIndex]="promotions.pageIndex"></app-paging-header>
                     </div>
                     <!-- Search Component -->
-                    <div class="sm:w-3/5 sm:flex-2 lg:w-fit lg:order-2 lg:block lg:ml-5 mr-0 sm:mr-4 lg:mr-0">
+                    <div class="sm:w-2/5 lg:w-fit lg:order-2 lg:block lg:ml-5">
                         <app-search></app-search>
                     </div>
                     <!-- Sort Component -->
-                    <app-sort></app-sort>
+                    <div class="hidden lg:flex">
+                        <app-sort></app-sort>
+                    </div>
                 </div>
             </div>
             <!-- User Search Filters -->
@@ -102,7 +101,7 @@
             </div>
             <!-- No Found -->
             <div *ngIf="promotions.count <= 0"
-                class="flex items-center w-fit m-2 mt-4 p-4 space-x-4 text-slate-600 bg-white border border-slate-200 rounded-lg shadow space-x" @fadeIn>
+                class="flex items-center w-fit mx-4 lg:mx-2 my-8 lg:mt-4 p-4 space-x-4 text-slate-600 bg-white border border-slate-200 rounded-lg shadow space-x" @fadeIn>
                 <i class="fa-solid fa-circle-info fa-2xl text-slate-500"></i>
                 <div class="pl-3 text-sm font-normal">Szukaliśmy, szukaliśmy, ale nie znaleźliśmy nic, co by spełniło twoje oczekiwania :(</div>
             </div>

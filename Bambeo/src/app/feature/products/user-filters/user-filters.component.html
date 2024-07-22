@@ -1,11 +1,11 @@
-<div class="flex flex-wrap items-center p-2 bg-slate-50 m-2 rounded-lg border border-slate-200">
-    <span class="flex p-1 px-2 rounded-lg text-slate-500 bg-white border border-slate-200 text-xs font-normal mx-2 my-1"
+<div class="flex flex-wrap items-center lg:p-2 lg:bg-slate-50 m-2 lg:mr-0 lg:rounded-lg lg:border lg:border-slate-200">
+    <span class="flex p-1 px-2 rounded-lg text-slate-600 bg-slate-100 lg:text-slate-500 lg:bg-white lg:border lg:border-slate-200 text-xs font-light lg:font-normal mx-2 my-1"
         *ngFor="let filter of userFilters">
         {{ filter.name }}
     </span>
     <div class="flex-col items-center">
         <button
-            class="flex items-center justify-center p-1 px-2 mx-2 my-1 rounded-lg bg-white text-slate-500 border-slate-200 border text-xs font-normal hover:bg-slate-50 hover:text-slate-600 lg:focus:border-rose-500 lg:focus:bg-rose-500 lg:focus:ring-4 lg:focus:ring-rose-200 lg:focus:outline-none lg:focus:text-white"
+            class="flex items-center justify-center p-1 px-2 mx-2 my-1 rounded-lg bg-slate-100 text-slate-600 lg:bg-white lg:text-slate-500 lg:border-slate-200 lg:border text-xs font-light lg:font-normal lg:hover:bg-slate-50 lg:hover:text-slate-600 lg:focus:border-rose-500 lg:focus:bg-rose-500 lg:focus:ring-4 lg:focus:ring-rose-200 lg:focus:outline-none lg:focus:text-white"
             (click)="resetFilters()">
             <i class="fa-solid fa-trash-can pr-1.5"></i> Wyczyść filtry
         </button>
