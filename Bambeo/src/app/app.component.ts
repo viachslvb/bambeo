@@ -4,22 +4,37 @@ import { ScrollService } from './core/services/scroll.service';
 import { FavoriteProductsService } from './core/state/favorite-products.service';
 import { RouterEventsService } from './core/services/router-events.service';
 import { isIphone, preventDoubleTapZoom, setViewportMetaTag } from './core/utils';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  animations: [
+    trigger('fadeInOut', [
+      state('void', style({ opacity: 0 })),
+      transition('void => *', [
+        animate('0.20s ease-in')
+      ]),
+      transition('* => void', [
+        animate('0.20s ease-out')
+      ])
+    ])
+  ]
 })
 export class AppComponent implements OnInit {
   @ViewChild('appView', { static: true }) appView!: ElementRef;
   title = 'Bambeo';
+  isFooterVisible = false;
 
   constructor(
     private authService: AuthService,
     private scrollService: ScrollService,
     private favoritesService: FavoriteProductsService,
     private routerEventsService: RouterEventsService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -29,5 +44,16 @@ export class AppComponent implements OnInit {
     preventDoubleTapZoom(this.renderer);
 
     this.authService.initializeAuthState().subscribe();
+
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        this.isFooterVisible = false;
+      }
+      else if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
+        setTimeout(() => {
+          this.isFooterVisible = true;
+        }, 70);
+      }
+    });
   }
 }

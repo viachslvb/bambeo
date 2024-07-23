@@ -13,7 +13,7 @@ import { PromotionService } from '../promotion.service';
 export class SortComponent implements AfterViewInit, OnDestroy {
   @ViewChild('changeSortDropdown', { static: true }) changeSortDropdown!: ElementRef;
   @ViewChild('changeSortButton', { static: true }) changeSortButton!: ElementRef;
-  
+
   private destroy$ = new Subject<void>();
   isDropdownVisible: boolean = false;
 
@@ -70,7 +70,7 @@ export class SortComponent implements AfterViewInit, OnDestroy {
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
     if (this.isDropdownVisible) {
-      if (!this.changeSortDropdown.nativeElement.contains(event.target) 
+      if (!this.changeSortDropdown.nativeElement.contains(event.target)
         && !this.changeSortButton.nativeElement.contains(event.target)) {
         this.isDropdownVisible = false;
       }

@@ -29,7 +29,7 @@ export class PromotionService {
 
   private filtersSubject = new BehaviorSubject<IPromotionFilter>(this.defaultFilter());
   private filters$ = this.filtersSubject.asObservable();
-   temporaryFilter: Partial<IPromotionFilter> = {};
+  temporaryFilter: Partial<IPromotionFilter> = {};
 
   private defaultFilter(): IPromotionFilter {
     return {
@@ -86,8 +86,11 @@ export class PromotionService {
     return this.filters$;
   }
 
-  resetFilters(): void {
+  resetFilters(forceReset: boolean = false): void {
     this.updateQueryParams({});
+
+    if (forceReset)
+      this.updateFilters(this.defaultFilter());
   }
 
   getPromotions(): Observable<Pagination<Promotion[]>> {

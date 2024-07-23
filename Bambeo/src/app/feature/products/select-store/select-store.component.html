@@ -1,24 +1,24 @@
-<div class="bg-rose-600 p-7 lg:rounded-lg">
+<h2 class="lg:hidden px-5 py-4 font-light text-lg text-slate-500">Wybierz Sklepy</h2>
+<div class="bg-rose-600 p-7 rounded-lg">
     <div class="relative w-5/6 lg:w-full">
         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <svg class="w-4 h-4 text-slate-700 font-bold" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-            </svg>
+            <i class="fa-solid fa-magnifying-glass text-slate-600"></i>
         </div>
-        <input type="text" placeholder="Wpisz nazwę sklepu..."
-        class="border border-b-0 border-rose-500 text-slate-700 placeholder-slate-700 text-sm rounded-lg focus:ring-rose-400 focus:ring-1 focus:border-rose-200 block w-full pl-10 p-2.5"
+        <input type="text" placeholder="Wpisz nazwę"
+        class="font-light lg:text-sm border border-b-0 border-rose-500 text-slate-600 placeholder-slate-600 rounded-lg focus:ring-rose-400 focus:ring-1 focus:border-rose-200 block w-full pl-10 p-2.5"
         #storeSearch>
     </div>
     <ul class="mt-5 bg-rose-600 ">
-        <li class="flex items-center p-3 cursor-pointer border-b border-rose-500 hover:bg-rose-500"
-            *ngFor="let store of filteredStores"
+        <li class="flex items-center p-3 cursor-pointer hover:bg-rose-500"
+            *ngFor="let store of filteredStores; let last = last"
+            [ngClass]="{'border-b border-rose-500': !last}"
             (click)="onStoreSelected(store)">
             <input type="checkbox"
                 class="w-4 h-4 text-rose-400 bg-white border-0 rounded focus:ring-rose-400 focus:text-rose-600 focus:ring-3 mr-3 cursor-pointer"
-                [(ngModel)]="store.selected" 
+                [(ngModel)]="store.selected"
                 [attr.data-store-id]="store.id"
                 #storeCheckbox>
-            <span class="text-[0.90rem] font-medium text-white">{{ store.name }}</span>
+            <span class="lg:text-[0.9rem] text-white">{{ store.name }}</span>
         </li>
         <li class="text-center text-sm text-rose-50 py-3"
             *ngIf="filteredStores && filteredStores.length < 1">

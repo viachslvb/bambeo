@@ -6,4 +6,4 @@
 </p-toast>
 <ngx-spinner bdColor="rgba(255,255,255,0)" size="medium" color="#e11d48" type="ball-spin-rotate" [fullScreen]="true"
   name="pageLoadingSpinner"></ngx-spinner>
-<app-footer class="mt-auto"></app-footer>
+<app-footer *ngIf="isFooterVisible"></app-footer>

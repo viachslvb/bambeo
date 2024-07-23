@@ -1,15 +1,13 @@
-<!-- sorting settings -->
-<div class="flex sm:items-center lg:order-1 lg:border-r lg:border-slate-200 lg:pr-5 group relative">
-    <div class="hidden min-w-max lg:flex mr-4 text-slate-600 font-light text-sm">{{ getCurrentSortLabel() }}</div>
+<!-- LG Screen -->
+<div class="hidden lg:flex items-center order-1 border-r border-slate-200 pr-5 group relative">
+    <div class="flex min-w-max mr-4 text-slate-600 font-light text-sm">{{ getCurrentSortLabel() }}</div>
     <button #changeSortButton
-    class="group flex items-center justify-center p-2.5 bg-slate-50 rounded-lg lg:bg-slate-100 lg:rounded-lg lg:border lg:border-slate-200 lg:focus:border-rose-500 lg:focus:bg-rose-500 lg:focus:ring-4 lg:focus:ring-rose-200 lg:focus:outline-none"
+    class="group flex items-center justify-center p-2.5 bg-slate-100 rounded-lg border border-slate-200 focus:border-rose-500 focus:bg-rose-500 focus:ring-4 focus:ring-rose-200 focus:outline-none"
     (click)="sortDropdownToggle()"
     type="button">
-        <svg class="w-[1.15rem] h-[1.15rem] md:w-5 md:h-5 lg:w-4 lg:h-4 flex-shrink-0 text-slate-500 group-hover:text-slate-500 lg:text-slate-500 lg:group-focus:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6v13m0 0 3-3m-3 3-3-3m11-2V1m0 0L9 4m3-3 3 3"/>
-        </svg>
+        <i class="fa-solid fa-arrow-down-wide-short text-slate-500 group-hover:text-slate-500 group-focus:text-white"></i>
     </button>
-    <!-- Sort dropdown menu -->
+    <!-- Sort Dropdown Menu -->
     <div #changeSortDropdown
     class="z-10 divide-y divide-slate-100 rounded-lg shadow-xl bg-white w-max"
     [ngClass]="{
@@ -33,4 +31,20 @@
             </li>
         </ul>
     </div>
+</div>
+<!-- Mobile Version -->
+<div class="lg:hidden">
+    <h2 class="lg:hidden py-2 px-3 my-2 font-light text-lg text-slate-500">Sortuj Według</h2>
+    <ul class="text-slate-700" aria-labelledby="changeSortButton">
+        <li *ngFor="let sortType of sortTypes; let last = last"
+            class="flex px-4 py-2 cursor-pointer"
+            [ngClass]="{ 'border-b border-slate-200': !last }"
+            (click)="onSortTypeChange(sortType)">
+            <input type="radio" [checked]="sortType.selected" (change)="onSortTypeChange(sortType)"
+                class="text-rose-500 focus:ring-rose-400 focus:text-rose-600 border border-slate-300 focus:ring-3 cursor-pointer mr-3">
+            <div class="font-light text-slate-700">
+                {{ sortType.label }}
+            </div>
+        </li>
+    </ul>
 </div>

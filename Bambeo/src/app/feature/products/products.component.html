@@ -4,12 +4,18 @@
     <ngx-spinner bdColor="rgba(255,255,255,0.0)" size="medium" color="#e11d48" type="ball-spin-rotate"
         [fullScreen]="true" [name]="promotionsLoadingSpinner"></ngx-spinner>
     <div class="flex justify-between">
+        <div
+        [@opacityInOut]="isFilterPageOpen && isMobile ? 'open' : 'closed'"
+        class="fixed inset-0 bg-slate-800 z-[99]"
+        (click)="toggleFilterPage()"
+        #filterPageBackgroundLayer
+        ></div>
         <!-- Store & Category Filters -->
         <div
             class="lg:w-3/12 lg:min-w-[250px]"
             [ngClass]="{
-                'fixed inset-y-0 left-0 z-[100] w-full h-full bg-white transform overflow-y-auto': isMobile,
-                '-translate-y-0': isFilterPageOpen && isMobile,
+                'fixed inset-y-0 left-0 z-[100] w-full h-[95%] bg-white rounded-t-2xl shadow-[rgba(0,0,0,0.2)_0px_-5px_10px_-4px] transform overflow-y-auto': isMobile,
+                'translate-y-[5%]': isFilterPageOpen && isMobile,
                 'translate-y-full': !isFilterPageOpen && isMobile
             }"
             (touchstart)="onTouchStart($event)"
@@ -17,39 +23,43 @@
             (touchend)="onTouchEnd($event)"
             #filterPage>
             <div class="lg:hidden flex justify-center">
-                <div class="h-1 w-10 mt-2 bg-slate-300"></div>
+                <div class="h-1 w-16 mt-2 bg-slate-400"></div>
             </div>
-            <div class="lg:hidden flex items-center justify-between p-5">
+            <div class="lg:hidden flex items-center justify-between px-5 py-3">
                 <div class="text-2xl font-semibold text-slate-700">
                     Filtry
                 </div>
                 <button type="button"
-                    class="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-slate-400 hover:text-slate-500"
+                    class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-50 p-2 text-slate-400"
                     (click)="toggleFilterPage()">
                     <span class="sr-only">Close menu</span>
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                        aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <i class="fa-solid fa-xmark fa-xl"></i>
                 </button>
             </div>
             <!-- Select Store -->
             <app-select-store [stores]="stores" *ngIf="stores.length > 0" @fadeIn>
             </app-select-store>
-            <!-- Select Category -->
-            <div class="lg:border lg:border-slate-200 lg:rounded-xl mt-5" *ngIf="categories.length > 0">
+            <div class="px-2 lg:px-0 lg:border lg:border-slate-200 lg:rounded-xl mt-5" *ngIf="categories.length > 0">
+                <!-- Select Category -->
                 <app-select-category [categories]="categories" @fadeIn>
                 </app-select-category>
+                <!-- Sort -->
+                <app-sort class="lg:hidden"></app-sort>
                 <!-- Other Promotion Options -->
                 <div class="p-4 my-5" @fadeIn>
                     <app-promotion-options></app-promotion-options>
                 </div>
             </div>
             <!-- Apply Filters -->
-            <div class="flex justify-end" [ngClass]="{hidden: !isMobile}">
+            <div class="flex justify-center items-center mb-10" [ngClass]="{hidden: !isMobile}">
+                <button type="button"
+                    (click)="resetFilters()"
+                    class="mr-5">
+                    Wyczyść filtry
+                </button>
                 <button type="button"
                     (click)="applyFilters()"
-                    class="text-white bg-rose-500 hover:bg-rose-600 focus:ring-4 focus:ring-rose-300 font-medium rounded-lg py-2 px-3 focus:outline-none mb-10 ml-auto mr-4">
+                    class="text-white bg-rose-500 hover:bg-rose-600 focus:ring-4 focus:ring-rose-300 font-medium text-lg rounded-lg py-2 px-5 focus:outline-none">
                     <i class="fa-solid fa-magnifying-glass fa-sm mr-2"></i> Pokaż wyniki
                 </button>
             </div>
@@ -61,12 +71,12 @@
             <div class="h-0" #spaceForFilterBarWhenFixed></div>
             <!-- Filter Bar -->
             <div class="flex w-full justify-between lg:justify-end items-center bg-white
-                        lg:bg-transparent shadow-[rgba(0,0,0,0.1)_0px_5px_4px_-4px] lg:shadow-none py-2 px-4 sm:px-6 lg:px-0"
+                        lg:bg-transparent shadow-[rgba(0,0,0,0.1)_0px_5px_4px_-4px] lg:shadow-none py-2 px-4 lg:px-0"
                         #filterBar>
                 <!-- Filter Bar Content -->
                 <div class="flex w-full justify-between lg:justify-end items-center lg:mx-2 lg:mr-0" @fadeIn>
                     <!-- Toggle Filter Button for Small Screens -->
-                    <div class="lg:hidden flex sm:flex-1 lg:p-0">
+                    <div class="flex order-2 lg:hidden lg:p-0">
                         <button
                             class="items-center text-rose-500"
                             (click)="toggleFilterPage(); $event.stopPropagation()"
@@ -79,7 +89,7 @@
                         <app-paging-header [totalCount]="promotions.count" [pageSize]="promotions.pageSize" [pageIndex]="promotions.pageIndex"></app-paging-header>
                     </div>
                     <!-- Search Component -->
-                    <div class="sm:w-2/5 lg:w-fit lg:order-2 lg:block lg:ml-5">
+                    <div class="sm:w-2/5 lg:w-fit order-1 lg:order-2 lg:block lg:ml-5">
                         <app-search></app-search>
                     </div>
                     <!-- Sort Component -->
@@ -89,7 +99,7 @@
                 </div>
             </div>
             <!-- User Search Filters -->
-            <app-user-filters *ngIf="categories.length > 0 && stores.length > 0" [stores]="stores" [categories]="categories"></app-user-filters>
+            <app-user-filters *ngIf="categories.length > 0 && stores.length > 0" [stores]="stores" [categories]="categories" @fadeIn></app-user-filters>
             <!-- Promotions List -->
             <div *ngIf="promotions.count > 0" class="flex flex-wrap justify-between items-center mt-3 lg:mt-0" @fadeIn>
                 <div class="flex w-full xs:w-1/2" *ngFor="let promotion of promotions.data">

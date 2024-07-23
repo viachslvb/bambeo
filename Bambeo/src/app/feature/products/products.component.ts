@@ -3,7 +3,7 @@ import { PromotionService } from 'src/app/feature/products/promotion.service';
 import { Promotion } from 'src/app/core/models/promotion';
 import { ProductCategory } from 'src/app/core/models/productCategory';
 import { Store } from 'src/app/core/models/store';
-import { Subject, catchError, forkJoin, of, takeUntil, tap } from 'rxjs';
+import { Subject, catchError, delay, forkJoin, of, takeUntil, tap } from 'rxjs';
 import { BusyService } from '../../core/services/busy.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,6 +21,19 @@ import { sortObjectKeys } from 'src/app/core/utils';
       transition('void => *', [
         animate('0.15s ease-in')
       ]),
+    ]),
+    trigger('opacityInOut', [
+      state('open', style({
+        opacity: 0.7,
+        visibility: 'visible'
+      })),
+      state('closed', style({
+        opacity: 0,
+        visibility: 'hidden'
+      })),
+      transition('open <=> closed', [
+        animate('0.3s ease-in-out')
+      ])
     ])
   ]
 })
@@ -30,6 +43,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('filterBar', { static: false }) filterBar!: ElementRef;
   @ViewChild('filterPage', { static: false }) filterPage!: ElementRef;
+  @ViewChild('filterPageBackgroundLayer', { static: false }) filterPageBackgroundLayer!: ElementRef;
   @ViewChild('toggleFilterPageButton', { static: false }) toggleFilterButton!: ElementRef;
   @ViewChild('spaceForFilterBarWhenFixed', { static: false }) spaceForFilterBarWhenFixed!: ElementRef;
 
@@ -314,7 +328,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.filterPageIsDragging = true;
 
       const deltaY = currentY - this.filterPageStartY;
-      const menuOffsetY = Math.max(Math.min(deltaY, window.innerHeight), 0);
+      const menuOffsetY = Math.max(Math.min(deltaY, window.innerHeight), 0) + 5 / 100 * window.innerHeight;
 
       filterPage.style.transform = `translateY(${menuOffsetY}px)`;
     }
@@ -338,7 +352,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.renderer.removeStyle(filterPage, 'transform');
         this.toggleFilterPage();
       } else {
-        filterPage.style.transform = 'translateY(0)';
+        filterPage.style.transform = 'translateY(5%)';
       }
     }
 
@@ -412,5 +426,9 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   applyFilters() {
     this.toggleFilterPage();
     this.promotionService.applyTemporaryFilters();
+  }
+
+  resetFilters() {
+    this.promotionService.resetFilters(true);
   }
 }
