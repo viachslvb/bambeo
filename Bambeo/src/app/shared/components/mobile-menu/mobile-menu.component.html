@@ -1,34 +1,52 @@
-<div class="fixed top-0 left-0 flex flex-col justify-center items-center inset-0 bg-rose-600 z-40">
-  <!-- header user info -->
-  <div *ngIf="isLoggedIn && user" class="flex flex-col justify-center items-center mb-10">
-    <div
-      class="flex justify-center items-center w-32 h-32 bg-rose-500 rounded-full text-rose-100 font-bold text-center text-6xl">
-      <span class="mt-3">{{ user.displayName[0] | uppercase }}</span>
-    </div>
-    <div class="text-2xl text-rose-400 font-semibold mt-2 truncate">{{ user.displayName }}</div>
-    <div class="text-xl text-rose-400 font-light truncate">{{ user.email }}</div>
-  </div>
-  <!-- menu items -->
-  <div class="flex flex-col justify-between" [ngClass]="{'min-h-[50%]': !isLoggedIn}">
-    <div class="flex flex-col justify-center items-center">
-      <div class="flex flex-col justify-center space-y-6">
-        <a routerLink="/" (click)="onCloseMenu()" class="text-rose-100 text-xl"><i class="fa-solid fa-house w-10"></i>
-          Strona Główna</a>
-        <a *ngIf="isLoggedIn" routerLink="/account" (click)="onCloseMenu()" class="text-rose-100 text-xl"><i
-            class="fa-solid fa-user w-10"></i> Moje Konto</a>
-        <a *ngIf="isLoggedIn" routerLink="/favorites" (click)="onCloseMenu()" class="text-rose-100 text-xl"><i
-            class="fa-solid fa-heart w-10"></i> Ulubione</a>
-        <a *ngIf="isLoggedIn" routerLink="/account/settings" (click)="onCloseMenu()" class="text-rose-100 text-xl"><i
-            class="fa-solid fa-cog w-10"></i> Ustawienia</a>
-        <a routerLink="/" (click)="onCloseMenu()" class="text-rose-100 text-xl"><i
-            class="fa-solid fa-chalkboard-user w-10"></i> Jak Korzystać</a>
-        <a *ngIf="isLoggedIn" (click)="onLogout(); onCloseMenu()" class="text-rose-100 text-xl cursor-pointer"><i
-            class="fa-solid fa-sign-out-alt w-10"></i> Wyloguj Się</a>
+<div class="fixed top-0 left-0 bottom-0 flex flex-col justify-between inset-0 bg-rose-600 z-40">
+    <!-- menu items -->
+    <div class="flex flex-col justify-start items-end mt-[20vh] px-6">
+      <div *ngIf="isLoggedIn && user" class="flex flex-col items-end mb-10">
+        <div class="text-2xl text-rose-400 font-semibold mt-2 truncate">{{ user.displayName }}</div>
+        <div class="text-xl text-rose-400 font-light truncate">{{ user.email }}</div>
       </div>
+      <a routerLink="/"
+        (click)="onCloseMenu()"
+        class="text-rose-100 text-xl border-b border-rose-500 py-3">
+        Strona Główna
+        <i class="fa-solid fa-house pl-3"></i>
+      </a>
+      <a routerLink="/account"
+        *ngIf="isLoggedIn"
+        (click)="onCloseMenu()"
+        class="text-rose-100 text-xl border-b border-rose-500 py-3">
+        Moje Konto
+        <i class="fa-solid fa-user pl-3"></i>
+      </a>
+      <a routerLink="/favorites"
+        *ngIf="isLoggedIn"
+        (click)="onCloseMenu()"
+        class="text-rose-100 text-xl border-b border-rose-500 py-3">
+        Ulubione
+        <i class="fa-solid fa-heart pl-3"></i>
+      </a>
+      <a routerLink="/account/settings"
+        *ngIf="isLoggedIn"
+        (click)="onCloseMenu()"
+        class="text-rose-100 text-xl border-b border-rose-500 py-3">
+        Ustawienia
+        <i class="fa-solid fa-cog pl-3"></i>
+      </a>
+      <a routerLink="/"
+        (click)="onCloseMenu()"
+        class="text-rose-100 text-xl border-b border-rose-500 py-3">
+        Jak Korzystać
+        <i class="fa-solid fa-chalkboard-user pl-3"></i>
+      </a>
+      <a (click)="onLogout(); onCloseMenu()"
+        *ngIf="isLoggedIn"
+        class="text-rose-100 text-xl cursor-pointer border-b border-rose-500 py-3">
+        Wyloguj Się
+        <i class="fa-solid fa-sign-out-alt pl-3"></i>
+      </a>
     </div>
     <!-- signup / login buttons -->
-    <div *ngIf="!isLoggedIn" class="flex flex-col justify-between items-center">
-      <span class="text-rose-400 font-semibold text-2xl">Dołącz do nas i korzystaj w pełni!</span>
+    <div *ngIf="!isLoggedIn" class="flex flex-col items-center mb-[10vh]">
       <div class="flex flex-col items-center mt-5">
         <button routerLink="/account/signup" (click)="onCloseMenu()" type="button"
           class="bg-rose-500 text-white focus:ring-4 focus:ring-rose-300 font-semibold text-2xl rounded-lg py-4 px-8 focus:outline-none">
@@ -41,5 +59,4 @@
         </button>
       </div>
     </div>
-  </div>
 </div>

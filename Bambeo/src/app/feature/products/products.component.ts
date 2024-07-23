@@ -310,7 +310,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onTouchStart(e: TouchEvent) {
     const filterPage = this.filterPage.nativeElement;
-    this.renderer.setStyle(filterPage, 'transition', 'transform ease-in-out 0.01s');
+    this.renderer.removeStyle(filterPage, 'transition');
     this.renderer.setStyle(filterPage, 'will-change', 'transform');
 
     this.filterPageStartY = e.touches[0].clientY;
