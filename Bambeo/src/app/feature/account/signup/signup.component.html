@@ -1,37 +1,35 @@
-<section class="flex flex-col items-center justify-center my-20 px-6 mx-auto lg:py-0">
-    <div class="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
-        <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 class="text-xl font-bold leading-tight tracking-tight text-slate-800 md:text-2xl mb-3">
-                <i class="fa-solid fa-hands mr-3"></i> Dołącz Do Nas
-            </h1>
-            <form [formGroup]="signupForm" class="space-y-4 md:space-y-6" (ngSubmit)="onSubmit()">
-                <bb-text-input [formControl]="signupForm.controls['displayName']" [label]="'Jak masz na imię?'"
-                    [type]="'text'" [name]="'displayName'" [placeholder]="'Maciej'"></bb-text-input>
-                <bb-text-input [formControl]="signupForm.controls['email']" [label]="'Twój adres e-mail'"
-                    [type]="'email'" [name]="'email'" [placeholder]="'maciej.wysocki@gmail.com'"></bb-text-input>
-                <bb-text-input [formControl]="signupForm.controls['password']" [label]="'Hasło'" [type]="'password'"
-                    [name]="'password'" [placeholder]="'••••••••'"></bb-text-input>
-                <bb-text-input [formControl]="signupForm.controls['confirmPassword']" [label]="'Powtórz hasło'"
-                    [type]="'password'" [name]="'confirmPassword'" [placeholder]="'••••••••'"></bb-text-input>
-                <div *ngIf="errors" class="text-xs text-rose-600 px-1">
-                    <li *ngFor="let error of errors">
-                        {{error}}
-                    </li>
-                </div>
-                <button type="submit" [disabled]="isLoading"
-                    class="w-full bg-rose-500 text-white hover:bg-rose-600 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                    [ngClass]="{'bg-rose-400 hover:bg-rose-400': isLoading}">
-                    Zarejestruj Się
-                    <span *ngIf="isLoading">
-                        <bb-loading-spinner [width]="'1rem'" [height]="'1rem'" class="ml-3"></bb-loading-spinner>
-                        <span class="sr-only">Loading...</span>
-                    </span>
-                </button>
-                <p class="text-sm font-light text-slate-500">
-                    Masz już konto? <a routerLink="/account/login"
-                        class="font-medium text-slate-600 hover:underline">Zaloguj się</a>
-                </p>
-            </form>
-        </div>
+<app-layout-center>
+    <div class="space-y-4 md:space-y-6">
+        <h1 class="text-xl font-bold leading-tight tracking-tight text-slate-800 md:text-2xl mb-3">
+            <i class="fa-solid fa-hands mr-3"></i> Dołącz Do Nas
+        </h1>
+        <form [formGroup]="signupForm" class="space-y-4 md:space-y-6" (ngSubmit)="onSubmit()">
+            <bb-text-input [formControl]="signupForm.controls['displayName']" [label]="'Jak masz na imię?'"
+                [type]="'text'" [name]="'displayName'" [placeholder]="'Maciej'"></bb-text-input>
+            <bb-text-input [formControl]="signupForm.controls['email']" [label]="'Twój adres e-mail'"
+                [type]="'email'" [name]="'email'" [placeholder]="'maciej.wysocki@gmail.com'"></bb-text-input>
+            <bb-text-input [formControl]="signupForm.controls['password']" [label]="'Hasło'" [type]="'password'"
+                [name]="'password'" [placeholder]="'••••••••'"></bb-text-input>
+            <bb-text-input [formControl]="signupForm.controls['confirmPassword']" [label]="'Powtórz hasło'"
+                [type]="'password'" [name]="'confirmPassword'" [placeholder]="'••••••••'"></bb-text-input>
+            <div *ngIf="errors" class="text-xs text-rose-600 px-1">
+                <li *ngFor="let error of errors">
+                    {{error}}
+                </li>
+            </div>
+            <button type="submit" [disabled]="isLoading"
+                class="w-full bg-rose-500 text-white hover:bg-rose-600 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                [ngClass]="{'bg-rose-400 hover:bg-rose-400': isLoading}">
+                Zarejestruj Się
+                <span *ngIf="isLoading">
+                    <bb-loading-spinner [width]="'1rem'" [height]="'1rem'" class="ml-3"></bb-loading-spinner>
+                    <span class="sr-only">Loading...</span>
+                </span>
+            </button>
+            <p class="sm:text-sm font-light text-slate-500">
+                Masz już konto? <a routerLink="/account/login"
+                    class="font-medium text-slate-600 hover:underline">Zaloguj się</a>
+            </p>
+        </form>
     </div>
-</section>
+</app-layout-center>

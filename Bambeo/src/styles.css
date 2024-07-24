@@ -331,6 +331,11 @@ html, body, * {
     color: #475569;
 }
 
+.p-component-overlay {
+    background-color: rgba(30, 41, 59, 0.6);
+    transition-duration: 0.3s;
+}
+
 /* Toast Notification */
 
 @media (max-width: 640px) {

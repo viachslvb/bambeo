@@ -35,7 +35,9 @@ export class MyAccountComponent implements AfterViewInit {
   }
 
   setInitialScrollPosition() {
-    this.updateScrollPosition();
+    if (window.innerWidth < 1024) {
+      this.updateScrollPosition();
+    }
   }
 
   updateScrollPosition() {

@@ -13,6 +13,7 @@ import { RouterModule } from '@angular/router';
 import { LoadingErrorComponent } from './components/loading-error/loading-error.component';
 import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import { LayoutCenterComponent } from './components/layout-center/layout-center.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
     LoadingSpinnerComponent,
     ProfileMenuDropdownComponent,
     LoadingErrorComponent,
-    MobileMenuComponent
+    MobileMenuComponent,
+    LayoutCenterComponent
   ],
   imports: [
     CommonModule,
@@ -44,7 +46,8 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
     ProfileMenuDropdownComponent,
     LoadingErrorComponent,
     MobileMenuComponent,
-    NgxSkeletonLoaderModule
+    NgxSkeletonLoaderModule,
+    LayoutCenterComponent
   ]
 })
 export class SharedModule { }

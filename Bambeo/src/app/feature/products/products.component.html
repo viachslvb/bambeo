@@ -37,22 +37,22 @@
             </div>
             <!-- Select Store -->
             <ng-container *ngIf="isStoresLoaded; else loadingStoresTemplate">
-                <app-select-store [stores]="stores" @fadeIn></app-select-store>
+                <app-select-store *ngIf="stores.length > 0" [stores]="stores" @fadeIn></app-select-store>
             </ng-container>
             <ng-template #loadingStoresTemplate>
                 <ngx-skeleton-loader [theme]="{ 'background-color': '#f1f5f9', 'border-radius': '0.5rem', height: '400px' }"></ngx-skeleton-loader>
             </ng-template>
             <!-- Select Category & Other Options -->
-            <div
-                *ngIf="isCategoriesLoaded; else loadingCategoriesTemplate"
-                class="px-2 lg:px-0 lg:border lg:border-slate-200 lg:rounded-xl mt-5">
-                <!-- Select Category -->
-                <app-select-category [categories]="categories" @fadeIn></app-select-category>
-                <!-- Sort -->
-                <app-sort class="lg:hidden"></app-sort>
-                <!-- Other Promotion Options -->
-                <div class="p-4 my-5" @fadeIn>
-                    <app-promotion-options></app-promotion-options>
+            <div *ngIf="isCategoriesLoaded; else loadingCategoriesTemplate">
+                <div *ngIf="categories.length > 0" class="px-2 lg:px-0 lg:border lg:border-slate-200 lg:rounded-xl mt-5">
+                    <!-- Select Category -->
+                    <app-select-category [categories]="categories" @fadeIn></app-select-category>
+                    <!-- Sort -->
+                    <app-sort class="lg:hidden"></app-sort>
+                    <!-- Other Promotion Options -->
+                    <div class="p-4 my-5" @fadeIn>
+                        <app-promotion-options></app-promotion-options>
+                    </div>
                 </div>
             </div>
             <ng-template #loadingCategoriesTemplate>

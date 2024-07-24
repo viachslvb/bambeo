@@ -1,39 +1,37 @@
-<section class="flex flex-col items-center justify-center my-20 px-6 mx-auto lg:py-0">
-    <div class="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
-        <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 class="text-xl font-bold leading-tight tracking-tight text-slate-800 md:text-2xl mb-3">
-                <i class="fa-solid fa-hands mr-3"></i> Logowanie
-            </h1>
-            <form [formGroup]="loginForm" class="space-y-4 md:space-y-6" (ngSubmit)="onSubmit()">
-                <bb-text-input [formControl]="loginForm.controls['email']" [label]="'E-mail'" [type]="'email'" [name]="'email'" [placeholder]="'maciej.wysocki@gmail.com'"></bb-text-input>
-                <bb-text-input [formControl]="loginForm.controls['password']" [label]="'Hasło'" [type]="'password'" [name]="'password'" [placeholder]="'••••••••'"></bb-text-input>
-                <div class="flex items-center justify-between text-xs xs:text-sm">
-                    <div class="flex items-start cursor-pointer">
-                        <div class="flex items-center h-5 cursor-pointer">
-                            <input id="remember" formControlName="rememberMe" aria-describedby="remember" type="checkbox" class="w-4 h-4 border border-slate-200 rounded bg-slate-50 focus:ring-4 focus:ring-rose-300 text-rose-600 cursor-pointer">
-                        </div>
-                        <div class="ml-3 cursor-pointer">
-                            <label for="remember" class="text-slate-600 cursor-pointer">Zapamiętaj mnie</label>
-                        </div>
+<app-layout-center>
+    <div class="space-y-4 md:space-y-6">
+        <h1 class="text-xl font-bold leading-tight tracking-tight text-slate-800 md:text-2xl mb-3">
+            <i class="fa-solid fa-hands mr-3"></i> Logowanie
+        </h1>
+        <form [formGroup]="loginForm" class="space-y-4 md:space-y-6" (ngSubmit)="onSubmit()">
+            <bb-text-input [formControl]="loginForm.controls['email']" [label]="'E-mail'" [type]="'email'" [name]="'email'" [placeholder]="'maciej.wysocki@gmail.com'"></bb-text-input>
+            <bb-text-input [formControl]="loginForm.controls['password']" [label]="'Hasło'" [type]="'password'" [name]="'password'" [placeholder]="'••••••••'"></bb-text-input>
+            <div class="flex items-center justify-between text-sm">
+                <div class="flex items-start cursor-pointer">
+                    <div class="flex items-center h-5 cursor-pointer">
+                        <input id="remember" formControlName="rememberMe" aria-describedby="remember" type="checkbox" class="w-4 h-4 border border-slate-200 rounded bg-slate-50 focus:ring-4 focus:ring-rose-300 text-rose-600 cursor-pointer">
                     </div>
-                    <a routerLink="/account/forgot-password" class="font-medium text-slate-600 hover:underline">Nie pamiętam hasła</a>
+                    <div class="ml-3 cursor-pointer">
+                        <label for="remember" class="text-slate-600 cursor-pointer">Zapamiętaj <span class="hidden xs:inline-block">mnie</span></label>
+                    </div>
                 </div>
-                <div *ngIf="errorMessage" class="text-sm text-rose-600 px-1">{{errorMessage}}</div>
-                <button type="submit"
-                    [disabled]="isLoading"
-                    class="w-full bg-rose-500 text-white hover:bg-rose-600 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                    [ngClass]="{'bg-rose-400 hover:bg-rose-400': isLoading}"
-                    >
-                    Zaloguj Się
-                    <span *ngIf="isLoading">
-                        <bb-loading-spinner [width]="'1rem'" [height]="'1rem'" class="ml-3"></bb-loading-spinner>
-                        <span class="sr-only">Loading...</span>
-                    </span>
-                </button>
-                <p class="text-sm font-light text-slate-500">
-                    Nie masz jeszcze konta? <a routerLink="/account/signup" class="font-medium text-slate-600 hover:underline">Zarejestruj się</a>
-                </p>
-            </form>
-        </div>
+                <a routerLink="/account/forgot-password" class="font-medium text-slate-600 hover:underline">Nie pamiętam hasła</a>
+            </div>
+            <div *ngIf="errorMessage" class="text-sm text-rose-600 px-1">{{errorMessage}}</div>
+            <button type="submit"
+                [disabled]="isLoading"
+                class="w-full bg-rose-500 text-white hover:bg-rose-600 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                [ngClass]="{'bg-rose-400 hover:bg-rose-400': isLoading}"
+                >
+                Zaloguj Się
+                <span *ngIf="isLoading">
+                    <bb-loading-spinner [width]="'1rem'" [height]="'1rem'" class="ml-3"></bb-loading-spinner>
+                    <span class="sr-only">Loading...</span>
+                </span>
+            </button>
+            <p class="sm:text-sm font-light text-slate-500">
+                Nie masz jeszcze konta? <a routerLink="/account/signup" class="font-medium text-slate-600 hover:underline">Zarejestruj się</a>
+            </p>
+        </form>
     </div>
-</section>
+</app-layout-center>

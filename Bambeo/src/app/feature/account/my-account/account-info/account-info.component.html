@@ -109,8 +109,8 @@
           (click)="confirmDeletingAccount()"
           class="w-44 mt-5 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center"
           [ngClass]="accountIsDeleted ? 'bg-slate-200 hover:bg-slate-200 text-slate-400' :
-                    isDeletingAccount ? 'bg-red-500 hover:bg-red-500 text-white' :
-                    'bg-red-600 hover:bg-red-700 text-white'">
+                    isDeletingAccount ? 'bg-rose-400 hover:bg-rose-500 text-white' :
+                    'bg-rose-500 hover:bg-rose-600 text-white'">
         <ng-container *ngIf="isDeletingAccount; else deleteAccountTitle">
           <span class="transition-[padding] duration-200 pr-3">
             Usuwam
