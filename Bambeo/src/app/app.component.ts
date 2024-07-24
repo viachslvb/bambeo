@@ -34,7 +34,6 @@ export class AppComponent implements OnInit {
     private favoritesService: FavoriteProductsService,
     private routerEventsService: RouterEventsService,
     private renderer: Renderer2,
-    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -44,16 +43,10 @@ export class AppComponent implements OnInit {
     preventDoubleTapZoom(this.renderer);
 
     this.authService.initializeAuthState().subscribe();
-
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationStart) {
-        this.isFooterVisible = false;
+    this.routerEventsService.isFooterVisible$.subscribe(
+      value => {
+        this.isFooterVisible = value;
       }
-      else if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
-        setTimeout(() => {
-          this.isFooterVisible = true;
-        }, 70);
-      }
-    });
+    );
   }
 }

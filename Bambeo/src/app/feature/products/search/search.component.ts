@@ -44,7 +44,7 @@ export class SearchComponent implements AfterViewInit, OnDestroy {
 
   private setupSearchSubscription(): void {
     fromEvent(this.promotionSearch.nativeElement, 'input').pipe(
-      debounceTime(400),
+      debounceTime(500),
       map((event: any) => event.target.value),
       distinctUntilChanged(),
       takeUntil(this.destroy$)
@@ -67,7 +67,7 @@ export class SearchComponent implements AfterViewInit, OnDestroy {
   }
 
   onSearch(searchTerm: string) {
-    this.promotionService.updateFilterPart({ pageIndex: 1, search: searchTerm });
+    this.promotionService.updateFilterPart({ pageIndex: 1, search: searchTerm }, true);
   }
 
   onSearchInputFocus() {

@@ -126,10 +126,10 @@ export class PromotionService {
     return false;
   }
 
-  updateFilterPart(part: Partial<IPromotionFilter>) {
+  updateFilterPart(part: Partial<IPromotionFilter>, updateNow: boolean = false) {
     this.temporaryFilter = { ...this.temporaryFilter, ...part };
 
-    if (!this.isMobile()) {
+    if (!this.isMobile() || updateNow) {
       this.applyFiltersToQueryParams();
     }
   }

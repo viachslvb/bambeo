@@ -5,15 +5,15 @@
 <!-- Data Display Section -->
 <ng-template #accountData>
   <div @fadeIn>
-    <h1 class="text-3xl font-medium mb-9 text-slate-800">
+    <h1 class="text-3xl font-medium mb-9 text-slate-700">
       Moje Konto
     </h1>
     <!-- Edit Account Info -->
-    <h1 class="text-xl leading-6  text-slate-800">
+    <h1 class="text-xl leading-6 text-slate-800">
       <i class="fa-solid fa-address-card mr-2"></i> Dane osobowe
     </h1>
     <div class="h-4"></div>
-    <div class="w-full bg-white rounded-lg shadow pt-2 pb-5 px-6">
+    <div class="w-full bg-white lg:rounded-lg lg:shadow lg:pt-2 lg:pb-5 lg:px-6">
       <form [formGroup]="accountInfoForm" class="max-w-xs" (ngSubmit)="saveAccountInfo()">
         <bb-text-input [formControl]="accountInfoForm.controls['displayName']" [label]="'Imię'" [type]="'text'"
           [name]="'displayName'"></bb-text-input>
@@ -49,7 +49,7 @@
         </div>
         <button type="submit" [disabled]="isSavingInfo || !accountInfoForm.dirty"
           class="w-32 mt-5 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-3 py-2 text-center"
-          [ngClass]="isAccountInfoChanged ? isSavingInfo ? 'bg-rose-400 hover:bg-rose-400 text-white' : 'bg-rose-500 hover:bg-rose-600 text-white' 
+          [ngClass]="isAccountInfoChanged ? isSavingInfo ? 'bg-rose-400 hover:bg-rose-400 text-white' : 'bg-rose-500 hover:bg-rose-600 text-white'
               : 'bg-slate-200 hover:bg-slate-200 text-slate-400'">
           <span class="transition-[padding] duration-200" [ngClass]="{'pr-3': isSavingInfo}">
             Zapisz
@@ -62,12 +62,12 @@
       </form>
     </div>
     <!-- Change Password -->
-    <div class="h-8"></div>
-    <h1 class="text-xl leading-6  text-slate-800">
+    <div class="h-9"></div>
+    <h1 class="text-xl leading-6 text-slate-800">
       <i class="fa-solid fa-key mr-2"></i> Zmiana hasła
     </h1>
     <div class="h-4"></div>
-    <div class="w-full bg-white rounded-lg shadow pt-2 pb-5 px-6">
+    <div class="w-full bg-white lg:rounded-lg lg:shadow lg:pt-2 lg:pb-5 lg:px-6">
       <form class="max-w-xs" (ngSubmit)="sendChangePasswordLink()">
         <bb-text-input [formControl]="passwordControl" [label]="'Hasło'" [type]="'text'"
           [name]="'password'"></bb-text-input>
@@ -95,13 +95,13 @@
       </form>
     </div>
     <!-- Delete Account -->
-    <div class="h-8"></div>
-      <h1 class="text-xl leading-6  text-slate-800">
-        <i class="fa-solid fa-eraser mr-2"></i> Usuń konto
-      </h1>
+    <div class="h-9"></div>
+    <h1 class="text-xl leading-6 text-slate-800">
+      <i class="fa-solid fa-eraser mr-2"></i> Usuń konto
+    </h1>
     </div>
     <div class="h-4"></div>
-    <div class="w-full bg-white rounded-lg shadow pt-5 pb-5 px-6">
+    <div class="w-full bg-white lg:rounded-lg lg:shadow lg:pt-5 lg:pb-5 lg:px-6">
       <div class="text-sm font-light text-slate-600">
         Usuwanie konta jest nieodwracalne. Po usunięciu konta stracisz dostęp do wszystkich swoich danych i usług związanych z tym kontem. Prosimy o przemyślane podjęcie decyzji. Jeśli jesteś pewny/pewna, że chcesz usunąć swoje konto, kliknij przycisk poniżej, aby otrzymać e-mail z potwierdzeniem usunięcia.
       </div>
