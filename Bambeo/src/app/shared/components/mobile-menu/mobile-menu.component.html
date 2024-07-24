@@ -1,7 +1,7 @@
 <div class="fixed top-0 left-0 bottom-0 flex flex-col justify-between inset-0 bg-rose-600 z-40">
     <!-- menu items -->
-    <div class="flex flex-col justify-start items-end mt-[20vh] px-6">
-      <div *ngIf="isLoggedIn && user" class="flex flex-col items-end mb-10">
+    <div class="flex flex-col flex-1 justify-center items-end px-6">
+      <div *ngIf="isLoggedIn && user" class="flex flex-col items-end mb-5">
         <div class="text-2xl text-rose-400 font-semibold mt-2 truncate">{{ user.displayName }}</div>
         <div class="text-xl text-rose-400 font-light truncate">{{ user.email }}</div>
       </div>
@@ -34,13 +34,14 @@
       </a>
       <a routerLink="/"
         (click)="onCloseMenu()"
-        class="text-rose-100 text-xl border-b border-rose-500 py-3">
+        class="text-rose-100 text-xl py-3"
+        [ngClass]="{'border-b border-rose-500': isLoggedIn}">
         Jak Korzystać
         <i class="fa-solid fa-chalkboard-user pl-3"></i>
       </a>
       <a (click)="onLogout(); onCloseMenu()"
         *ngIf="isLoggedIn"
-        class="text-rose-100 text-xl cursor-pointer border-b border-rose-500 py-3">
+        class="text-rose-100 text-xl cursor-pointer py-3">
         Wyloguj Się
         <i class="fa-solid fa-sign-out-alt pl-3"></i>
       </a>
@@ -52,7 +53,7 @@
           class="bg-rose-500 text-white focus:ring-4 focus:ring-rose-300 font-semibold text-2xl rounded-lg py-4 px-8 focus:outline-none">
           <i class="fa-solid fa-user mr-2"></i> Zarejestruj Się
         </button>
-        <span class="text-rose-200 font-normal pt-8">Masz już konto?</span>
+        <span class="text-rose-100 font-normal pt-8">Masz już konto?</span>
         <button routerLink="/account/login" (click)="onCloseMenu()" type="button"
           class="text-white underline max-w-fit font-normal text-xl pt-1 pb-3 px-6 focus:outline-none">
           Zaloguj Się

@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -18,14 +18,15 @@ import { Subscription } from 'rxjs';
 })
 export class HeaderComponent implements OnDestroy {
   private routerSubscription: Subscription;
-  
+
   isHomePage: boolean = true;
   isChecked: boolean = false;
+  isImageLoaded: boolean = false;
 
   constructor(private router: Router) {
     this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        
+
         const url = new URL(this.router.url, window.location.origin);
         this.isHomePage = url.pathname === '/' || url.pathname === '/' && this.hasAnyQueryParams(url.searchParams);
         this.isChecked = true;
@@ -35,6 +36,10 @@ export class HeaderComponent implements OnDestroy {
 
   private hasAnyQueryParams(params: URLSearchParams): boolean {
     return [...params.keys()].length > 0;
+  }
+
+  onLoad() {
+    this.isImageLoaded = true;
   }
 
   ngOnDestroy() {

@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, Renderer2, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Renderer2, AfterViewInit, ChangeDetectorRef, OnDestroy, HostListener } from '@angular/core';
 import { PromotionService } from 'src/app/feature/products/promotion.service';
 import { Promotion } from 'src/app/core/models/promotion';
 import { ProductCategory } from 'src/app/core/models/productCategory';
@@ -21,6 +21,9 @@ import { sortObjectKeys } from 'src/app/core/utils';
       transition('void => *', [
         animate('0.15s ease-in')
       ]),
+      transition('* => void', [
+        animate('0.15s ease-out')
+      ])
     ]),
     trigger('opacityInOut', [
       state('open', style({
@@ -52,6 +55,8 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   categories: ProductCategory[] = [];
   stores: Store[] = [];
   isPromotionsLoaded = false;
+  isCategoriesLoaded = false;
+  isStoresLoaded = false;
   isLoadingError = false;
 
   // Variables for managing filter page touch interactions
@@ -65,8 +70,6 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   isMobile: boolean = false;
   isFilterBarFixed: boolean = false;
   isFilterPageOpen: boolean = false;
-  private scrollListener!: () => void;
-  private resizeListener!: () => void;
 
   // Loading spinner management
   private dataLoadingSpinnerTimeout: any;
@@ -91,30 +94,19 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.updateIsMobile();
+    this.updateIsMobile(window.innerWidth);
     this.subscribeToIsMobile();
     this.setFilterPageVisibility(!this.isMobile);
 
     setTimeout(() => {
       this.renderer.setStyle(this.filterPage.nativeElement, 'transition', 'transform ease-in-out 0.3s');
     }, 200);
-
-    this.addScrollListener();
-    this.addResizeListener();
     this.setThresholdToCloseFilterPage();
 
     this.cdr.detectChanges();
   }
 
   ngOnDestroy(): void {
-    if (this.scrollListener) {
-      this.scrollListener();
-    }
-
-    if (this.resizeListener) {
-      this.resizeListener();
-    }
-
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -137,6 +129,8 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
         next: results => {
             this.stores = results.stores;
             this.categories = results.categories;
+            this.isCategoriesLoaded = true;
+            this.isStoresLoaded = true;
             this.hideLoadingSpinner();
         }
     });
@@ -257,13 +251,10 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     return param ? parseInt(param, 10) : defaultValue;
   }
 
-  private addScrollListener() {
-    this.scrollListener = this.renderer.listen('window', 'scroll', this.onScroll.bind(this));
-  }
-
-  // Scroll event handler
-  private onScroll = (event: Event): void => {
+  @HostListener('window:scroll', ['$event'])
+  onScroll(event: any) {
     if (!this.isMobile) return;
+
     if (this.spaceForFilterBarWhenFixed) {
       const elementRect = this.spaceForFilterBarWhenFixed.nativeElement.getBoundingClientRect();
 
@@ -273,10 +264,11 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.makeFilterBarUnfixed();
       }
     }
-  };
+  }
 
-  private addResizeListener() {
-    this.resizeListener = this.renderer.listen('window', 'resize', this.updateIsMobile.bind(this));
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.updateIsMobile(event.target.innerWidth);
   }
 
   private subscribeToIsMobile() {
@@ -303,8 +295,8 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     })
   }
 
-  updateIsMobile(): void {
-    this.isMobile = window.innerWidth <= 1024;
+  updateIsMobile(width: number): void {
+    this.isMobile = width <= 1024;
     this.promotionService.updateIsMobile(this.isMobile);
   }
 
@@ -399,7 +391,7 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
 
       setTimeout(() => {
         this.setFilterPageVisibility(false);
-      }, 300);
+      }, 500);
     }
   }
 

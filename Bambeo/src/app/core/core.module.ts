@@ -12,7 +12,6 @@ import { MessageService } from 'primeng/api';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
-import { RouterEventsService } from './services/router-events.service';
 
 @NgModule({
   declarations: [

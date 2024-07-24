@@ -12,6 +12,7 @@ import { ProfileMenuDropdownComponent } from './components/profile-menu-dropdown
 import { RouterModule } from '@angular/router';
 import { LoadingErrorComponent } from './components/loading-error/loading-error.component';
 import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.compon
     ReactiveFormsModule,
     BreadcrumbModule,
     NgxSpinnerModule,
-    RouterModule
+    RouterModule,
+    NgxSkeletonLoaderModule
   ],
   exports: [
     PaginatorModule,
@@ -41,7 +43,8 @@ import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.compon
     BreadcrumbModule,
     ProfileMenuDropdownComponent,
     LoadingErrorComponent,
-    MobileMenuComponent
+    MobileMenuComponent,
+    NgxSkeletonLoaderModule
   ]
 })
 export class SharedModule { }

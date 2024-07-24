@@ -15,10 +15,10 @@ import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Rout
     trigger('fadeInOut', [
       state('void', style({ opacity: 0 })),
       transition('void => *', [
-        animate('0.20s ease-in')
+        animate('0.10s ease-in')
       ]),
       transition('* => void', [
-        animate('0.20s ease-out')
+        animate('0.10s ease-out')
       ])
     ])
   ]

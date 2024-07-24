@@ -11,12 +11,11 @@
         #filterPageBackgroundLayer
         ></div>
         <!-- Store & Category Filters -->
-        <div
-            class="lg:w-3/12 lg:min-w-[250px]"
+        <div class="lg:w-3/12 lg:min-w-[250px]"
             [ngClass]="{
                 'fixed inset-y-0 left-0 z-[100] w-full h-[95%] bg-white rounded-t-2xl shadow-[rgba(0,0,0,0.2)_0px_-5px_10px_-4px] transform overflow-y-auto': isMobile,
                 'translate-y-[5%]': isFilterPageOpen && isMobile,
-                'translate-y-full': !isFilterPageOpen && isMobile
+                'translate-y-[106%]': !isFilterPageOpen && isMobile
             }"
             (touchstart)="onTouchStart($event)"
             (touchmove)="onTouchMove($event)"
@@ -37,12 +36,18 @@
                 </button>
             </div>
             <!-- Select Store -->
-            <app-select-store [stores]="stores" *ngIf="stores.length > 0" @fadeIn>
-            </app-select-store>
-            <div class="px-2 lg:px-0 lg:border lg:border-slate-200 lg:rounded-xl mt-5" *ngIf="categories.length > 0">
+            <ng-container *ngIf="isStoresLoaded; else loadingStoresTemplate">
+                <app-select-store [stores]="stores" @fadeIn></app-select-store>
+            </ng-container>
+            <ng-template #loadingStoresTemplate>
+                <ngx-skeleton-loader [theme]="{ 'background-color': '#f1f5f9', 'border-radius': '0.5rem', height: '400px' }"></ngx-skeleton-loader>
+            </ng-template>
+            <!-- Select Category & Other Options -->
+            <div
+                *ngIf="isCategoriesLoaded; else loadingCategoriesTemplate"
+                class="px-2 lg:px-0 lg:border lg:border-slate-200 lg:rounded-xl mt-5">
                 <!-- Select Category -->
-                <app-select-category [categories]="categories" @fadeIn>
-                </app-select-category>
+                <app-select-category [categories]="categories" @fadeIn></app-select-category>
                 <!-- Sort -->
                 <app-sort class="lg:hidden"></app-sort>
                 <!-- Other Promotion Options -->
@@ -50,8 +55,12 @@
                     <app-promotion-options></app-promotion-options>
                 </div>
             </div>
+            <ng-template #loadingCategoriesTemplate>
+                <ngx-skeleton-loader count="3" [theme]="{ 'background-color': '#f1f5f9', 'border-radius': '0.5rem', height: '50px' }"></ngx-skeleton-loader>
+                <ngx-skeleton-loader [theme]="{ 'background-color': '#f1f5f9', 'border-radius': '0.5rem', width: '50%', height: '50px' }"></ngx-skeleton-loader>
+            </ng-template>
             <!-- Apply Filters -->
-            <div class="flex justify-center items-center mb-10" [ngClass]="{hidden: !isMobile}">
+            <div class="flex justify-around items-center mb-10" [ngClass]="{hidden: !isMobile}">
                 <button type="button"
                     (click)="resetFilters()"
                     class="mr-5">
@@ -59,14 +68,14 @@
                 </button>
                 <button type="button"
                     (click)="applyFilters()"
-                    class="text-white bg-rose-500 hover:bg-rose-600 focus:ring-4 focus:ring-rose-300 font-medium text-lg rounded-lg py-2 px-5 focus:outline-none">
+                    class="text-white bg-rose-600 hover:bg-rose-600 focus:ring-4 focus:ring-rose-300 font-medium text-lg rounded-lg py-2 px-5 focus:outline-none">
                     <i class="fa-solid fa-magnifying-glass fa-sm mr-2"></i> Pokaż wyniki
                 </button>
             </div>
-
         </div>
         <!-- Products Section -->
-        <div class="w-full lg:w-9/12 lg:ml-10" *ngIf="isPromotionsLoaded && !isLoadingError">
+        <div *ngIf="isCategoriesLoaded && isStoresLoaded && isPromotionsLoaded && !isLoadingError"
+            class="w-full lg:w-9/12 lg:pl-10">
             <!-- Space for Fixed Filter Bar -->
             <div class="h-0" #spaceForFilterBarWhenFixed></div>
             <!-- Filter Bar -->
@@ -76,7 +85,7 @@
                 <!-- Filter Bar Content -->
                 <div class="flex w-full justify-between lg:justify-end items-center lg:mx-2 lg:mr-0" @fadeIn>
                     <!-- Toggle Filter Button for Small Screens -->
-                    <div class="flex order-2 lg:hidden lg:p-0">
+                    <div class="flex order-2 lg:hidden pr-2 lg:p-0">
                         <button
                             class="items-center text-rose-500"
                             (click)="toggleFilterPage(); $event.stopPropagation()"
@@ -99,7 +108,7 @@
                 </div>
             </div>
             <!-- User Search Filters -->
-            <app-user-filters *ngIf="categories.length > 0 && stores.length > 0" [stores]="stores" [categories]="categories" @fadeIn></app-user-filters>
+            <app-user-filters [stores]="stores" [categories]="categories" @fadeIn></app-user-filters>
             <!-- Promotions List -->
             <div *ngIf="promotions.count > 0" class="flex flex-wrap justify-between items-center mt-3 lg:mt-0" @fadeIn>
                 <div class="flex w-full xs:w-1/2" *ngFor="let promotion of promotions.data">
@@ -114,6 +123,28 @@
                 class="flex items-center w-fit mx-4 lg:mx-2 my-8 lg:mt-4 p-4 space-x-4 text-slate-600 bg-white border border-slate-200 rounded-lg shadow space-x" @fadeIn>
                 <i class="fa-solid fa-circle-info fa-2xl text-slate-500"></i>
                 <div class="pl-3 text-sm font-normal">Szukaliśmy, szukaliśmy, ale nie znaleźliśmy nic, co by spełniło twoje oczekiwania :(</div>
+            </div>
+        </div>
+        <div *ngIf="(!isCategoriesLoaded || !isStoresLoaded || !isPromotionsLoaded) && !isLoadingError"
+            class="w-full px-4 lg:w-9/12 lg:pl-10">
+            <div class="flex flex-col mt-4">
+                <ngx-skeleton-loader
+                    [theme]="{ 'background-color': '#f1f5f9', 'border-radius': '0.5rem', height: '40px' }"
+                    class="self-start lg:self-end w-1/2 xs:1/3 lg:w-2/3">
+                </ngx-skeleton-loader>
+                <ngx-skeleton-loader
+                    [theme]="{ 'background-color': '#f1f5f9', 'border-radius': '0.5rem', height: '60px' }"
+                    class="w-full">
+                </ngx-skeleton-loader>
+                <div class="flex flex-wrap justify-between items-center">
+                    <div *ngFor="let i of [1, 2, 3, 4]; let index = index" class="flex w-full xs:w-1/2">
+                        <ngx-skeleton-loader
+                            [theme]="{ 'background-color': '#f1f5f9', 'border-radius': '0.5rem', height: '100px' }"
+                            class="w-full"
+                            [ngClass]="{'xs:ml-4': index % 2 === 1}">
+                        </ngx-skeleton-loader>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
