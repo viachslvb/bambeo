@@ -292,7 +292,7 @@ export class ProductsComponent extends ContentLoadingComponent implements OnInit
   }
 
   updateIsMobile(width: number): void {
-    this.isMobile = width <= 1024;
+    this.isMobile = width < 1024;
     this.promotionService.updateIsMobile(this.isMobile);
   }
 

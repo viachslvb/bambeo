@@ -2,66 +2,65 @@
 <ngx-spinner bdColor="rgba(255,255,255,0.0)" size="medium" color="#e11d48" type="ball-spin-rotate" [fullScreen]="true"
   [name]="productLoadingSpinner"></ngx-spinner>
 
-<div *ngIf="product" class="container max-w-7xl mx-auto mt-12 mb-20 lg:px-6" @fadeIn>
+<div *ngIf="product" class="container max-w-5xl mx-auto my-4 lg:my-10 px-4 lg:px-6" @fadeIn>
   <button (click)="goBack()"
-    class="flex items-center mb-8 px-5 py-2 text-sm text-slate-700 rounded-lg hover:bg-slate-100">
-    <i class="fa-solid fa-arrow-left w-4"></i>
-    <span class="ml-3 align-middle">Wróć do poprzedniej strony</span>
+    class="flex items-center p-2 py-3 text-slate-700 rounded-lg lg:hover:bg-slate-50 mb-5 lg:mb-8 lg:px-5 lg:py-2">
+    <i class="fa-solid fa-angle-left fa-xl lg:fa-m"></i>
+    <span class="hidden text-sm align-middle lg:inline-flex lg:ml-3">Wróć do poprzedniej strony</span>
   </button>
   <div class="flex flex-col md:flex-row justify-between">
     <!-- Product Image -->
-    <div class="w-full md:w-1/5 flex justify-center">
+    <div class="w-full md:w-1/4 flex justify-center">
       <img [src]="product.imageUrl" class="object-contain h-48 md:h-48 w-full">
     </div>
     <!-- Product Details -->
-    <div class="w-full md:w-3/5 md:pl-20">
+    <div class="w-full mt-7 md:m-0 md:w-3/4 lg:pl-10">
       <h1 class="text-2xl text-slate-700 font-semibold">{{ product.name }}</h1>
       <div class="text-slate-500 font-light">{{ product.category.name }}</div>
       <div class="text-rose-600 font-semibold"><span class="text-slate-500 font-light">w</span> {{ product.store.name }}
       </div>
       <!-- Promotion Details -->
-      <div class="max-w-[85%] text-slate-800 bg-slate-50 border border-slate-200 rounded-lg p-4 mt-5 mb-6">
-        <div *ngIf="product.hasPromotion; else noPromotion">
-          <h2 class="text-xl text-rose-600 font-semibold mb-2">
-            <i class="fa-solid fa-tag pr-2"></i> Promocja
-            <span class="bg-yellow-300 text-white ml-2 p-2 rounded font-extrabold text-base">- {{
-              product.promotion.discountPercentage }}%</span>
-          </h2>
-          <div class=" text-slate-700 mb-4">{{ product.promotion.discountCondition }}</div>
-          <div class="flex items-center mb-1">
-            <div class="text-lg font-semibold text-white bg-rose-500 w-fit px-2 rounded">{{ product.promotion.price }}
-              zł</div>
-            <span class="text-slate-700 text-xs px-2"> / opak</span>
+      <div class="w-full lg:max-w-[85%]">
+        <div class="text-slate-800 bg-slate-50 border border-slate-200 rounded-lg p-4 mt-5 mb-6">
+          <div *ngIf="product.hasPromotion; else noPromotion">
+            <h2 class="text-xl text-rose-600 font-semibold mb-2">
+              <i class="fa-solid fa-tag pr-2"></i> Promocja
+              <span class="bg-yellow-300 text-white ml-2 p-2 rounded font-extrabold text-base">- {{
+                product.promotion.discountPercentage }}%</span>
+            </h2>
+            <div class=" text-slate-700 mb-4">{{ product.promotion.discountCondition }}</div>
+            <div class="flex items-center mb-1">
+              <div class="text-lg font-semibold text-white bg-rose-500 w-fit px-2 rounded">{{ product.promotion.price }}
+                zł</div>
+              <span class="text-slate-700 text-xs px-2"> / opak</span>
+            </div>
+            <div class=" text-slate-700 text-xs mb-5">Cena regularna {{ product.promotion.previousPrice }} zł</div>
+            <div class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 19.525"
+                style="enable-background:new 0 0 122.88 119.97" xml:space="preserve" class="text-slate-700 w-6 h-6">
+                <path
+                  d="M11.355.66c0-.365.36-.66.805-.66s.805.295.805.66v2.885c0 .365-.36.66-.805.66s-.805-.295-.805-.66V.66zM2.34 12.705h1.845c.115 0 .215.095.215.215v1.365a.215.215 0 0 1-.215.215H2.34a.215.215 0 0 1-.215-.215V12.92c0-.12.095-.215.215-.215zM9.405 8.82h1.845c.055 0 .105.025.145.06a6.575 6.575 0 0 0-1.85 1.735h-.14a.215.215 0 0 1-.215-.215V9.03c0-.12.095-.215.215-.215zm-3.535 0h1.845c.115 0 .215.095.215.215V10.4a.215.215 0 0 1-.215.215H5.87a.215.215 0 0 1-.215-.215V9.03c0-.115.095-.215.215-.215zm-3.535 0H4.18c.115 0 .215.095.215.215V10.4a.215.215 0 0 1-.215.215H2.34a.215.215 0 0 1-.215-.215V9.03c0-.115.095-.215.215-.215zm3.535 3.885h1.845c.115 0 .215.095.215.215v1.365a.215.215 0 0 1-.215.215H5.87a.215.215 0 0 1-.215-.215V12.92c0-.12.095-.215.215-.215zM16.845 9.69A5.11 5.11 0 0 1 20 14.415a5.12 5.12 0 0 1-5.11 5.11 5.105 5.105 0 0 1-3.615-1.495 5.105 5.105 0 0 1-1.495-3.615c0-2.055 1.28-3.975 3.18-4.755 1.18-.48 2.715-.45 3.885.035zm-2.74 4.585a.865.865 0 0 1 .225-.175v-2.225a.41.41 0 0 1 .41-.41.41.41 0 0 1 .41.41V14.1c.15.08.275.205.355.355h1.59a.41.41 0 1 1 0 .82h-1.59a.865.865 0 0 1-.765.46.875.875 0 0 1-.655-.295.87.87 0 0 1 .015-1.16zm3.82-2.815c-2.12-2.12-5.69-1.52-6.925 1.145a4.29 4.29 0 0 0-.395 1.805 4.29 4.29 0 0 0 1.255 3.035 4.275 4.275 0 0 0 3.035 1.255 4.285 4.285 0 0 0 3.035-1.255 4.275 4.275 0 0 0 1.255-3.035 4.285 4.285 0 0 0-.43-1.875 3.93 3.93 0 0 0-.825-1.075zM4.125.66c0-.365.36-.66.805-.66.445 0 .805.295.805.66v2.885c0 .365-.36.66-.805.66s-.805-.295-.805-.66V.66zM.885 6.315H16.22V2.99a.41.41 0 0 0-.405-.405h-1.47a.445.445 0 0 1 0-.89h1.47a1.3 1.3 0 0 1 .92.38 1.295 1.295 0 0 1 .38.92v5.28a6.77 6.77 0 0 0-.905-.245v-.825h.01H.885v8.61a.41.41 0 0 0 .405.405h7.285c.085.31.185.61.315.9H1.3a1.3 1.3 0 0 1-.92-.38 1.295 1.295 0 0 1-.38-.92V2.995a1.3 1.3 0 0 1 .38-.92 1.295 1.295 0 0 1 .92-.38h1.57a.445.445 0 0 1 0 .89H1.3a.41.41 0 0 0-.405.405v3.325h-.01zm6.135-3.73a.445.445 0 0 1 0-.89h2.995a.445.445 0 0 1 0 .89H7.02z" />
+              </svg>
+              <span class=" text-slate-600 font-light pl-3">Ważna od {{ product.promotion.startDate | date:'d.MM' }} do {{
+                product.promotion.endDate | date:'d.MM' }}</span>
+            </div>
           </div>
-          <div class=" text-slate-700 text-xs mb-5">Cena regularna {{ product.promotion.previousPrice }} zł</div>
-          <div class="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 19.525"
-              style="enable-background:new 0 0 122.88 119.97" xml:space="preserve" class="text-slate-700 w-6 h-6">
-              <path
-                d="M11.355.66c0-.365.36-.66.805-.66s.805.295.805.66v2.885c0 .365-.36.66-.805.66s-.805-.295-.805-.66V.66zM2.34 12.705h1.845c.115 0 .215.095.215.215v1.365a.215.215 0 0 1-.215.215H2.34a.215.215 0 0 1-.215-.215V12.92c0-.12.095-.215.215-.215zM9.405 8.82h1.845c.055 0 .105.025.145.06a6.575 6.575 0 0 0-1.85 1.735h-.14a.215.215 0 0 1-.215-.215V9.03c0-.12.095-.215.215-.215zm-3.535 0h1.845c.115 0 .215.095.215.215V10.4a.215.215 0 0 1-.215.215H5.87a.215.215 0 0 1-.215-.215V9.03c0-.115.095-.215.215-.215zm-3.535 0H4.18c.115 0 .215.095.215.215V10.4a.215.215 0 0 1-.215.215H2.34a.215.215 0 0 1-.215-.215V9.03c0-.115.095-.215.215-.215zm3.535 3.885h1.845c.115 0 .215.095.215.215v1.365a.215.215 0 0 1-.215.215H5.87a.215.215 0 0 1-.215-.215V12.92c0-.12.095-.215.215-.215zM16.845 9.69A5.11 5.11 0 0 1 20 14.415a5.12 5.12 0 0 1-5.11 5.11 5.105 5.105 0 0 1-3.615-1.495 5.105 5.105 0 0 1-1.495-3.615c0-2.055 1.28-3.975 3.18-4.755 1.18-.48 2.715-.45 3.885.035zm-2.74 4.585a.865.865 0 0 1 .225-.175v-2.225a.41.41 0 0 1 .41-.41.41.41 0 0 1 .41.41V14.1c.15.08.275.205.355.355h1.59a.41.41 0 1 1 0 .82h-1.59a.865.865 0 0 1-.765.46.875.875 0 0 1-.655-.295.87.87 0 0 1 .015-1.16zm3.82-2.815c-2.12-2.12-5.69-1.52-6.925 1.145a4.29 4.29 0 0 0-.395 1.805 4.29 4.29 0 0 0 1.255 3.035 4.275 4.275 0 0 0 3.035 1.255 4.285 4.285 0 0 0 3.035-1.255 4.275 4.275 0 0 0 1.255-3.035 4.285 4.285 0 0 0-.43-1.875 3.93 3.93 0 0 0-.825-1.075zM4.125.66c0-.365.36-.66.805-.66.445 0 .805.295.805.66v2.885c0 .365-.36.66-.805.66s-.805-.295-.805-.66V.66zM.885 6.315H16.22V2.99a.41.41 0 0 0-.405-.405h-1.47a.445.445 0 0 1 0-.89h1.47a1.3 1.3 0 0 1 .92.38 1.295 1.295 0 0 1 .38.92v5.28a6.77 6.77 0 0 0-.905-.245v-.825h.01H.885v8.61a.41.41 0 0 0 .405.405h7.285c.085.31.185.61.315.9H1.3a1.3 1.3 0 0 1-.92-.38 1.295 1.295 0 0 1-.38-.92V2.995a1.3 1.3 0 0 1 .38-.92 1.295 1.295 0 0 1 .92-.38h1.57a.445.445 0 0 1 0 .89H1.3a.41.41 0 0 0-.405.405v3.325h-.01zm6.135-3.73a.445.445 0 0 1 0-.89h2.995a.445.445 0 0 1 0 .89H7.02z" />
-            </svg>
-            <span class=" text-slate-600 font-light pl-3">Ważna od {{ product.promotion.startDate | date:'d.MM' }} do {{
-              product.promotion.endDate | date:'d.MM' }}</span>
-          </div>
+          <ng-template #noPromotion>
+            <div class="text-slate-700 text-sm">
+              <p>Aktualnie brak promocji, ale możesz dodać ten produkt do ulubionych, aby śledzić przyszłe oferty.</p>
+            </div>
+          </ng-template>
         </div>
-        <ng-template #noPromotion>
-          <div class="text-slate-700 text-sm">
-            <p>Aktualnie brak promocji, ale możesz dodać ten produkt do ulubionych, aby śledzić przyszłe oferty.</p>
+        <!-- Add to Favorites -->
+        <div class="w-full mt-6">
+          <div class="flex justify-end items-center h-16">
+            <p class="text-sm text-slate-400 pr-5">
+              {{ isFavorite ? 'Dodano do ulubionych' : 'Dodaj ten produkt do ulubionych, aby śledzić promocje' }}
+            </p>
+            <i (click)="toggleFavorite()"
+              class="fa-solid fa-heart lg:hover:text-rose-500 lg:focus:text-rose-500 transition-all duration-200 cursor-pointer"
+              [ngClass]="{'text-rose-500 fa-3x': isFavorite, 'text-slate-200 fa-4x' : !isFavorite}"></i>
           </div>
-        </ng-template>
-      </div>
-    </div>
-    <div class="w-full md:w-1/5">
-      <div class="text-center">
-        <div class="flex h-16 justify-center items-center">
-          <i (click)="toggleFavorite()"
-            class="fa-solid fa-heart hover:text-rose-500 focus:text-rose-500 transition-all duration-200 cursor-pointer"
-            [ngClass]="{'text-rose-500 fa-3x': isFavorite, 'text-slate-200 fa-4x' : !isFavorite}"></i>
-        </div>
-        <div class="max-w-[180px] mt-3 mx-auto">
-          <p class="text-sm text-slate-400">
-            {{ isFavorite ? 'Dodano do ulubionych' : 'Dodaj ten produkt do ulubionych, aby śledzić promocje' }}
-          </p>
         </div>
       </div>
     </div>

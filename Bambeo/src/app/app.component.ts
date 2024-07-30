@@ -3,7 +3,7 @@ import { AuthService } from './core/state/auth.service';
 import { ScrollService } from './core/services/scroll.service';
 import { FavoriteProductsService } from './core/state/favorite-products.service';
 import { isIphone, preventDoubleTapZoom, setViewportMetaTag } from './core/utils';
-import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { BusyService } from './core/services/busy.service';
 import { UiLoadingService } from './core/services/ui-loading.service';
 
@@ -68,6 +68,8 @@ export class AppComponent implements OnInit {
       }
     });
   }
+
+
 
   checkComponentType() {
     const currentRoute = this.router.routerState.root.snapshot.firstChild;

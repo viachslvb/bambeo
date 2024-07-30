@@ -6,8 +6,10 @@ import { Location } from '@angular/common';
 import { BusyService } from 'src/app/core/services/busy.service';
 import { ProductInfo } from 'src/app/core/models/productInfo';
 import { FavoriteProductsService } from 'src/app/core/state/favorite-products.service';
-import { Subject, takeUntil } from 'rxjs';
+import { catchError, finalize, Observable, Subject, takeUntil, tap, throwError } from 'rxjs';
 import { fadeInAnimation } from 'src/app/core/animations';
+import { ContentLoadingComponent } from 'src/app/core/components/content-loading/content-loading.component';
+import { UiLoadingService } from 'src/app/core/services/ui-loading.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -15,7 +17,7 @@ import { fadeInAnimation } from 'src/app/core/animations';
   styleUrls: ['./product-detail.component.css'],
   animations: [fadeInAnimation]
 })
-export class ProductDetailComponent implements OnInit, OnDestroy {
+export class ProductDetailComponent extends ContentLoadingComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   product?: ProductInfo;
   isFavorite = false;
@@ -30,18 +32,24 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private location: Location,
     private busyService: BusyService,
-    private ts: Title
-  ) { }
+    private ts: Title,
+    uiLoadingService: UiLoadingService
+  ) {
+    super(uiLoadingService);
+  }
 
-  ngOnInit(): void {
-    this.subscribeToRouteParams();
+  override ngOnInit(): void {
+    super.ngOnInit();
+
     this.subscribeToFavorites();
   }
 
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+
+    clearTimeout(this.productLoadingSpinnerTimeout);
     this.destroy$.next();
     this.destroy$.complete();
-    clearTimeout(this.productLoadingSpinnerTimeout);
   }
 
   private subscribeToFavorites(): void {
@@ -54,42 +62,38 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
       });
   }
 
-  private subscribeToRouteParams(): void {
-    this.route.params
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(params => {
-        const productId = params['id'];
-        if (productId && /^\d+$/.test(productId)) {
-          this.loadProduct(Number(productId));
-        } else {
-          console.error('Invalid product ID:', productId);
-          this.router.navigate(['/not-found']);
-        }
-      });
+  loadContent(): Observable<any> {
+    const productId = this.route.snapshot.paramMap.get('id');
+
+    if (productId && /^\d+$/.test(productId)) {
+      this.productLoadingSpinnerTimeout = setTimeout(() => {
+        this.busyService.busy(this.productLoadingSpinner);
+      }, 70);
+
+      return this.productService.getProduct(Number(productId)).pipe(
+        tap(product => {
+          this.product = product;
+          this.isFavorite = this.favoritesService.isFavorite(product.id);
+          this.ts.setTitle(`Bambeo • Promocja na ${product.name}`);
+        }),
+        catchError(err => {
+          console.error('Error fetching a product with ID '+productId);
+          this.isLoadingError = true;
+          this.product = undefined;
+
+          return throwError(() => err);
+        }),
+        finalize(() => {
+          this.cleanupLoadingSpinner();
+        })
+      );
+    } else {
+      this.router.navigate(['/not-found']);
+      return throwError(() => new Error('Invalid product ID: '+productId));
+    }
   }
 
-  private loadProduct(id: number): void {
-    this.productLoadingSpinnerTimeout = setTimeout(() => {
-      this.busyService.busy(this.productLoadingSpinner);
-    }, 70);
-
-    this.productService.getProduct(id).subscribe({
-      next: product => {
-        this.product = product;
-        this.isFavorite = this.favoritesService.isFavorite(product.id);
-        this.ts.setTitle(`Bambeo • Promocja na ${product.name}`);
-        this.clearLoadingSpinner();
-      },
-      error: err => {
-        console.error(err);
-        this.isLoadingError = true;
-        this.product = undefined;
-        this.clearLoadingSpinner();
-      }
-    });
-  }
-
-  private clearLoadingSpinner(): void {
+  private cleanupLoadingSpinner(): void {
     clearTimeout(this.productLoadingSpinnerTimeout);
     this.busyService.idle(this.productLoadingSpinner);
   }
