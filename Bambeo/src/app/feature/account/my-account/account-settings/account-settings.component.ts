@@ -1,26 +1,21 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MyAccountService } from '../my-account.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil, tap } from 'rxjs';
 import { UserSettingsUpdateModel } from 'src/app/core/models/api/requests/userSettingsUpdateModel';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { ContentLoadingComponent } from 'src/app/core/components/content-loading/content-loading.component';
+import { UiLoadingService } from 'src/app/core/services/ui-loading.service';
+import { fadeInAnimation } from 'src/app/core/animations';
 
 @Component({
   selector: 'app-account-settings',
   templateUrl: './account-settings.component.html',
   styleUrls: ['./account-settings.component.css'],
-  animations: [
-    trigger('fadeIn', [
-      state('void', style({ opacity: 0 })),
-      transition('void => *', [
-        animate('0.15s ease-in')
-      ]),
-    ])
-  ]
+  animations: [fadeInAnimation]
 })
-export class AccountSettingsComponent implements OnInit, OnDestroy {
+export class AccountSettingsComponent extends ContentLoadingComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  
+
   settingsForm: FormGroup;
   emailSettingsOptions = [
     { label: 'Ogólne maile promocyjne od serwisu', formControlName: 'generalPromotionalEmails' },
@@ -36,8 +31,10 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private myAccountService: MyAccountService
+    private myAccountService: MyAccountService,
+    uiLoadingService: UiLoadingService
   ) {
+    super(uiLoadingService);
     this.settingsForm = this.formBuilder.group({
       emailSettings: this.formBuilder.group({
         generalPromotionalEmails: false,
@@ -46,32 +43,28 @@ export class AccountSettingsComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
-    this.loadAccountSettings();
-  }
-
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  private loadAccountSettings() {
+  loadContent(): Observable<any> {
     this.loadingTimeout = setTimeout(() => {
       this.showLoadingSpinner = true;
     }, 50);
 
-    this.myAccountService.getUserSettings().subscribe({
-      next: (settings) => {
+    return this.myAccountService.getUserSettings().pipe(
+      tap(settings => {
+        this.showLoadingSpinner = false;
         clearTimeout(this.loadingTimeout);
+
         this.settingsForm.patchValue(settings);
         this.settingsState = this.settingsForm.value;
         this.dataLoaded = true;
         this.trackChanges();
-      },
-      error: (err) => {
-        console.error(err);
-      }
-    });
+      })
+    );
   }
 
   trackChanges() {

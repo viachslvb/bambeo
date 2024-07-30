@@ -6,11 +6,13 @@ import { Observable, Subject, debounceTime, finalize, map, of, switchMap, take, 
 import { SignupModel } from 'src/app/core/models/api/requests/signupModel';
 import { EmailExistsModel } from 'src/app/core/models/api/requests/checkEmailModel';
 import { NoWhitespaceValidator } from 'src/app/core/validators/whitespaces.validator';
+import { fadeInAnimation } from 'src/app/core/animations';
 
 @Component({
-  selector: 'bb-signup',
+  selector: 'app-signup',
   templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css']
+  styleUrls: ['./signup.component.css'],
+  animations: [fadeInAnimation]
 })
 
 export class SignupComponent implements OnInit, OnDestroy {
@@ -90,14 +92,14 @@ export class SignupComponent implements OnInit, OnDestroy {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       const passwordControl = this.signupForm.get('password')?.value;
       const confirmPasswordControl = control.value;
-  
+
       if (passwordControl && confirmPasswordControl) {
         const password = passwordControl;
         const confirmPassword = confirmPasswordControl;
 
         return password === confirmPassword ? of(null) : of({ passwordMismatch: true });
       }
-  
+
       return of(null);
     };
   }

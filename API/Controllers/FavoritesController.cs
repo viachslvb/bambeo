@@ -27,6 +27,10 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ApiResponse<FavoriteProductResponseDto>>> GetFavorites()
         {
+            Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+            Response.Headers["Pragma"] = "no-cache";
+            Response.Headers["Expires"] = "0";
+
             ServiceResult<FavoriteProductResponseDto> result = await _favoritesService.GetUserFavoritesAsync(User.GetUserId());
 
             return Ok(new ApiResponse<FavoriteProductResponseDto>(result.Data));

@@ -1,27 +1,17 @@
-<ng-container *ngIf="isChecked && isHomePage">
-    <header class="container max-w-7xl mx-auto px-6 mb-8 lg:mb-20" @fadeIn>
-        <div class="flex flex-col md:flex-row justify-between items-center">
-            <img
-                [ngClass]="{'w-full sm:w-fit h-auto max-h-56 -mx-16 sm:-m-0 sm:mt-8 lg:mx-10': isImageLoaded,
-                            'hidden': !isImageLoaded}"
-                src="./assets/header-picture.svg"
-                (load)="onLoad()"
-                alt=""
-            />
-            <div *ngIf="!isImageLoaded" class="-mx-16 sm:-m-0 sm:mt-8 lg:mx-10">
-                <ngx-skeleton-loader
-                    appearance="circle"
-                    [theme]="{ 'background-color': '#f1f5f9', width: '14rem', 'height': '14rem' }"
-                ></ngx-skeleton-loader>
-            </div>
-            <div class="text-center md:text-left mt-2 sm:pl-5 lg:pl-10 xl:pl-24">
-                <h1 class="mb-2 font-semibold leading-none tracking-tight text-slate-700 text-xl xs:text-xl md:text-3xl lg:text-4xl mt-5 md:mt-0"><span class="underline underline-offset-3 decoration-[6px] decoration-rose-500">Oszczędzaj</span> na zakupach, korzystaj z życia</h1>
-                <p class="text-base xs:text-lg lg:text-xl font-light text-slate-500">Jesteśmy Twoim partnerem w poszukiwaniu najlepszych zniżek na produkty spożywcze. Oszczędzaj pieniądze i ciesz się życiem.</p>
-                <button type="button" class="hidden text-slate-700 bg-white border border-slate-200 focus:outline-none hover:bg-slate-100 focus:ring-4 focus:ring-slate-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 mt-7">Dowiedz się więcej</button>
-            </div>
+<header class="container max-w-7xl mx-auto px-6 mb-8 lg:mb-20" @fadeIn>
+    <div class="flex flex-col md:flex-row justify-between items-center">
+        <img
+            class="transition-opacity duration-150 -mx-16 sm:-m-0 sm:mt-8 lg:mx-10"
+            [ngClass]="{'w-full sm:w-fit h-auto max-h-56 opacity-100': isImageLoaded,
+                        'w-56 h-56 opacity-0': !isImageLoaded}"
+            src="./assets/header-picture.svg"
+            (load)="onLoad()"
+            alt=""
+        />
+        <div class="text-center md:text-left mt-2 sm:pl-5 lg:pl-10 xl:pl-24">
+            <h1 class="mb-2 font-semibold leading-none tracking-tight text-slate-700 text-xl xs:text-xl md:text-3xl lg:text-4xl mt-5 md:mt-0"><span class="underline underline-offset-3 decoration-[6px] decoration-rose-500">Oszczędzaj</span> na zakupach, korzystaj z życia</h1>
+            <p class="text-base xs:text-lg lg:text-xl font-light text-slate-500">Jesteśmy Twoim partnerem w poszukiwaniu najlepszych zniżek na produkty spożywcze. Oszczędzaj pieniądze i ciesz się życiem.</p>
+            <button type="button" class="hidden text-slate-700 bg-white border border-slate-200 focus:outline-none hover:bg-slate-100 focus:ring-4 focus:ring-slate-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 mt-7">Dowiedz się więcej</button>
         </div>
-    </header>
-</ng-container>
-<!-- <ng-container *ngIf="isChecked && !isHomePage">
-    <app-header-section></app-header-section>
-</ng-container> -->
+    </div>
+</header>

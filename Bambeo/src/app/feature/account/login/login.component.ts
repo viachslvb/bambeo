@@ -3,11 +3,13 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService } from '../account.service';
 import { LoginModel } from 'src/app/core/models/api/requests/loginModel';
+import { fadeInAnimation } from 'src/app/core/animations';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  animations: [fadeInAnimation]
 })
 export class LoginComponent {
   loginForm = new FormGroup({
@@ -15,12 +17,12 @@ export class LoginComponent {
     password: new FormControl('', Validators.required),
     rememberMe: new FormControl(true)
   })
-  
+
   returnUrl: string;
   errorMessage?: string;
   isLoading = false;
 
-  constructor(private accountService: AccountService, private router: Router, 
+  constructor(private accountService: AccountService, private router: Router,
     private activatedRoute: ActivatedRoute) {
       this.returnUrl = this.activatedRoute.snapshot.queryParams['returnUrl'] || '/promotions'
   }

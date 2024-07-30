@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ProductsComponent } from './products.component';
 
 const routes: Routes = [
-  { path: '', component: ProductsComponent },
+  { path: '', component: ProductsComponent, data: { dynamic: true } },
   {
     path: 'products/:id',
     loadChildren: () => import('./product/product.module').then(m => m.ProductModule)

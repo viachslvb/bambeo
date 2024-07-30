@@ -1,36 +1,19 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, ElementRef, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, HostListener, OnDestroy, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, first, skipWhile } from 'rxjs';
 import { AuthService } from 'src/app/core/state/auth.service';
 import { UserService } from '../../state/user.service';
 import { scrollToTop } from '../../utils';
+import { fadeInAnimation, fadeInOutAnimation } from '../../animations';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
-  animations: [
-    trigger('fadeIn', [
-      state('void', style({ opacity: 0 })),
-      transition('void => *', [
-        animate('0.25s ease-in')
-      ]),
-    ]),
-    trigger('fadeInOut', [
-      state('void', style({ opacity: 0 })),
-      transition('void => *', [
-        animate('0.20s ease-in')
-      ]),
-      transition('* => void', [
-        animate('0.20s ease-out')
-      ])
-    ])
-  ]
+  animations: [fadeInAnimation, fadeInOutAnimation]
 })
 export class NavbarComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
-  private resizeListener: () => void;
 
   isAuthStatusChecked = false;
   isMobileMenuOpen: boolean = false;
@@ -41,21 +24,17 @@ export class NavbarComponent implements OnDestroy {
     private renderer: Renderer2,
     private router: Router
   ) {
-    this.resizeListener = this.renderer.listen('window', 'resize', this.onResize.bind(this));
     this.subscribeToAuthCheck();
   }
 
   ngOnDestroy(): void {
-    if (this.resizeListener) {
-      this.resizeListener();
-    }
-
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  private onResize() {
-    const isMobile = window.innerWidth <= 640;
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    const isMobile = event.target.innerWidth <= 640;
 
     if (!isMobile && this.isMobileMenuOpen) {
       this.toggleMobileMenu();

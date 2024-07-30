@@ -9,10 +9,10 @@ const routes: Routes = [
     path: '',
     component: MyAccountComponent,
     children: [
-      { path: '', component: AccountInfoComponent },
-      { path: 'settings', 
+      { path: '', component: AccountInfoComponent, data: { dynamic: true } },
+      { path: 'settings',
         component: AccountSettingsComponent,
-        data: { breadcrumb: 'Ustawienia' } 
+        data: { breadcrumb: 'Ustawienia', dynamic: true }
       }
     ]
   }

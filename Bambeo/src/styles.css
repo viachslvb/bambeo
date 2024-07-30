@@ -124,6 +124,10 @@
     border-color: transparent;
 }
 
+html {
+    overflow-y: scroll;
+}
+
 html, body, * {
     touch-action: manipulation;
 }

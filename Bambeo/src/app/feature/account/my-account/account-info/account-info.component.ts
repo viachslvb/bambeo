@@ -1,29 +1,24 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subject, switchMap, takeUntil } from 'rxjs';
+import { Observable, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { UserUpdateModel } from 'src/app/core/models/api/requests/userUpdateModel';
 import { UserService } from 'src/app/core/state/user.service';
 import { MyAccountService } from '../my-account.service';
-import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AuthService } from 'src/app/core/state/auth.service';
 import { ApiErrorCode } from 'src/app/core/models/api/apiErrorCode';
 import { Router } from '@angular/router';
 import { NoWhitespaceValidator } from 'src/app/core/validators/whitespaces.validator';
+import { ContentLoadingComponent } from 'src/app/core/components/content-loading/content-loading.component';
+import { UiLoadingService } from 'src/app/core/services/ui-loading.service';
+import { fadeInAnimation } from 'src/app/core/animations';
 
 @Component({
   selector: 'app-account-info',
   templateUrl: './account-info.component.html',
-  animations: [
-    trigger('fadeIn', [
-      state('void', style({ opacity: 0 })),
-      transition('void => *', [
-        animate('0.15s ease-in')
-      ]),
-    ])
-  ]
+  animations: [fadeInAnimation]
 })
-export class AccountInfoComponent implements OnInit, OnDestroy {
+export class AccountInfoComponent extends ContentLoadingComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   accountInfoForm = new FormGroup({
@@ -51,22 +46,27 @@ export class AccountInfoComponent implements OnInit, OnDestroy {
   isDeletingAccount = false;
   accountIsDeleted = false;
 
-  constructor(private myAccountService: MyAccountService, private userService: UserService,
-    private confirmationService: ConfirmationService, private authService: AuthService,
-    private router: Router, private toastService: MessageService
-  ) {}
-
-  ngOnInit(): void {
-    this.loadAccountInfo();
+  constructor(
+    private myAccountService: MyAccountService,
+    private userService: UserService,
+    private confirmationService: ConfirmationService,
+    private authService: AuthService,
+    private router: Router,
+    private toastService: MessageService,
+    uiLoadingService: UiLoadingService
+  ) {
+    super(uiLoadingService);
+    console.log('constructor account info');
   }
 
-  private loadAccountInfo() {
+  loadContent(): Observable<any> {
     this.loadingTimeout = setTimeout(() => {
       this.showLoadingSpinner = true;
     }, 50);
 
-    this.myAccountService.getUserInfo().subscribe({
-      next: (accountInfo) => {
+    return this.myAccountService.getUserInfo().pipe(
+      tap(accountInfo => {
+        this.showLoadingSpinner = false;
         clearTimeout(this.loadingTimeout);
 
         this.isEmailVerified = accountInfo.emailConfirmed;
@@ -74,14 +74,13 @@ export class AccountInfoComponent implements OnInit, OnDestroy {
         this.accountInfoState = this.accountInfoForm.value;
         this.dataLoaded = true;
         this.trackChanges();
-      },
-      error: (err) => {
-        console.error(err);
-      }
-    });
+      })
+    );
   }
 
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+
     this.destroy$.next();
     this.destroy$.complete();
   }

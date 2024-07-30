@@ -1,20 +1,13 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
+import { fadeInAnimation } from 'src/app/core/animations';
 
 @Component({
   selector: 'app-my-account',
   templateUrl: './my-account.component.html',
   styleUrls: ['./my-account.component.css'],
-  animations: [
-    trigger('fadeIn', [
-      state('void', style({ opacity: 0 })),
-      transition('void => *', [
-        animate('0.15s ease-in')
-      ]),
-    ])
-  ]
+  animations: [fadeInAnimation]
 })
 export class MyAccountComponent implements AfterViewInit {
   @ViewChild('menuContainer', { static: false }) menuContainer!: ElementRef;
@@ -52,6 +45,8 @@ export class MyAccountComponent implements AfterViewInit {
         targetElement = this.menuContainer.nativeElement.querySelector('#account');
         break;
       case '/':
+        targetElement = this.menuContainer.nativeElement.querySelector('#home');
+        break;
       default:
         targetElement = this.menuContainer.nativeElement.querySelector('#account');
         break;

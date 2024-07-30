@@ -60,7 +60,7 @@
                 <!-- mobile menu -->
                 <app-mobile-menu *ngIf="isAuthStatusChecked && isMobileMenuOpen" [isOpen]="isMobileMenuOpen"
                     [user]="userService.currentUser$ | async" [isLoggedIn]="authService.isLoggedIn()"
-                    (closeMenu)="toggleMobileMenu()" (logout)="logout()" @fadeInOut class="z-40"></app-mobile-menu>
+                    (closeMenu)="toggleMobileMenu()" (logout)="logout()" class="z-40" @fadeInOut></app-mobile-menu>
             </div>
         </div>
     </div>

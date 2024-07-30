@@ -1,67 +1,63 @@
 import { Component, OnInit } from '@angular/core';
 import { FavoriteProduct } from 'src/app/core/models/favoriteProduct';
 import { FavoriteProductsService } from 'src/app/core/state/favorite-products.service';
-import { trigger, state, style, transition, animate } from '@angular/animations';
 import { BusyService } from 'src/app/core/services/busy.service';
 import { ConfirmationService } from 'primeng/api';
+import { fadeInAnimation } from 'src/app/core/animations';
+import { ContentLoadingComponent } from 'src/app/core/components/content-loading/content-loading.component';
+import { UiLoadingService } from 'src/app/core/services/ui-loading.service';
+import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-favorites',
   templateUrl: './favorites.component.html',
   styleUrls: ['./favorites.component.css'],
-  animations: [
-    trigger('fadeIn', [
-      state('void', style({ opacity: 0 })),
-      transition('void => *', [
-        animate('0.20s ease-in')
-      ]),
-    ])
-  ]
+  animations: [fadeInAnimation]
 })
-export class FavoritesComponent implements OnInit {
+export class FavoritesComponent extends ContentLoadingComponent implements OnInit {
   isFavoritesLoaded = false;
   favoriteProducts: FavoriteProduct[] = [];
   promotionCount = 0;
   isLoadingError = false;
 
-  private favoritesLoadingSpinnerTimeout: any;
+  private loadingTimeout: any;
   favoritesLoadingSpinner = 'favoritesLoadingSpinner';
 
   constructor(
     private favoritesService: FavoriteProductsService,
     private confirmationService: ConfirmationService,
-    private busyService: BusyService
-  ) { }
-
-  ngOnInit(): void {
-    this.loadFavoriteProducts();
+    private busyService: BusyService,
+    uiLoadingService: UiLoadingService
+  ) {
+    super(uiLoadingService);
   }
 
-  loadFavoriteProducts(): void {
-    this.favoritesLoadingSpinnerTimeout = setTimeout(() => {
+  loadContent(): Observable<any> {
+    this.loadingTimeout = setTimeout(() => {
       this.busyService.busy(this.favoritesLoadingSpinner);
     }, 70);
 
-    this.favoritesService.getFavoriteProducts().subscribe({
-      next: (response) => {
+    return this.favoritesService.getFavoriteProducts().pipe(
+      tap(response => {
         this.favoriteProducts = response.products;
         this.promotionCount = response.promotionCount;
         this.favoritesService.setFavorites(response.products);
-
         this.isFavoritesLoaded = true;
-        this.cleanupLoadingSpinner();
-      },
-      error: (err) => {
-        console.error('Error loading favorites:', err);
-
+      }),
+      catchError(err => {
+        console.error('Error fetching favorite products', err);
         this.isLoadingError = true;
+
+        return throwError(() => err);
+      }),
+      finalize(() => {
         this.cleanupLoadingSpinner();
-      }
-    });
+      })
+    );
   }
 
   private cleanupLoadingSpinner(): void {
-    clearTimeout(this.favoritesLoadingSpinnerTimeout);
+    clearTimeout(this.loadingTimeout);
     this.busyService.idle(this.favoritesLoadingSpinner);
   }
 

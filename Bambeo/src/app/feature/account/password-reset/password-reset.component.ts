@@ -6,11 +6,13 @@ import { EMPTY, Observable, Subject, catchError, finalize, of, switchMap, takeUn
 import { PasswordResetModel } from 'src/app/core/models/api/requests/passwordResetModel';
 import { ApiErrorCode } from 'src/app/core/models/api/apiErrorCode';
 import { AuthService } from 'src/app/core/state/auth.service';
+import { fadeInAnimation } from 'src/app/core/animations';
 
 @Component({
   selector: 'app-password-reset',
   templateUrl: './password-reset.component.html',
-  styleUrls: ['./password-reset.component.css']
+  styleUrls: ['./password-reset.component.css'],
+  animations: [fadeInAnimation]
 })
 export class PasswordResetComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

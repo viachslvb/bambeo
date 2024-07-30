@@ -2,11 +2,13 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AccountService } from '../account.service';
 import { ForgotPasswordModel } from 'src/app/core/models/api/requests/forgotPasswordModel';
+import { fadeInAnimation } from 'src/app/core/animations';
 
 @Component({
   selector: 'app-forgot-password',
   templateUrl: './forgot-password.component.html',
-  styleUrls: ['./forgot-password.component.css']
+  styleUrls: ['./forgot-password.component.css'],
+  animations: [fadeInAnimation]
 })
 export class ForgotPasswordComponent {
   forgotPasswordForm = new FormGroup({

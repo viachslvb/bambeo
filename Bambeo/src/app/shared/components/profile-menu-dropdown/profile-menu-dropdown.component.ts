@@ -6,30 +6,20 @@ import { User } from 'src/app/core/models/user';
   templateUrl: './profile-menu-dropdown.component.html',
   styleUrls: ['./profile-menu-dropdown.component.css']
 })
-export class ProfileMenuDropdownComponent implements OnDestroy {
+export class ProfileMenuDropdownComponent {
   @Input() user!: User;
   @Output() logout = new EventEmitter<void>();
   @ViewChild('profileMenuButton') profileMenuButton!: ElementRef;
   @ViewChild('profileMenuDropdown') profileMenuDropdown!: ElementRef;
 
-  private resizeListener: () => void;
   isDropdownMenuVisible: boolean = false;
 
-  constructor(
-    private renderer: Renderer2
-  ) {
-    this.resizeListener = this.renderer.listen('window', 'resize', this.onResize.bind(this));
-  }
+  constructor() { }
 
-  private onResize() {
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
     if (this.isDropdownMenuVisible) {
       this.toggle();
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.resizeListener) {
-      this.resizeListener();
     }
   }
 

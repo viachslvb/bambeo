@@ -34,21 +34,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseStatusCodePagesWithReExecute("/errors/{0}");
 app.UseCors("CorsPolicy");
-app.UseStaticFiles(new StaticFileOptions
-{
-    OnPrepareResponse = ctx =>
-    {
-        if (ctx.Context.Request.Path.Value.Contains("/fonts/"))
-        {
-            ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=31536000");
-        }
-
-        if (ctx.Context.Request.Path.Value.Contains("/images/"))
-        {
-            ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=31536000");
-        }
-    }
-});
+app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();

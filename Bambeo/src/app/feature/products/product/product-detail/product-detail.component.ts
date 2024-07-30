@@ -3,24 +3,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { ProductService } from '../product.service';
 import { Location } from '@angular/common';
-import { trigger, state, style, transition, animate } from '@angular/animations';
 import { BusyService } from 'src/app/core/services/busy.service';
 import { ProductInfo } from 'src/app/core/models/productInfo';
 import { FavoriteProductsService } from 'src/app/core/state/favorite-products.service';
 import { Subject, takeUntil } from 'rxjs';
+import { fadeInAnimation } from 'src/app/core/animations';
 
 @Component({
   selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css'],
-  animations: [
-    trigger('fadeIn', [
-      state('void', style({ opacity: 0 })),
-      transition('void => *', [
-        animate('0.20s ease-in')
-      ]),
-    ])
-  ]
+  animations: [fadeInAnimation]
 })
 export class ProductDetailComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

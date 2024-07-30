@@ -3,28 +3,22 @@ import { PromotionService } from 'src/app/feature/products/promotion.service';
 import { Promotion } from 'src/app/core/models/promotion';
 import { ProductCategory } from 'src/app/core/models/productCategory';
 import { Store } from 'src/app/core/models/store';
-import { Subject, catchError, delay, forkJoin, of, takeUntil, tap } from 'rxjs';
+import { Observable, Subject, catchError, forkJoin, of, take, takeUntil, tap } from 'rxjs';
 import { BusyService } from '../../core/services/busy.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IPromotionFilter } from './models/IPromotionFilter';
 import { Pagination } from 'src/app/core/models/pagination';
 import { sortObjectKeys } from 'src/app/core/utils';
+import { ContentLoadingComponent } from 'src/app/core/components/content-loading/content-loading.component';
+import { UiLoadingService } from 'src/app/core/services/ui-loading.service';
+import { fadeInAnimation } from 'src/app/core/animations';
 
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css'],
-  animations: [
-    trigger('fadeIn', [
-      state('void', style({ opacity: 0 })),
-      transition('void => *', [
-        animate('0.15s ease-in')
-      ]),
-      transition('* => void', [
-        animate('0.15s ease-out')
-      ])
-    ]),
+  animations: [ fadeInAnimation,
     trigger('opacityInOut', [
       state('open', style({
         opacity: 0.7,
@@ -41,7 +35,7 @@ import { sortObjectKeys } from 'src/app/core/utils';
   ]
 })
 
-export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ProductsComponent extends ContentLoadingComponent implements OnInit, AfterViewInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   @ViewChild('filterBar', { static: false }) filterBar!: ElementRef;
@@ -82,13 +76,16 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     private renderer: Renderer2,
     private busyService: BusyService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    uiLoadingService: UiLoadingService,
   ) {
+    super(uiLoadingService);
     this.promotionService.setLoadingSpinner(this.promotionsLoadingSpinner);
   }
 
-  ngOnInit() {
-    this.loadData();
+  override ngOnInit() {
+    super.ngOnInit();
+
     this.initFiltersFromQueryParams();
     this.subscribeToPromotions();
   }
@@ -106,55 +103,54 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  override ngOnDestroy(): void {
+    //super.ngOnDestroy();
+
+    /* this.destroy$.next();
+    this.destroy$.complete(); */
   }
 
-  private loadData(): void {
+  loadContent(): Observable<any> {
     this.showLoadingSpinnerWithTimeout();
 
-    forkJoin({
-        stores: this.promotionService.getStores().pipe(catchError(error => {
-            console.error('Error loading stores:', error);
-            this.isLoadingError = true;
-            return of([]);
-        })),
-        categories: this.promotionService.getCategories().pipe(catchError(error => {
-            console.error('Error loading categories:', error);
-            this.isLoadingError = true;
-            return of([]);
-        }))
-    }).subscribe({
-        next: results => {
-            this.stores = results.stores;
-            this.categories = results.categories;
-            this.isCategoriesLoaded = true;
-            this.isStoresLoaded = true;
-            this.hideLoadingSpinner();
-        }
-    });
-  }
-
-  private showLoadingSpinnerWithTimeout(): void {
-      this.dataLoadingSpinnerTimeout = setTimeout(() => {
-          this.busyService.busy(this.dataLoadingSpinner);
-      }, 70);
-  }
-
-  private hideLoadingSpinner(): void {
-      clearTimeout(this.dataLoadingSpinnerTimeout);
-      this.busyService.idle(this.dataLoadingSpinner);
+    return forkJoin({
+      stores: this.promotionService.getStores().pipe(
+        catchError(error => {
+          console.error('Error loading stores:', error);
+          this.isLoadingError = true;
+          return of([]);
+        })
+      ),
+      categories: this.promotionService.getCategories().pipe(
+        catchError(error => {
+          console.error('Error loading categories:', error);
+          this.isLoadingError = true;
+          return of([]);
+        })
+      ),
+      promotions: this.promotionService.getPromotions().pipe(
+        take(1),
+        catchError(() => {
+          return of({ pageIndex: 1, pageSize: this.promotionService.defaultPageSize, hasPreviousPage: false, hasNextPage: false, count: 0, data: [] });
+        })
+      )
+    }).pipe(
+      tap(results => {
+        this.stores = results.stores;
+        this.categories = results.categories;
+        this.promotions = results.promotions;
+        this.isCategoriesLoaded = true;
+        this.isStoresLoaded = true;
+        this.isPromotionsLoaded = true;
+        this.hideLoadingSpinner();
+      })
+    );
   }
 
   private subscribeToPromotions() {
     this.promotionService.getPromotions().pipe(
-      tap(() => {
-        this.isPromotionsLoaded = true;
-      }),
       takeUntil(this.destroy$),
       catchError(() => {
-        // Return an empty Pagination object to keep the stream alive
         return of({ pageIndex: 1, pageSize: this.promotionService.defaultPageSize, hasPreviousPage: false, hasNextPage: false, count: 0, data: [] });
       })
     ).subscribe({
@@ -422,5 +418,16 @@ export class ProductsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   resetFilters() {
     this.promotionService.resetFilters(true);
+  }
+
+  private showLoadingSpinnerWithTimeout(): void {
+    this.dataLoadingSpinnerTimeout = setTimeout(() => {
+        this.busyService.busy(this.dataLoadingSpinner);
+    }, 70);
+  }
+
+  private hideLoadingSpinner(): void {
+      clearTimeout(this.dataLoadingSpinnerTimeout);
+      this.busyService.idle(this.dataLoadingSpinner);
   }
 }

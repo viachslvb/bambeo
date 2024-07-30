@@ -5,10 +5,10 @@
 <!-- Data Display Section -->
 <ng-template #settingsData>
   <div @fadeIn>
-    <h1 class="text-3xl font-medium mb-9 text-slate-700">
+    <h1 class="text-3xl font-medium mb-10 text-slate-700">
       Ustawienia
     </h1>
-    <h1 class="text-xl leading-6 text-slate-800">
+    <h1 class="text-2xl leading-6 text-slate-700">
       <i class="fa-solid fa-envelope mr-2"></i> Ustawienia powiadomień e-mail
     </h1>
     <div class="h-4"></div>
@@ -25,7 +25,7 @@
         </div>
         <button type="submit"
             [disabled]="isSavingInfo || !settingsForm.dirty"
-            class="w-32 mt-5 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-3 py-2 text-center"
+            class="w-32 mt-5 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg px-3 py-2 text-center"
             [ngClass]="isSettingsChanged ? isSavingInfo ? 'bg-rose-400 hover:bg-rose-400 text-white' : 'bg-rose-500 hover:bg-rose-600 text-white'
             : 'bg-slate-200 hover:bg-slate-200 text-slate-400'"
             >
