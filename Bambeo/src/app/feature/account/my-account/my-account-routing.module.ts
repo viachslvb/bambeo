@@ -9,10 +9,19 @@ const routes: Routes = [
     path: '',
     component: MyAccountComponent,
     children: [
-      { path: '', component: AccountInfoComponent, data: { dynamic: true } },
+      { path: '',
+        title: 'Bambeo • Moje Konto',
+        component: AccountInfoComponent,
+        data: {
+          dynamic: true
+        }
+      },
       { path: 'settings',
+        title: 'Bambeo • Ustawienia',
         component: AccountSettingsComponent,
-        data: { breadcrumb: 'Ustawienia', dynamic: true }
+        data: {
+          dynamic: true
+        }
       }
     ]
   }

@@ -1,20 +1,23 @@
-import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { AuthService } from './core/state/auth.service';
 import { ScrollService } from './core/services/scroll.service';
 import { FavoriteProductsService } from './core/state/favorite-products.service';
 import { isIphone, preventDoubleTapZoom, setViewportMetaTag } from './core/utils';
-import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRouteSnapshot, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { BusyService } from './core/services/busy.service';
 import { UiLoadingService } from './core/services/ui-loading.service';
+import { slideInAnimation } from './core/animations';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  animations: [ slideInAnimation ]
 })
 export class AppComponent implements OnInit {
   private previousPath: string = '';
   private loadingTimeout: any;
+  isMobile: boolean = false;
   isHomePage: boolean = false;
   title = 'Bambeo';
 
@@ -29,6 +32,8 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.updateIsMobile(window.innerWidth);
+
     if (isIphone()) {
       setViewportMetaTag();
     }
@@ -69,15 +74,42 @@ export class AppComponent implements OnInit {
     });
   }
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.updateIsMobile(event.target.innerWidth);
+  }
 
+  updateIsMobile(width: number): void {
+    this.isMobile = width < 1024;
+  }
+
+  prepareRoute(outlet: RouterOutlet) {
+    if (this.isMobile) {
+      return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
+    }
+    return null;
+  }
 
   checkComponentType() {
-    const currentRoute = this.router.routerState.root.snapshot.firstChild;
-    const isDynamicComponent = currentRoute?.data?.['dynamic'] ?? false;
+    const currentRoute = this.router.routerState.snapshot.root;
+    const isDynamicComponent = this.getRouteData(currentRoute, 'dynamic') ?? false;
 
     if (!isDynamicComponent) {
       this.uiLoadingService.resetComponentLoadingState();
     }
+  }
+
+  private getRouteData(route: ActivatedRouteSnapshot, key: string): any {
+    if (route.data && route.data[key] !== undefined) {
+      return route.data[key];
+    }
+    for (const child of route.children) {
+      const childData = this.getRouteData(child, key);
+      if (childData !== undefined) {
+        return childData;
+      }
+    }
+    return undefined;
   }
 
   private hasAnyQueryParams(params: URLSearchParams): boolean {

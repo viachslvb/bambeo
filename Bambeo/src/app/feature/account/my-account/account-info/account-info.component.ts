@@ -56,7 +56,6 @@ export class AccountInfoComponent extends ContentLoadingComponent implements OnI
     uiLoadingService: UiLoadingService
   ) {
     super(uiLoadingService);
-    console.log('constructor account info');
   }
 
   loadContent(): Observable<any> {

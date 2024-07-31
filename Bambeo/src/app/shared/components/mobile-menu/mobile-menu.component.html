@@ -45,6 +45,19 @@
         Wyloguj Się
         <i class="fa-solid fa-sign-out-alt pl-3"></i>
       </a>
+      <!-- Regulamin / Polityka prywatności / etc -->
+      <a (click)="onCloseMenu()"
+        class="text-rose-100 text-sm border-b border-rose-500 mt-5 py-3">
+        Polityka prywatności
+      </a>
+      <a (click)="onCloseMenu()"
+        class="text-rose-100 text-sm border-b border-rose-500 py-3">
+        Polityka plików cookies
+      </a>
+      <a (click)="onCloseMenu()"
+        class="text-rose-100 text-sm py-3">
+        Regulamin
+      </a>
     </div>
     <!-- signup / login buttons -->
     <div *ngIf="!isLoggedIn" class="flex flex-col items-center mb-[10vh]">
