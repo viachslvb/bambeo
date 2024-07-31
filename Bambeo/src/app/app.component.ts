@@ -6,13 +6,11 @@ import { isIphone, preventDoubleTapZoom, setViewportMetaTag } from './core/utils
 import { ActivatedRouteSnapshot, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { BusyService } from './core/services/busy.service';
 import { UiLoadingService } from './core/services/ui-loading.service';
-import { slideInAnimation } from './core/animations';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  animations: [ slideInAnimation ]
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
   private previousPath: string = '';
@@ -81,13 +79,6 @@ export class AppComponent implements OnInit {
 
   updateIsMobile(width: number): void {
     this.isMobile = width < 1024;
-  }
-
-  prepareRoute(outlet: RouterOutlet) {
-    if (this.isMobile) {
-      return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
-    }
-    return null;
   }
 
   checkComponentType() {

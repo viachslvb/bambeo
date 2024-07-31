@@ -22,11 +22,13 @@ import { fadeInAnimation } from 'src/app/core/animations';
     trigger('opacityInOut', [
       state('open', style({
         opacity: 0.7,
-        visibility: 'visible'
+        visibility: 'visible',
+        'background-color': '#1e293b'
       })),
       state('closed', style({
         opacity: 0,
-        visibility: 'hidden'
+        visibility: 'hidden',
+        'background-color': '#ffffff'
       })),
       transition('open <=> closed', [
         animate('0.3s ease-in-out')
@@ -104,10 +106,10 @@ export class ProductsComponent extends ContentLoadingComponent implements OnInit
   }
 
   override ngOnDestroy(): void {
-    //super.ngOnDestroy();
+    super.ngOnDestroy();
 
-    /* this.destroy$.next();
-    this.destroy$.complete(); */
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   loadContent(): Observable<any> {

@@ -7,11 +7,13 @@ const routes: Routes = [
     component: ProductsComponent,
     data: {
       dynamic: true,
+      reuse: true,
       animation: 'ProductsComponent'
     }
   },
   {
     path: 'products/:id',
+    data: {reuse: true},
     loadChildren: () => import('./product/product.module').then(m => m.ProductModule)
   }
 ]

@@ -1,5 +1,5 @@
 import { Directive, OnDestroy, OnInit } from '@angular/core';
-import { finalize, Observable, Subscription } from 'rxjs';
+import { delay, finalize, Observable, Subscription } from 'rxjs';
 import { UiLoadingService } from '../../services/ui-loading.service';
 
 @Directive()

@@ -1,7 +1,7 @@
 <app-navbar></app-navbar>
 <app-header *ngIf="isHomePage"></app-header>
-<main [@routeAnimations]="prepareRoute(outlet)" [ngClass]="{'pb-24': isMobile}">
-  <router-outlet #outlet="outlet"></router-outlet>
+<main [ngClass]="{'pb-24': isMobile}">
+  <router-outlet></router-outlet>
 </main>
 <p-toast position="bottom-right" [preventOpenDuplicates]=true
   [breakpoints]="{ '640px': { width: '100%', right: '0', left: '0', bottom: '0' } }">

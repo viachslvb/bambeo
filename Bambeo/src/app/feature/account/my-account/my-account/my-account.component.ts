@@ -1,13 +1,13 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
-import { fadeInAnimation, slideInAnimation } from 'src/app/core/animations';
+import { fadeInAnimation } from 'src/app/core/animations';
 
 @Component({
   selector: 'app-my-account',
   templateUrl: './my-account.component.html',
   styleUrls: ['./my-account.component.css'],
-  animations: [fadeInAnimation, slideInAnimation]
+  animations: [fadeInAnimation]
 })
 export class MyAccountComponent implements AfterViewInit {
   @ViewChild('menuContainer', { static: false }) menuContainer!: ElementRef;

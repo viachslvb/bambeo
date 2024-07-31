@@ -6,7 +6,7 @@
     <div class="flex justify-between">
         <div
         [@opacityInOut]="isFilterPageOpen && isMobile ? 'open' : 'closed'"
-        class="fixed inset-0 bg-slate-800 z-[99]"
+        class="fixed inset-0 z-[99]"
         (click)="toggleFilterPage()"
         #filterPageBackgroundLayer
         ></div>
