@@ -1,10 +1,10 @@
 <div class="fixed top-0 left-0 bottom-0 flex flex-col justify-between inset-0 bg-rose-600 z-40">
     <!-- menu items -->
     <div class="flex flex-col flex-1 justify-center items-end px-6">
-      <div *ngIf="isLoggedIn && user" class="flex flex-col items-end mb-5">
+      <!-- <div *ngIf="isLoggedIn && user" class="flex flex-col items-end mb-5">
         <div class="text-2xl text-rose-400 font-semibold mt-2 truncate">{{ user.displayName }}</div>
         <div class="text-xl text-rose-400 font-light truncate">{{ user.email }}</div>
-      </div>
+      </div> -->
       <a routerLink="/"
         (click)="onCloseMenu()"
         class="text-rose-100 text-xl border-b border-rose-500 py-3">
@@ -60,7 +60,7 @@
       </a>
     </div>
     <!-- signup / login buttons -->
-    <div *ngIf="!isLoggedIn" class="flex flex-col items-center mb-[10vh]">
+    <div *ngIf="!isLoggedIn" class="flex flex-col items-center mb-[5vh]">
       <div class="flex flex-col items-center mt-5">
         <button routerLink="/account/signup" (click)="onCloseMenu()" type="button"
           class="bg-rose-500 text-white focus:ring-4 focus:ring-rose-300 font-semibold text-2xl rounded-lg py-4 px-8 focus:outline-none">

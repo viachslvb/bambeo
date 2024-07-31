@@ -1,9 +1,13 @@
 <footer
   *ngIf="!isLoading"
-  [ngClass]="{'fixed inset-x-0 bottom-0 h-11': isMobile, 'relative mt-24': !isMobile}"
-  class="bg-rose-600"
+  [ngClass]="{
+    'fixed inset-x-0 bottom-0 bg-slate-50 h-14': isMobile,
+    'bg-rose-600 relative mt-24': !isMobile
+  }"
   @fadeIn>
-  <svg class="absolute top-0 w-full h-5 -mt-3 lg:-mt-10 lg:h-16 text-rose-600" preserveAspectRatio="none" viewBox="0 0 1440 54">
+  <svg preserveAspectRatio="none" viewBox="0 0 1440 54"
+    class="absolute top-0 w-full h-4 -mt-3 lg:-mt-10 lg:h-16"
+    [ngClass]="{'text-slate-50': isMobile, 'text-rose-600': !isMobile}">
     <path fill="currentColor" d="M0 22L120 16.7C240 11 480 1.00001 720 0.700012C960 1.00001 1200 11 1320 16.7L1440 22V40H0V22Z"></path>
   </svg>
   <ng-container *ngIf="!isMobile; else mobileFooterBar">
@@ -89,19 +93,22 @@
       </div>
     </div>
   </ng-container>
-  <ng-template #mobileFooterBar>
-    <div class="flex flex-row justify-center items-center space-x-4 h-9">
+  <ng-template #mobileFooterBar >
+    <div class="flex flex-row justify-center items-center text-sm font-light space-x-12 h-16">
       <a routerLink="/"
-        class="px-3 py-2 rounded-xl">
-        <i class="fa-solid fa-house fa-xl text-rose-100"></i>
+        class="flex flex-col justify-center items-center text-slate-500">
+        <i class="fa-solid fa-house fa-lg pb-3"></i>
+        Główna
       </a>
       <a routerLink="/account"
-        class="px-3 py-2 rounded-xl">
-        <i class="fa-solid fa-user fa-xl text-rose-100"></i>
+        class="flex flex-col justify-center items-center text-slate-500">
+        <i class="fa-solid fa-user fa-lg pb-3"></i>
+        Moje Konto
       </a>
       <a routerLink="/favorites"
-        class="px-3 py-2 rounded-xl">
-        <i class="fa-solid fa-heart fa-xl text-rose-100"></i>
+        class="flex flex-col justify-center items-center text-slate-500">
+        <i class="fa-solid fa-heart fa-lg pb-3"></i>
+        Ulubione
       </a>
     </div>
   </ng-template>
