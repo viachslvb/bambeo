@@ -3,8 +3,12 @@
 <main [ngClass]="{'pb-24': isMobile}">
   <router-outlet></router-outlet>
 </main>
-<p-toast position="bottom-right" [preventOpenDuplicates]=true
-  [breakpoints]="{ '640px': { width: '100%', right: '0', left: '0', bottom: '0' } }">
+<p-toast
+  position="top-right"
+  [preventOpenDuplicates]=true
+  [breakpoints]="{ '640px': { width: '100%', right: '0', left: '0', top: '0' } }"
+  showTransformOptions="translateY(-100%)"
+>
 </p-toast>
 <ngx-spinner bdColor="rgba(255,255,255,0)" size="medium" color="#e11d48" type="ball-spin-rotate" [fullScreen]="true"
   name="pageLoadingSpinner"></ngx-spinner>

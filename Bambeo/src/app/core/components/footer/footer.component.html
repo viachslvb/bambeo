@@ -6,7 +6,7 @@
   }"
   @fadeIn>
   <svg preserveAspectRatio="none" viewBox="0 0 1440 54"
-    class="absolute top-0 w-full h-4 -mt-3 lg:-mt-10 lg:h-16"
+    class="absolute top-0 w-full h-5 -mt-3 lg:-mt-10 lg:h-16"
     [ngClass]="{'text-slate-50': isMobile, 'text-rose-600': !isMobile}">
     <path fill="currentColor" d="M0 22L120 16.7C240 11 480 1.00001 720 0.700012C960 1.00001 1200 11 1320 16.7L1440 22V40H0V22Z"></path>
   </svg>
@@ -94,21 +94,18 @@
     </div>
   </ng-container>
   <ng-template #mobileFooterBar >
-    <div class="flex flex-row justify-center items-center text-sm font-light space-x-12 h-16">
+    <div class="flex flex-row justify-center items-center text-sm space-x-12 h-14">
       <a routerLink="/"
-        class="flex flex-col justify-center items-center text-slate-500">
-        <i class="fa-solid fa-house fa-lg pb-3"></i>
-        Główna
+        class="flex flex-col justify-center items-center text-slate-500 py-1">
+        <i class="fa-solid fa-house fa-lg leading-none pb-0.5"></i> Główna
       </a>
       <a routerLink="/account"
-        class="flex flex-col justify-center items-center text-slate-500">
-        <i class="fa-solid fa-user fa-lg pb-3"></i>
-        Moje Konto
+        class="flex flex-col justify-center items-center text-slate-500 py-1">
+        <i class="fa-solid fa-user fa-lg leading-none pb-0.5"></i> Moje Konto
       </a>
       <a routerLink="/favorites"
-        class="flex flex-col justify-center items-center text-slate-500">
-        <i class="fa-solid fa-heart fa-lg pb-3"></i>
-        Ulubione
+        class="flex flex-col justify-center items-center text-slate-500 py-1">
+        <i class="fa-solid fa-heart fa-lg leading-none pb-0.5"></i> Ulubione
       </a>
     </div>
   </ng-template>

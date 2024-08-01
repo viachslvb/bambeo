@@ -10,6 +10,8 @@ import { catchError, finalize, Observable, Subject, takeUntil, tap, throwError }
 import { fadeInAnimation } from 'src/app/core/animations';
 import { ContentLoadingComponent } from 'src/app/core/components/content-loading/content-loading.component';
 import { UiLoadingService } from 'src/app/core/services/ui-loading.service';
+import { AuthService } from 'src/app/core/state/auth.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-product-detail',
@@ -28,6 +30,8 @@ export class ProductDetailComponent extends ContentLoadingComponent implements O
   constructor(
     private productService: ProductService,
     private favoritesService: FavoriteProductsService,
+    private authService: AuthService,
+    private toastService: MessageService,
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
@@ -99,17 +103,27 @@ export class ProductDetailComponent extends ContentLoadingComponent implements O
   }
 
   toggleFavorite(): void {
-    if (this.product) {
-      if (this.isFavorite) {
-        this.favoritesService.removeFromFavorites(this.product.id).subscribe({
-          error: err => console.error(err)
-        });
-      } else {
-        this.favoritesService.addToFavorites(this.product.id).subscribe({
-          error: err => console.error(err)
-        });
+    if (this.authService.isLoggedIn()) {
+      if (this.product) {
+        if (this.isFavorite) {
+          this.favoritesService.removeFromFavorites(this.product.id).subscribe({
+            error: err => console.error(err)
+          });
+        } else {
+          this.favoritesService.addToFavorites(this.product.id).subscribe({
+            error: err => console.error(err)
+          });
+        }
+        this.isFavorite = !this.isFavorite;
       }
-      this.isFavorite = !this.isFavorite;
+    }
+    else {
+      this.toastService.add({
+        severity: 'warn',
+        life: 10000,
+        summary: 'Wymagane logowanie',
+        detail: 'Musisz się zalogować, aby dodać ten produkt do ulubionych.'
+      });
     }
   }
 

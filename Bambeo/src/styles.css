@@ -349,6 +349,16 @@ html, body, * {
     }
 }
 
+@media (max-width: 640px) {
+    .p-toast {
+        opacity: 1;
+        width: '100%';
+        right: '0';
+        left: '0';
+        top: '0'
+    }
+}
+
 .p-toast .p-toast-message .p-toast-icon-close {
     width: 2rem !important;
     min-width: 2rem !important;
@@ -374,7 +384,7 @@ html, body, * {
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
-.p-toast .p-toast-message.p-toast-message-info {
+/* .p-toast .p-toast-message .p-toast-message-info {
     background: #EFF6FF;
     border: none;
     border-width: 0 0 0 6px;
@@ -384,4 +394,4 @@ html, body, * {
 .p-toast .p-toast-message.p-toast-message-info .p-toast-message-icon,
 .p-toast .p-toast-message.p-toast-message-info .p-toast-icon-close {
     color: rgba(255, 255, 255, 0.5);
-}
+} */
