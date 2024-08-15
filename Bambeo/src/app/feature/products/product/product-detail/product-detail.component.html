@@ -25,7 +25,7 @@
         </div>
         <!-- Add to Favorites -->
         <i *ngIf="authService.isLoggedIn()" (click)="toggleFavorite()"
-           class="fa-solid fa-heart lg:hover:text-rose-500 lg:focus:text-rose-500 transition-all duration-200 cursor-pointer mt-4"
+           class="fa-solid fa-heart lg:hover:text-rose-500 lg:focus:text-rose-500 transition-all duration-200 cursor-pointer mt-4 no-ripple"
            [ngClass]="{'text-rose-500 fa-3x': isFavorite, 'text-slate-200 fa-4x' : !isFavorite}">
         </i>
       </div>
@@ -35,7 +35,7 @@
           <div *ngIf="product.hasPromotion; else noPromotion">
             <h2 class="text-xl text-rose-600 font-semibold mb-2">
               <i class="fa-solid fa-tag pr-2"></i> Promocja
-              <span class="bg-yellow-300 text-white ml-2 p-2 rounded font-extrabold text-base">- {{
+              <span class="bg-amber-400 text-white ml-2 p-2 rounded font-extrabold text-base">- {{
                 product.promotion.discountPercentage }}%</span>
             </h2>
             <div class="font-light text-slate-700 mb-1">{{ product.promotion.discountCondition }}</div>

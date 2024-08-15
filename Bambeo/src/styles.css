@@ -146,6 +146,10 @@ html, body, * {
     bottom: 0;
 }
 
+.no-ripple {
+    -webkit-tap-highlight-color: transparent;
+}
+
 /* Filter Bar */
 .filterbar-fixed {
     position: fixed;

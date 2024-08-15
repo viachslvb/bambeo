@@ -12,6 +12,7 @@ import { MessageService } from 'primeng/api';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { CookieNoticeComponent } from './components/cookie-notice/cookie-notice.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     HeaderComponent,
     NotFoundComponent,
     ServerErrorComponent,
-    HeaderSectionComponent
+    HeaderSectionComponent,
+    CookieNoticeComponent
   ],
   imports: [
     CommonModule,
@@ -32,7 +34,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     NavbarComponent,
     HeaderComponent,
     FooterComponent,
-    HeaderSectionComponent
+    HeaderSectionComponent,
+    CookieNoticeComponent
   ],
   providers: [
     MessageService,
