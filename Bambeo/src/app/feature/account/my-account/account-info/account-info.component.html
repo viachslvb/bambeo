@@ -20,12 +20,12 @@
         <bb-text-input [formControl]="accountInfoForm.controls['email']" [label]="'E-mail'" [type]="'email'"
           [name]="'email'"></bb-text-input>
         <ng-container *ngIf="isEmailVerified; else emailIsNotVerified">
-          <div class="text-xs font-light text-slate-600">
+          <div class="font-light text-slate-600">
             <i class="fa-solid fa-circle-check text-green-400 mr-1"></i> E-mail został potwierdzony
           </div>
         </ng-container>
         <ng-template #emailIsNotVerified>
-          <div class="text-xs text-slate-600 -mt-1">
+          <div class="font-light text-slate-600">
             <div *ngIf="!confirmationLinkSent">
               <i class="fa-solid fa-circle-xmark text-rose-700 mr-1"></i> Twój adres e-mail nie jest potwierdzony. Bez
               potwierdzonego adresu e-mail nie będziesz mógł korzystać ze wszystkich funkcji serwisu.
@@ -42,7 +42,7 @@
             </div>
           </div>
         </ng-template>
-        <div *ngIf="errors" class="text-xs text-rose-600 mt-4 px-1">
+        <div *ngIf="errors" class="text-rose-600 mt-4 px-1">
           <li *ngFor="let error of errors">
             {{error}}
           </li>
@@ -123,7 +123,7 @@
           {{ accountIsDeleted ? 'Konto Zostało Usunięte' : 'Usuń Moje Konto' }}
         </ng-template>
       </button>
-      <div *ngIf="deleteAccountErrorMessage" class="text-xs text-rose-600 mt-4 px-1">
+      <div *ngIf="deleteAccountErrorMessage" class="text-rose-600 mt-4 px-1">
         {{deleteAccountErrorMessage}}
       </div>
     </div>

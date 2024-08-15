@@ -1,9 +1,9 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, Renderer2 } from '@angular/core';
 import { AuthService } from './core/state/auth.service';
 import { ScrollService } from './core/services/scroll.service';
 import { FavoriteProductsService } from './core/state/favorite-products.service';
 import { isIphone, preventDoubleTapZoom, setViewportMetaTag } from './core/utils';
-import { ActivatedRouteSnapshot, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRouteSnapshot, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import { BusyService } from './core/services/busy.service';
 import { UiLoadingService } from './core/services/ui-loading.service';
 
@@ -44,9 +44,6 @@ export class AppComponent implements OnInit {
       if (event instanceof NavigationStart) {
         const currentPath = event.url.split('?')[0];
 
-        const url = new URL(event.url, window.location.origin);
-        this.isHomePage = url.pathname === '/' || (url.pathname === '/' && this.hasAnyQueryParams(url.searchParams));
-
         if (currentPath !== this.previousPath) {
           this.uiLoadingService.setComponentLoadingState(true);
           this.uiLoadingService.setRouteLoadingState(true);
@@ -62,12 +59,17 @@ export class AppComponent implements OnInit {
         this.busyService.idle();
 
         this.uiLoadingService.setRouteLoadingState(false);
+
+        let url = new URL(event.url, window.location.origin);
         if (event instanceof NavigationEnd) {
           this.checkComponentType();
+          url = new URL(event.urlAfterRedirects, window.location.origin)
         }
         else {
           this.uiLoadingService.resetComponentLoadingState();
         }
+
+        this.isHomePage = url.pathname === '/' || (url.pathname === '/' && this.hasAnyQueryParams(url.searchParams));
       }
     });
   }

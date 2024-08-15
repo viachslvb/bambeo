@@ -30,7 +30,7 @@ export class ProductDetailComponent extends ContentLoadingComponent implements O
   constructor(
     private productService: ProductService,
     private favoritesService: FavoriteProductsService,
-    private authService: AuthService,
+    public authService: AuthService,
     private toastService: MessageService,
     private route: ActivatedRoute,
     private router: Router,
@@ -103,27 +103,17 @@ export class ProductDetailComponent extends ContentLoadingComponent implements O
   }
 
   toggleFavorite(): void {
-    if (this.authService.isLoggedIn()) {
-      if (this.product) {
-        if (this.isFavorite) {
-          this.favoritesService.removeFromFavorites(this.product.id).subscribe({
-            error: err => console.error(err)
-          });
-        } else {
-          this.favoritesService.addToFavorites(this.product.id).subscribe({
-            error: err => console.error(err)
-          });
-        }
-        this.isFavorite = !this.isFavorite;
+    if (this.product) {
+      if (this.isFavorite) {
+        this.favoritesService.removeFromFavorites(this.product.id).subscribe({
+          error: err => console.error(err)
+        });
+      } else {
+        this.favoritesService.addToFavorites(this.product.id).subscribe({
+          error: err => console.error(err)
+        });
       }
-    }
-    else {
-      this.toastService.add({
-        severity: 'warn',
-        life: 10000,
-        summary: 'Wymagane logowanie',
-        detail: 'Musisz się zalogować, aby dodać ten produkt do ulubionych.'
-      });
+      this.isFavorite = !this.isFavorite;
     }
   }
 

@@ -93,19 +93,20 @@
       </div>
     </div>
   </ng-container>
-  <ng-template #mobileFooterBar >
+  <ng-template #mobileFooterBar>
     <div class="flex flex-row justify-center items-center text-sm space-x-12 h-14">
       <a routerLink="/"
         class="flex flex-col justify-center items-center text-slate-500 py-1">
-        <i class="fa-solid fa-house fa-lg leading-none pb-0.5"></i> Główna
+        <i class="fa-regular fa-chart-bar fa-lg leading-none pb-0.5"></i> Główna
       </a>
-      <a routerLink="/account"
+      <a [routerLink]="authService.isLoggedIn() ? '/account' : '/account/login'"
         class="flex flex-col justify-center items-center text-slate-500 py-1">
-        <i class="fa-solid fa-user fa-lg leading-none pb-0.5"></i> Moje Konto
+        <i class="fa-regular fa-circle-user fa-lg leading-none pb-0.5"></i> Moje Konto
+
       </a>
-      <a routerLink="/favorites"
+      <a *ngIf="authService.isLoggedIn()" routerLink="/favorites"
         class="flex flex-col justify-center items-center text-slate-500 py-1">
-        <i class="fa-solid fa-heart fa-lg leading-none pb-0.5"></i> Ulubione
+        <i class="fa-regular fa-heart fa-lg leading-none pb-0.5"></i> Ulubione
       </a>
     </div>
   </ng-template>

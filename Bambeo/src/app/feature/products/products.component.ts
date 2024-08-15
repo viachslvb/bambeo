@@ -372,6 +372,10 @@ export class ProductsComponent extends ContentLoadingComponent implements OnInit
     this.isFilterPageOpen = !this.isFilterPageOpen;
 
     if (this.isFilterPageOpen) {
+      if (this.isMobile) {
+        this.filterPage.nativeElement.scrollTop = 0;
+      }
+
       this.setFilterPageVisibility(true);
       this.renderer.addClass(document.body, 'no-scroll');
       this.renderer.setStyle(document.body, 'overscroll-behavior', 'contain');

@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { UiLoadingService } from '../../services/ui-loading.service';
 import { fadeInAnimation } from '../../animations';
+import { AuthService } from '../../state/auth.service';
 
 @Component({
   selector: 'app-footer',
@@ -12,7 +13,10 @@ export class FooterComponent implements OnInit {
   isLoading: boolean = true;
   isMobile: boolean = false;
 
-  constructor(private uiLoadingService: UiLoadingService) {
+  constructor(
+    private uiLoadingService: UiLoadingService,
+    public authService: AuthService
+  ) {
     this.uiLoadingService.isLoading.subscribe(state => {
       this.isLoading = this.isMobile ? false : state;
     });
