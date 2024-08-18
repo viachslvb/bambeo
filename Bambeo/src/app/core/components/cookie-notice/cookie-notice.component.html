@@ -1,14 +1,19 @@
 <div *ngIf="showNotice"
   class="fixed bg-white shadow-[rgba(0,0,0,0.2)_0px_-5px_10px_-4px] inset-x-0 bottom-0 z-[1000]" @fadeOut>
   <div class="container max-w-7xl mx-auto py-4 px-4 md:px-6">
+
     <div class="flex flex-col md:flex-row justify-between md:items-center">
-      <div class="md:w-[80%]">
-        <h1 class="text-xl md:text-2xl font-medium text-slate-700 pb-1">Ważna informacja</h1>
-        <p class="text-sm md:text-base font-light text-slate-500">Ten projekt jest w fazie rozwoju i jest prezentowany tylko w celach demonstracyjnych. Nie ma tu funkcji takich jak zgoda na pliki cookie ani regulamin, a dane mogą być fikcyjne. Dziękujemy za zrozumienie.</p>
+      <div class="flex flex-row justify-between items-center lg:px-8">
+        <i class="fa-regular fa-lightbulb fa-3x text-slate-700"></i>
+        <div class="pl-4 md:pl-6 md:pr-2 lg:px-8">
+          <h1 class="text-xl md:text-2xl font-medium text-slate-700 pb-1"><span class="underline underline-offset-3 decoration-[6px] decoration-rose-500">Ważna</span> informacja</h1>
+          <p class="md:text-base leading-5 font-light text-slate-500 mt-1">Ten projekt jest w fazie rozwoju i jest prezentowany tylko w celach demonstracyjnych. Nie ma tu funkcji takich jak zgoda na pliki cookie ani regulamin, a dane mogą być fikcyjne. Dziękujemy za zrozumienie.</p>
+        </div>
       </div>
-      <div class="ml-auto md:ml-0 mt-1">
-        <button (click)="acceptCookies()" type="button"
-        class="text-white bg-amber-400 hover:bg-amber-500 focus:ring-4 focus:ring-amber-200 font-medium rounded-lg py-2 px-3 focus:outline-none text-center">
+      <div class="ml-auto mt-2 md:m-0">
+        <button
+          (click)="acceptCookies()" type="button"
+          class="text-white bg-amber-400 hover:bg-amber-500 ring-4 ring-amber-200 focus:ring-amber-100 font-medium rounded-lg py-2 px-3 focus:outline-none text-center">
           Rozumiem
         </button>
       </div>
