@@ -19,6 +19,8 @@ export class PromotionService {
     private busyService: BusyService,
     private toastService: MessageService
   ) { }
+  private categoriesCache!: ProductCategory[];
+  private storesCache!: Store[];
 
   defaultPageSize = 12;
   private promotionsLoadingSpinnerTimeout: any;
@@ -226,12 +228,25 @@ export class PromotionService {
 
   getStores(): Observable<Store[]> {
     const endpoint = '/stores';
-    return this.apiService.get<Store[]>(endpoint);
+
+    if (this.storesCache) {
+      return of(this.storesCache);
+    } else {
+      return this.apiService.get<Store[]>(endpoint).pipe(
+        tap(stores => this.storesCache = stores));
+    }
   }
 
   getCategories(): Observable<ProductCategory[]> {
     const endpoint = '/categories';
-    return this.apiService.get<ProductCategory[]>(endpoint);
+
+    if (this.categoriesCache) {
+      return of(this.categoriesCache);
+    } else {
+      return this.apiService.get<ProductCategory[]>(endpoint).pipe(
+        tap(categories => this.categoriesCache = categories)
+      );
+    }
   }
 
   setLoadingSpinner(name: string) {
