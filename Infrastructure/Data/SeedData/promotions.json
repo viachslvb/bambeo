@@ -1,52 +1,352 @@
 [
   {
-    "ProductId": 1,
+    "ProductId": 7,
     "Price": 1.99,
-    "PreviousPrice": 2.49,
-    "DiscountPercent": 20,
-    "DiscountCondition": "Drugi 56% taniej prazy zakupie 3",
-    "CreatedAt": "2024-05-08T00:00:00",
-    "StartDate": "2024-05-08T00:00:00",
-    "EndDate": "2024-05-31T23:59:59"
+    "PreviousPrice": 2.89,
+    "DiscountPercentage": 31,
+    "DiscountCondition": "Drugi 6-pak 62% taniej przy zakupie 2x6-paku",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
   },
   {
-    "ProductId": 2,
-    "Price": 2.99,
+    "ProductId": 8,
+    "Price": 1.79,
+    "PreviousPrice": 2.45,
+    "DiscountPercentage": 26,
+    "DiscountCondition": "Drugi 6-pak 52% taniej przy zakupie 2x6-paku",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 9,
+    "Price": 4.50,
+    "PreviousPrice": 8.99,
+    "DiscountPercentage": 49,
+    "DiscountCondition": "1 + 1 GRATIS",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 10,
+    "Price": 3.79,
+    "PreviousPrice": 5.79,
+    "DiscountPercentage": 34,
+    "DiscountCondition": "Teraz 34% taniej",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 11,
+    "Price": 4.49,
+    "PreviousPrice": 5.24,
+    "DiscountPercentage": 14,
+    "DiscountCondition": "Drugi 28% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 12,
+    "Price": 2.19,
+    "PreviousPrice": 2.69,
+    "DiscountPercentage": 18,
+    "DiscountCondition": "Drugi 36% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 13,
+    "Price": 2.79,
     "PreviousPrice": 3.49,
-    "DiscountPercent": 20,
-    "DiscountCondition": "Drugi 56% taniej prazy zakupie 3",
-    "CreatedAt": "2024-05-08T00:00:00",
-    "StartDate": "2024-05-08T00:00:00",
-    "EndDate": "2024-05-31T23:59:59"
+    "DiscountPercentage": 20,
+    "DiscountCondition": "Drugi 40% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
   },
   {
-    "ProductId": 3,
-    "Price": 3.99,
-    "PreviousPrice": 4.49,
-    "DiscountPercent": 20,
-    "DiscountCondition": "Drugi 56% taniej prazy zakupie 3",
-    "CreatedAt": "2024-05-08T00:00:00",
-    "StartDate": "2024-05-08T00:00:00",
-    "EndDate": "2024-05-31T23:59:59"
+    "ProductId": 14,
+    "Price": 2.99,
+    "PreviousPrice": 3.99,
+    "DiscountPercentage": 25,
+    "DiscountCondition": "25% taniej przy zakupie 3",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
   },
   {
-    "ProductId": 4,
+    "ProductId": 15,
     "Price": 4.99,
-    "PreviousPrice": 5.49,
-    "DiscountPercent": 20,
-    "DiscountCondition": "Drugi 56% taniej prazy zakupie 3",
-    "CreatedAt": "2024-05-08T00:00:00",
-    "StartDate": "2024-05-08T00:00:00",
-    "EndDate": "2024-05-31T23:59:59"
+    "PreviousPrice": 6.55,
+    "DiscountPercentage": 23,
+    "DiscountCondition": "Drugi 46% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
   },
   {
-    "ProductId": 5,
+    "ProductId": 16,
+    "Price": 4.89,
+    "PreviousPrice": 6.79,
+    "DiscountPercentage": 27,
+    "DiscountCondition": "Drugi 54% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 17,
+    "Price": 5.49,
+    "PreviousPrice": 7.49,
+    "DiscountPercentage": 26,
+    "DiscountCondition": "Drugi 52% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 18,
+    "Price": 6.99,
+    "PreviousPrice": 8.99,
+    "DiscountPercentage": 22,
+    "DiscountCondition": "22% taniej przy zakupie 3",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 19,
+    "Price": 5.99,
+    "PreviousPrice": 9.89,
+    "DiscountPercentage": 39,
+    "DiscountCondition": "Drugi 78% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 20,
+    "Price": 4.89,
+    "PreviousPrice": 7.79,
+    "DiscountPercentage": 37,
+    "DiscountCondition": "Drugi 74% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 21,
+    "Price": 3.29,
+    "PreviousPrice": 3.99,
+    "DiscountPercentage": 17,
+    "DiscountCondition": "17% taniej przy zakupie 3",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 22,
+    "Price": 2.65,
+    "PreviousPrice": 2.79,
+    "DiscountPercentage": 5,
+    "DiscountCondition": "Teraz taniej przy zakupie 3",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 23,
+    "Price": 2.79,
+    "PreviousPrice": 3.66,
+    "DiscountPercentage": 23,
+    "DiscountCondition": "Drugi 46% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 24,
+    "Price": 6.99,
+    "PreviousPrice": 8.39,
+    "DiscountPercentage": 16,
+    "DiscountCondition": "Drugi 32% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 25,
+    "Price": 1.49,
+    "PreviousPrice": 1.94,
+    "DiscountPercentage": 23,
+    "DiscountCondition": "23% taniej przy zakupie 4",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 26,
+    "Price": 1.49,
+    "PreviousPrice": 1.94,
+    "DiscountPercentage": 23,
+    "DiscountCondition": "23% taniej przy zakupie 4",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 27,
+    "Price": 4.29,
+    "PreviousPrice": 5.19,
+    "DiscountPercentage": 17,
+    "DiscountCondition": "Drugi 34% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 28,
+    "Price": 6.99,
+    "PreviousPrice": 8.99,
+    "DiscountPercentage": 22,
+    "DiscountCondition": "Drugi 44% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 29,
+    "Price": 3.30,
+    "PreviousPrice": 6.59,
+    "DiscountPercentage": 49,
+    "DiscountCondition": "2 + 2 GRATIS",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 30,
+    "Price": 4.69,
+    "PreviousPrice": 6.99,
+    "DiscountPercentage": 32,
+    "DiscountCondition": "Drugi 64% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 31,
     "Price": 4.99,
-    "PreviousPrice": 5.49,
-    "DiscountPercent": 20,
-    "DiscountCondition": "Drugi 56% taniej prazy zakupie 3",
-    "CreatedAt": "2024-05-08T00:00:00",
-    "StartDate": "2024-05-08T00:00:00",
-    "EndDate": "2024-05-31T23:59:59"
+    "PreviousPrice": 5.99,
+    "DiscountPercentage": 16,
+    "DiscountCondition": "Drugi 32% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 32,
+    "Price": 9.99,
+    "PreviousPrice": 12.69,
+    "DiscountPercentage": 21,
+    "DiscountCondition": "21% taniej",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 33,
+    "Price": 2.49,
+    "PreviousPrice": 2.79,
+    "DiscountPercentage": 10,
+    "DiscountCondition": "Drugi 20% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 34,
+    "Price": 1.99,
+    "PreviousPrice": 2.39,
+    "DiscountPercentage": 16,
+    "DiscountCondition": "Drugi 32% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 35,
+    "Price": 5.49,
+    "PreviousPrice": 6.95,
+    "DiscountPercentage": 21,
+    "DiscountCondition": "Drugi 42% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 36,
+    "Price": 5.69,
+    "PreviousPrice": 9.49,
+    "DiscountPercentage": 40,
+    "DiscountCondition": "Drugi 80% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 37,
+    "Price": 9.49,
+    "PreviousPrice": 11.49,
+    "DiscountPercentage": 17,
+    "DiscountCondition": "Drugi 34% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 38,
+    "Price": 0.99,
+    "PreviousPrice": 1.09,
+    "DiscountPercentage": 9,
+    "DiscountCondition": "Teraz taniej przy zakupie 5",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 39,
+    "Price": 1.79,
+    "PreviousPrice": 2.09,
+    "DiscountPercentage": 14,
+    "DiscountCondition": "Teraz taniej przy zakupie 3",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 40,
+    "Price": 6.99,
+    "PreviousPrice": 7.99,
+    "DiscountPercentage": 12,
+    "DiscountCondition": "Drugi 24% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
+  },
+  {
+    "ProductId": 41,
+    "Price": 4.99,
+    "PreviousPrice": 7.79,
+    "DiscountPercentage": 35,
+    "DiscountCondition": "Drugi 70% taniej przy zakupie 2",
+    "CreatedAt": "2024-08-19T00:00:00",
+    "StartDate": "2024-08-19T00:00:00",
+    "EndDate": "2024-12-31T23:59:59"
   }
 ]

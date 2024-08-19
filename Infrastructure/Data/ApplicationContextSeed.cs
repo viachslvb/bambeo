@@ -29,16 +29,16 @@ namespace Infrastructure.Data
 
             //if (!context.Products.Any())
             //{
-            //    var productsData = File.ReadAllText("../Infrastructure/Data/SeedData/products.json");
-            //    var products = JsonSerializer.Deserialize<List<Product>>(productsData);
-            //    context.Products.AddRange(products);
+            //var productsData = File.ReadAllText("../Infrastructure/Data/SeedData/products.json");
+            //var products = JsonSerializer.Deserialize<List<Product>>(productsData);
+            //context.Products.AddRange(products);
             //}
 
             //if (!context.Promotions.Any())
             //{
-            //    var promotionsData = File.ReadAllText("../Infrastructure/Data/SeedData/promotions.json");
-            //    var promotions = JsonSerializer.Deserialize<List<Promotion>>(promotionsData);
-            //    context.Promotions.AddRange(promotions);
+            //var promotionsData = File.ReadAllText("../Infrastructure/Data/SeedData/promotions.json");
+            //var promotions = JsonSerializer.Deserialize<List<Promotion>>(promotionsData);
+            //context.Promotions.AddRange(promotions);
             //}
 
             //if (!userManager.Users.Any())

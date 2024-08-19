@@ -1,37 +1,247 @@
 ﻿[
   {
-    "Name": "Światowid Ser żółty Edamski, 250 g",
-    "ImageUrl": "/images/products/product_id_0.jpg",
-    "ProductCategoryId": 2,
-    "StoreId": 1,
-    "CreatedAt": "2023-10-31T10:00:00"
-  },
-  {
-    "Name": "Światowid Ser holenderski Mimolette w plastrach, 150 g",
-    "ImageUrl": "/images/products/product_id_1.jpg",
-    "ProductCategoryId": 3,
-    "StoreId": 1,
-    "CreatedAt": "2023-10-31T10:00:00"
-  },
-  {
-    "Name": "Sierpc Ser zółty Królewski wędzony w plastrach, 135 g",
-    "ImageUrl": "/images/products/product_id_2.jpg",
-    "ProductCategoryId": 4,
-    "StoreId": 1,
-    "CreatedAt": "2023-10-31T10:00:00"
-  },
-  {
-    "Name": "Hochland Ser topiony w krążku z szynką, 180 g",
-    "ImageUrl": "/images/products/product_id_3.jpg",
+    "Name": "Żywiec Zdrój Niegazowany 1,75 l",
+    "ImageUrl": "/images/products/product_id_10.jpg",
     "ProductCategoryId": 11,
     "StoreId": 1,
-    "CreatedAt": "2023-10-31T10:00:00"
+    "CreatedAt": "2024-08-19T10:00:00"
   },
   {
-    "Name": "Président Ser pleśniowy Camembert naturalny, 120 g",
-    "ImageUrl": "/images/products/product_id_4.jpg",
-    "ProductCategoryId": 17,
-    "StoreId": 2,
-    "CreatedAt": "2023-10-31T10:00:00"
+    "Name": "Nałęczowianka Naturalna woda mineralna niegazowana 1,5 l",
+    "ImageUrl": "/images/products/product_id_11.jpg",
+    "ProductCategoryId": 11,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Pomidory San Marzano, opak. 300 g",
+    "ImageUrl": "/images/products/product_id_12.jpg",
+    "ProductCategoryId": 5,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Almette Puszysty serek twarogowy z chrzanem, 150 g",
+    "ImageUrl": "/images/products/product_id_13.jpg",
+    "ProductCategoryId": 2,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Kraina Wędlin Select Kiełbasa żywiecka z szynki plastry, 100 g",
+    "ImageUrl": "/images/products/product_id_14.jpg",
+    "ProductCategoryId": 3,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Hortex Jabłko brzoskwinia Napój karton, 1l",
+    "ImageUrl": "/images/products/product_id_15.jpg",
+    "ProductCategoryId": 13,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "FRoSTA Szpinak siekany, 450 g",
+    "ImageUrl": "/images/products/product_id_16.jpg",
+    "ProductCategoryId": 5,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Hortex Sok 100% jabłko butelka, 1l",
+    "ImageUrl": "/images/products/product_id_17.jpg",
+    "ProductCategoryId": 13,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Kraina Wędlin Nature Schab wędzony plastry, 100 g",
+    "ImageUrl": "/images/products/product_id_18.jpg",
+    "ProductCategoryId": 3,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Tarczyński Exclusive Kabanosy drobiowe z wieprzowiną, 105 g",
+    "ImageUrl": "/images/products/product_id_19.jpg",
+    "ProductCategoryId": 3,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Światowid Ser żółty Edamski porcja, 250 g",
+    "ImageUrl": "/images/products/product_id_20.jpg",
+    "ProductCategoryId": 2,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Nussbeisser Czekolada mleczna z całymi migdałami, 100 g",
+    "ImageUrl": "/images/products/product_id_21.jpg",
+    "ProductCategoryId": 9,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Pepsi-Cola Zero cukru Napój gazowany o smaku cola, 2 l",
+    "ImageUrl": "/images/products/product_id_22.jpg",
+    "ProductCategoryId": 9,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Tarczyński Kabanosy Exclusive paluszki wieprzowe, 95 g",
+    "ImageUrl": "/images/products/product_id_23.jpg",
+    "ProductCategoryId": 3,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Twix Baton, 50 g",
+    "ImageUrl": "/images/products/product_id_24.jpg",
+    "ProductCategoryId": 9,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Croissant z nadzieniem orzechowo-kakaowym, 85 g",
+    "ImageUrl": "/images/products/product_id_25.jpg",
+    "ProductCategoryId": 7,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Lisner Rybka na raz w sosie słodko-pikantnym, 100 g",
+    "ImageUrl": "/images/products/product_id_26.jpg",
+    "ProductCategoryId": 4,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Gusto Bello Szynka Prosciutto, 80 g",
+    "ImageUrl": "/images/products/product_id_27.jpg",
+    "ProductCategoryId": 3,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Tutti Serek brzoskwinia, 150 g",
+    "ImageUrl": "/images/products/product_id_28.jpg",
+    "ProductCategoryId": 9,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Tutti Serek stracciatella, 150 g",
+    "ImageUrl": "/images/products/product_id_29.jpg",
+    "ProductCategoryId": 9,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "HIT markizy czekoladowe ciastka, 220 g",
+    "ImageUrl": "/images/products/product_id_30.jpg",
+    "ProductCategoryId": 9,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "President Camembert Naturalny, 170 g",
+    "ImageUrl": "/images/products/product_id_31.jpg",
+    "ProductCategoryId": 2,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Berlinki Classic parówki, 300 g",
+    "ImageUrl": "/images/products/product_id_32.jpg",
+    "ProductCategoryId": 3,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Diamant cukier drobny, 1 kg",
+    "ImageUrl": "/images/products/product_id_33.jpg",
+    "ProductCategoryId": 6,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Mroźna Kraina Fasolka szparagowa żółta i zielona cała, 450 g",
+    "ImageUrl": "/images/products/product_id_34.jpg",
+    "ProductCategoryId": 5,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Pudliszki Ketchup łagodny, 990 g",
+    "ImageUrl": "/images/products/product_id_35.jpg",
+    "ProductCategoryId": 8,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "KitKat Chunky Peanut Butter Paluszek waflowy w mlecznej czekoladzie, 42 g",
+    "ImageUrl": "/images/products/product_id_36.jpg",
+    "ProductCategoryId": 9,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Mleczna Dolina Kefir w butelce, 400 g",
+    "ImageUrl": "/images/products/product_id_37.jpg",
+    "ProductCategoryId": 2,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Nasze Smaki Naleśniki z jabłkami, 400g",
+    "ImageUrl": "/images/products/product_id_38.jpg",
+    "ProductCategoryId": 8,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Kujawski Olej rzepakowy z pierwszego tłoczenia, 1 l",
+    "ImageUrl": "/images/products/product_id_39.jpg",
+    "ProductCategoryId": 6,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "BakaD'Or Selection Mieszanka orzechów, 180 g",
+    "ImageUrl": "/images/products/product_id_40.jpg",
+    "ProductCategoryId": 9,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Bułka wrocławska z makiem, 65 g",
+    "ImageUrl": "/images/products/product_id_41.jpg",
+    "ProductCategoryId": 7,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Światowid Gouda ser topiony, 100 g",
+    "ImageUrl": "/images/products/product_id_42.jpg",
+    "ProductCategoryId": 2,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Mleczna Dolina Masło bez laktozy kostka, 200 g",
+    "ImageUrl": "/images/products/product_id_43.jpg",
+    "ProductCategoryId": 2,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
+  },
+  {
+    "Name": "Tarczyński Naturalnie parówki z kurczaka, 160 g",
+    "ImageUrl": "/images/products/product_id_45.jpg",
+    "ProductCategoryId": 9,
+    "StoreId": 1,
+    "CreatedAt": "2024-08-19T10:00:00"
   }
 ]
