@@ -414,7 +414,10 @@ export class ProductsComponent extends ContentLoadingComponent implements OnInit
 
   onPageChanged(event: any) {
     const pageIndex = event.page + 1;
-    this.promotionService.updateFilterPart({ pageIndex: pageIndex });
+    if (pageIndex !== this.promotions.pageIndex) {
+      this.promotionService.updateFilterPart({ pageIndex: pageIndex }, true);
+      this.spaceForFilterBarWhenFixed.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   applyFilters() {

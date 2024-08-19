@@ -31,12 +31,10 @@ export class ScrollService {
       ).subscribe(() => {
         if (current.position) {
           requestAnimationFrame(() => {
-            //this.viewportScroller.scrollToPosition(current.position as [number, number]);
             const [x, y] = current.position as [number, number];
             window.scrollTo({
               top: y,
-              left: x,
-              behavior: 'smooth'
+              left: x
             });
           });
         } else if (current.anchor) {
